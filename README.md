@@ -6,9 +6,13 @@
 
 ## Installation
 
+### Requirements
+- Serverless framework
+- NodeJS in version 12 minimum
 > [Include a step-by-step procedure on how to get your code installed. Be sure to include any third-party dependencies that need to be installed separately]
 
 ## Getting Started
+If you have serverless framework installed, type ```npm install``` and ```sls offline``` in your terminal in the project folder.
 >[Simple steps to start working with the software similar to a "Hello World"]
 
 ## Usage
