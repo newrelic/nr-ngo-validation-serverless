@@ -1,30 +1,28 @@
 {
-  "name": "validation-service",
-  "version": "1.0.0",
+  "name": "nr-ngo-validation-serverless",
+  "version": "0.0.1",
   "description": "",
-  "main": "src/functions/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --passWithNoTests"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DominikMarciniszyn/validation-service.git"
+    "url": "git+https://github.com/newrelic/nr-ngo-validation-serverless.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/DominikMarciniszyn/validation-service/issues"
+    "email": "opensource+nr-ngo-validation-serverless@newrelic.com"
   },
-  "homepage": "https://github.com/DominikMarciniszyn/validation-service#readme",
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@newrelic/eslint-plugin-newrelic": "^0.3.1",
     "@types/aws-lambda": "8.10.17",
+    "@types/jest": "22.2.3",
     "@types/node": "10.12.18",
     "eslint": "^7.9.0",
     "husky": "^4.3.0",
     "lint-staged": "^10.4.0",
+    "jest": "26.4.2",
     "prettier": "2.1.2",
     "serverless-dotenv-plugin": "2.4.2",
     "serverless-offline": "^6.4.0",
