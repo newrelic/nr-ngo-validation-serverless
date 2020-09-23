@@ -2,16 +2,16 @@ name: Pull Request
 
 on:
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
+  push:
+    branches: [develop]
 
   repository_dispatch:
     types: [pull-request]
 
 jobs:
-  checkout-and-build-pr:
-    name: checkout-and-build-pr
+  test:
+    name: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -35,4 +35,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run tests
+        run: npm test
 
