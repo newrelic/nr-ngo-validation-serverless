@@ -7,7 +7,6 @@ on:
 jobs:
   eslint:
     name: eslint
-    needs: checkout-and-build-pr
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
