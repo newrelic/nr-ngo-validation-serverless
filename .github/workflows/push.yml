@@ -1,10 +1,10 @@
-name: Push
+name: Pull Request
 
 on: push
 
 jobs:
-  build:
-    name: build
+  test:
+    name: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -29,11 +29,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-  test:
-    name: test
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Run tests
         run: npm test
 
