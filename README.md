@@ -2,8 +2,6 @@
 
 # NGO Validation Service [build badges go here when available]
 
-![CI](https://github.com/newrelic/nr-ngo-validation-serverless/workflows/CI/badge.svg) ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr-ngo-validation-serverless?include_prereleases&sort=semver)
-
 > [Brief description - what is the project and value does it provide? How often should users expect to get releases? How is versioning set up? Where does this project want to go?]
 
 ## Installation
