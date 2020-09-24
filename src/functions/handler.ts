@@ -6,6 +6,7 @@ export const handle: APIGatewayProxyHandler = async (
 ) => {
   // eslint-disable-next-line no-console
   console.log(_context);
+
   return {
     statusCode: 200,
     body: JSON.stringify(
