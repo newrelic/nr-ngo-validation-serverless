@@ -14,6 +14,11 @@
 
 ## Getting Started
 
+Before installation set environmental variables in `.env` file. This file contains the REGION and STAGE variables. If those variable will be empty the default values will be provided:
+
+- STAGE=staging
+- REGION=eu-west-1
+
 If you have serverless framework installed, type `npm install` and `sls offline` in your terminal in the project folder.
 
 ## Usage
