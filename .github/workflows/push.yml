@@ -1,8 +1,6 @@
-name: Pull Request
+name: Push
 
-on:
-  pull_request:
-    branches: [develop]
+on: push
 
 jobs:
   eslint:

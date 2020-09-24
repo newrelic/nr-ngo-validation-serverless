@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "eslint-check": "eslint src/**/*.ts"
   },
   "repository": {
     "type": "git",
