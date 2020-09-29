@@ -49,7 +49,7 @@ jobs:
           exit 1
 
   build:
-    name: build
+    name: Build and test
     needs: eslint
     runs-on: ubuntu-latest
     steps:
