@@ -12,12 +12,12 @@ export const validateLookupResponse = (
   return lookupResponse;
 };
 
-export const isTokenValid = (token: string): boolean => {
-  if (token.includes('@')) {
-    const splittedToken = token.split('@');
-    console.log(`Splitted Token: ${splittedToken.length}`);
-    return true;
-  }
+const TOKEN_REGEX = /^[a-zA-Z0-9]+(@)[a-zA-Z0-9]+$/;
 
+export const isTokenValid = (token: string): boolean => {
+  if (token) {
+    const regex = new RegExp(TOKEN_REGEX);
+    return regex.test(token);
+  }
   return false;
 };
