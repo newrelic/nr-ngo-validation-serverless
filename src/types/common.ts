@@ -39,7 +39,7 @@ export enum StatusCodes {
 }
 
 export interface Location {
-  timestamp: string;
+  timestamp: number | string;
   version: string | number;
   type: string;
   address: string;
@@ -53,10 +53,10 @@ export interface Location {
 }
 
 export interface CommonObject {
-  timestamp: string;
-  version: string;
+  timestamp: number;
+  version: string | number;
   type: string;
-  type_object: string;
+  type_value: string | number;
 }
 
 export interface DataObject {
@@ -69,7 +69,11 @@ export interface DataObject {
   name: CommonObject;
   locations: Location[];
   websites: CommonObject[];
-  legal_identifier: CommonObject;
-  timestamp: string;
+  legal_identifier: CommonObject[];
   status: CommonObject;
+}
+
+export interface AgentObject {
+  expiration_date: number;
+  pin: string;
 }
