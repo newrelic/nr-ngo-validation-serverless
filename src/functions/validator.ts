@@ -12,9 +12,9 @@ export const validate: APIGatewayProxyHandler = async (
   event: APIGatewayEvent,
   _context: Context,
 ): Promise<LambdaResponse> => {
-  // eslint-disable-next-line no-console
-  console.log(_context);
   const queryStringParams = event.queryStringParameters || {};
+
+  // TODO: Handle sending request with pin and handle (check the excel)
 
   if (Object.keys(queryStringParams).length === 0) {
     return LambdaResponses.noTokenProvided;
@@ -33,16 +33,13 @@ export const validate: APIGatewayProxyHandler = async (
 
   // TODO: Validate token expiration date
 
-  // TODO: Validate if org_is is returned in response
   const validatedLookupResponse = validateLookupResponse(lookupRes);
   if (validatedLookupResponse === LambdaResponses.noDataForProvidedToken) {
     return validatedLookupResponse;
   }
 
-  // TODO: call Constraint API if org_id exists
-
-  const orgId = lookupRes.returnStatus.data[0].org_id;
-
+  const orgId = (validatedLookupResponse as LookupLargeResponse).returnStatus
+    .data[0].org_id;
   const constraintApiUrl = createConstraintApiUrl(
     config.CONSTRAINT_API_URL,
     orgId,
@@ -52,9 +49,17 @@ export const validate: APIGatewayProxyHandler = async (
     constraintApiUrl,
   );
 
+  console.log(JSON.stringify(constraintRes, null, 2));
+
+  // TODO: check what is the value of eligibility_status and which error code was returned
+
   // TODO: create frontend-backend contract and convert response
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: constraintRes }, null, 2),
+    body: JSON.stringify(
+      { data: constraintRes /* .returnStatus.data */ },
+      null,
+      2,
+    ),
   };
 };
