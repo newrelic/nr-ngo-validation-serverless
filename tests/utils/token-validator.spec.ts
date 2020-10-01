@@ -14,8 +14,10 @@ describe('Lookup API validation path', () => {
   });
 });
 
-describe('Lookup response validation', () => {
-  it('Correct response from lookup api should pass the validation check', () => {});
+// describe('Lookup response validation', () => {
+//   it('Correct response from lookup api should pass the validation check', () => { });
 
-  it('Incorrect response (empty array) from lookup api should return no data for provided token', () => {});
-});
+//   it('Incorrect response (empty array) from lookup api should return no data for provided token', () => {
+
+//   });
+// });
