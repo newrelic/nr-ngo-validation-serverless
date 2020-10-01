@@ -29,6 +29,8 @@ export const validate: APIGatewayProxyHandler = async (
 
   const lookupRes = await sendGetRequest<LookupLargeResponse>(lookUpApiUrl);
 
+  // TODO: Validate token expiration date
+
   // TODO: Validate if org_is is returned in response
   const validatedLookupResponse = validateLookupResponse(lookupRes);
   if (validatedLookupResponse === LambdaResponses.noDataForProvidedToken) {
@@ -37,22 +39,20 @@ export const validate: APIGatewayProxyHandler = async (
 
   // TODO: call Constraint API if org_id exists
 
-  if (lookupRes) {
-    const orgId = lookupRes.returnStatus.data[0].org_id;
+  const orgId = lookupRes.returnStatus.data[0].org_id;
 
-    const constraintApiUrl = createConstraintApiUrl(
-      config.CONSTRAINT_API_URL,
-      orgId,
-    );
+  const constraintApiUrl = createConstraintApiUrl(
+    config.CONSTRAINT_API_URL,
+    orgId,
+  );
 
-    const constraintRes = await sendGetRequest<ConstraintResponse>(
-      constraintApiUrl,
-    );
-    console.log('constraintRes', constraintRes);
-  }
+  const constraintRes = await sendGetRequest<ConstraintResponse>(
+    constraintApiUrl,
+  );
 
+  // TODO: create frontend-backend contract and convert response
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: lookupRes }, null, 2),
+    body: JSON.stringify({ message: constraintRes }, null, 2),
   };
 };
