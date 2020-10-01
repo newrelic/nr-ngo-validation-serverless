@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { LookupLargeResponse } from '../../src/types/lookupLargeResponse';
 
-export const LookupApiFixtires = {
+export const LookupApiFixtures = {
   invalidLookupResponse: {
     returnStatus: {
       elapsed: '127.0 milliseconds',
