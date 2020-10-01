@@ -20,7 +20,9 @@ export const validate: APIGatewayProxyHandler = async (
     return LambdaResponses.noTokenProvided;
   }
 
-  // TODO: Add token validation here
+  if (!isTokenValid(queryStringParams.token)) {
+    return LambdaResponses.badTokenProvided;
+  }
 
   const lookUpApiUrl = createLookupApiUrl(
     config.LOOKUP_API_URL,
