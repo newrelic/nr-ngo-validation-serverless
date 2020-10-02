@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ConstraintResponse } from '../../src/types/constraintResponse';
 
-export const ConstraintApiResponse = {
+export const ConstraintApiFixtures = {
   allPassResponse: {
     returnStatus: {
       elapsed: '251.0 milliseconds',
