@@ -1,12 +1,9 @@
 import { APIGatewayProxyHandler, APIGatewayEvent, Context } from 'aws-lambda';
-import { sendGetRequest } from '../utils/http-util';
-import { createLookupApiUrl, createConstraintApiUrl } from '../utils/http-util';
-import { config } from '../config';
 import { LambdaResponse } from '../types/response';
-import { LookupLargeResponse } from '../types/lookupLargeResponse';
-import { ConstraintResponse } from '../types/constraintResponse';
 import { LambdaResponses } from '../utils/lambda-responses';
-import { validateLookupResponse, isTokenValid } from '../utils/token-validator';
+import { isTokenValid } from '../utils/token-validator';
+import { getResponseFromLookup } from '../services/lookup';
+import { getOrgId, getResponseFromConstraint } from '../services/constraint';
 
 export const validate: APIGatewayProxyHandler = async (
   event: APIGatewayEvent,
@@ -16,6 +13,7 @@ export const validate: APIGatewayProxyHandler = async (
 
   // TODO: Handle sending request with pin and handle (check the excel)
 
+  // Token validation
   if (Object.keys(queryStringParams).length === 0) {
     return LambdaResponses.noTokenProvided;
   }
@@ -24,32 +22,18 @@ export const validate: APIGatewayProxyHandler = async (
     return LambdaResponses.badTokenProvided;
   }
 
-  const lookUpApiUrl = createLookupApiUrl(
-    config.LOOKUP_API_URL,
-    queryStringParams.token,
-  );
+  // Lookup API
+  const lookupResponse = await getResponseFromLookup(queryStringParams.token);
 
-  const lookupRes = await sendGetRequest<LookupLargeResponse>(lookUpApiUrl);
-
-  // TODO: Validate token expiration date
-
-  const validatedLookupResponse = validateLookupResponse(lookupRes);
-  if (validatedLookupResponse === LambdaResponses.noDataForProvidedToken) {
-    return validatedLookupResponse;
+  if (lookupResponse instanceof LambdaResponses) {
+    return lookupResponse as LambdaResponse;
   }
 
-  const orgId = (validatedLookupResponse as LookupLargeResponse).returnStatus
-    .data[0].org_id;
-  const constraintApiUrl = createConstraintApiUrl(
-    config.CONSTRAINT_API_URL,
-    orgId,
-  );
+  // Constraing API
+  const orgId = getOrgId(lookupResponse);
+  const constraintResponse = await getResponseFromConstraint(orgId);
 
-  const constraintRes = await sendGetRequest<ConstraintResponse>(
-    constraintApiUrl,
-  );
-
-  console.log(JSON.stringify(constraintRes, null, 2));
+  console.log(JSON.stringify(constraintResponse, null, 2));
 
   // TODO: check what is the value of eligibility_status and which error code was returned
 
@@ -57,7 +41,7 @@ export const validate: APIGatewayProxyHandler = async (
   return {
     statusCode: 200,
     body: JSON.stringify(
-      { data: constraintRes /* .returnStatus.data */ },
+      { data: constraintResponse.returnStatus.data },
       null,
       2,
     ),

@@ -11,6 +11,7 @@ export interface ReturnStatus {
 
 export interface DataObject {
   program_code: string;
+  org_id: string;
   error_code: ErrorCodes[];
   eligibility_status: boolean;
 }
