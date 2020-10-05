@@ -9,10 +9,22 @@ export const getResponseFromLookup = async (
 ): Promise<LookupLargeResponse | LambdaResponses> => {
   const lookUpApiUrl = createLookupApiUrl(config.LOOKUP_API_URL, token);
   const lookupRes = await sendGetRequest<LookupLargeResponse>(lookUpApiUrl);
-
-  // TODO: Validate token expiration date
-
   const validatedLookupResponse = validateLookupResponse(lookupRes);
 
   return validatedLookupResponse;
+};
+
+export const getExpirationDateFromResponse = (
+  pin: string,
+  lookupResponse: LookupLargeResponse,
+): number => {
+  let expirationDate = 0;
+
+  for (const agent of lookupResponse.returnStatus.data[0].agents) {
+    if (pin === agent.pin) {
+      expirationDate = agent.expiration_date;
+    }
+  }
+
+  return expirationDate;
 };

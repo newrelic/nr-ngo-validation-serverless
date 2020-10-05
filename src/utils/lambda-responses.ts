@@ -20,4 +20,13 @@ export class LambdaResponses {
     statusCode: 404,
     body: JSON.stringify({ message: 'This endpoint does not exist' }, null, 2),
   };
+
+  public static readonly tokenExpired: LambdaResponse = {
+    statusCode: 401,
+    body: JSON.stringify(
+      { message: 'Verified - TechSoup Token expired' },
+      null,
+      2,
+    ),
+  };
 }
