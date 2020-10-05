@@ -14,9 +14,5 @@ export const getResponseFromLookup = async (
 
   const validatedLookupResponse = validateLookupResponse(lookupRes);
 
-  if (validatedLookupResponse === LambdaResponses.noDataForProvidedToken) {
-    return validatedLookupResponse;
-  }
-
   return validatedLookupResponse;
 };
