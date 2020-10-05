@@ -1,11 +1,13 @@
 import {
   isTokenValid,
   validateLookupResponse,
+  getPinFromToken,
+  isTokenExpired,
 } from '../../src/utils/token-validator';
 import { LookupApiFixtures } from '../fixtures/lookup-api-fixtures';
 import { LambdaResponses } from '../../src/utils/lambda-responses';
 
-describe('Lookup API validation path', () => {
+describe('Token utils', () => {
   it('Provided token has got proper format', () => {
     const correctToken = 'pin123@321handle';
     expect(isTokenValid(correctToken)).toEqual(true);
@@ -16,6 +18,32 @@ describe('Lookup API validation path', () => {
     invalidTokens.forEach((token) => {
       expect(isTokenValid(token)).toEqual(false);
     });
+  });
+
+  it('From the given token, pin is excluded', () => {
+    const token = '12345@qwerty';
+    const expectedPin = '12345';
+
+    expect(getPinFromToken(token)).toEqual(expectedPin);
+  });
+
+  it('Check of token expiration return true, token expired', () => {
+    const token = '1234@qwer';
+
+    expect(
+      isTokenExpired(
+        token,
+        LookupApiFixtures.validLookupApiButTokenExpiredResponse,
+      ),
+    ).toBe(true);
+  });
+
+  it('Check of token expiration return false, token is valid', () => {
+    const token = '1234@qwer';
+    const response = LookupApiFixtures.validLookupApiResponse;
+    response.returnStatus.data[0].agents[0].expiration_date = Date.now() + 1000;
+
+    expect(isTokenExpired(token, response)).toBe(false);
   });
 });
 

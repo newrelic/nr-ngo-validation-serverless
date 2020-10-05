@@ -1,5 +1,8 @@
 import * as fetch from 'node-fetch';
-import { getResponseFromLookup } from '../../src/services/lookup';
+import {
+  getResponseFromLookup,
+  getExpirationDateFromResponse,
+} from '../../src/services/lookup';
 import { LookupLargeResponse } from '../../src/types/lookupLargeResponse';
 import { LambdaResponses } from '../../src/utils/lambda-responses';
 import { LookupApiFixtures } from '../fixtures/lookup-api-fixtures';
@@ -10,13 +13,13 @@ const { Response } = fetch;
 
 let expectedValidResponse: LookupLargeResponse;
 let invalidResponse: LookupLargeResponse;
-let expectedError: LambdaResponses;
+let noDataForProvidedTokenError: LambdaResponses;
 
 describe('Lookup API', () => {
   beforeAll(() => {
     expectedValidResponse = LookupApiFixtures.validLookupApiResponse;
     invalidResponse = LookupApiFixtures.invalidLookupResponse;
-    expectedError = LambdaResponses.noDataForProvidedToken;
+    noDataForProvidedTokenError = LambdaResponses.noDataForProvidedToken;
   });
 
   beforeEach(() => {
@@ -40,6 +43,17 @@ describe('Lookup API', () => {
 
     const response = await getResponseFromLookup('bad@token');
 
-    expect(response).toEqual(expectedError);
+    expect(response).toEqual(noDataForProvidedTokenError);
+  });
+
+  it('Should return expiration date from valid response', () => {
+    const pin = '1234';
+    const expectedExpirationDate = 1605629838458;
+    const expirationDate = getExpirationDateFromResponse(
+      pin,
+      expectedValidResponse,
+    );
+
+    expect(expirationDate).toEqual(expectedExpirationDate);
   });
 });
