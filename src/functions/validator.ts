@@ -1,8 +1,11 @@
 import { APIGatewayProxyHandler, APIGatewayEvent, Context } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
-import { isTokenValid } from '../utils/token-validator';
-import { getResponseFromLookup } from '../services/lookup';
+import { isTokenValid, isTokenExpired } from '../utils/token-validator';
+import {
+  getResponseFromLookup,
+  getExpirationDateFromResponse,
+} from '../services/lookup';
 import { getOrgId, getResponseFromConstraint } from '../services/constraint';
 import { LookupLargeResponse } from '../types/lookupLargeResponse';
 
@@ -30,6 +33,15 @@ export const validate: APIGatewayProxyHandler = async (
 
   if (lookupResponse === LambdaResponses.noDataForProvidedToken) {
     return lookupResponse as LambdaResponse;
+  }
+
+  if (
+    isTokenExpired(
+      queryStringParams.token,
+      lookupResponse as LookupLargeResponse,
+    )
+  ) {
+    return LambdaResponses.tokenExpired;
   }
 
   // Constraing API
