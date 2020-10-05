@@ -4,6 +4,7 @@ import { LambdaResponses } from '../utils/lambda-responses';
 import { isTokenValid } from '../utils/token-validator';
 import { getResponseFromLookup } from '../services/lookup';
 import { getOrgId, getResponseFromConstraint } from '../services/constraint';
+import { LookupLargeResponse } from '../types/lookupLargeResponse';
 
 export const validate: APIGatewayProxyHandler = async (
   event: APIGatewayEvent,
@@ -25,12 +26,14 @@ export const validate: APIGatewayProxyHandler = async (
   // Lookup API
   const lookupResponse = await getResponseFromLookup(queryStringParams.token);
 
-  if (lookupResponse instanceof LambdaResponses) {
+  console.log(`Data: ${JSON.stringify(lookupResponse, null, 2)}`);
+
+  if (lookupResponse === LambdaResponses.noDataForProvidedToken) {
     return lookupResponse as LambdaResponse;
   }
 
   // Constraing API
-  const orgId = getOrgId(lookupResponse);
+  const orgId = getOrgId(lookupResponse as LookupLargeResponse);
   const constraintResponse = await getResponseFromConstraint(orgId);
 
   console.log(JSON.stringify(constraintResponse, null, 2));
