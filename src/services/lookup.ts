@@ -28,3 +28,9 @@ export const getExpirationDateFromResponse = (
 
   return expirationDate;
 };
+
+export const getStatusFromResponse = (
+  lookupResponse: LookupLargeResponse,
+): number => {
+  return lookupResponse.returnStatus.data[0].status.type_value as number;
+};

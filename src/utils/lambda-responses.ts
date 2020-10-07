@@ -29,4 +29,9 @@ export class LambdaResponses {
       2,
     ),
   };
+
+  public static readonly notQualified: LambdaResponse = {
+    statusCode: 401,
+    body: JSON.stringify({ message: "Sorry you don't qualified. " }, null, 2),
+  };
 }

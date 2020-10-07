@@ -2,6 +2,7 @@ import * as fetch from 'node-fetch';
 import {
   getResponseFromLookup,
   getExpirationDateFromResponse,
+  getStatusFromResponse,
 } from '../../src/services/lookup';
 import { LookupLargeResponse } from '../../src/types/lookupLargeResponse';
 import { LambdaResponses } from '../../src/utils/lambda-responses';
@@ -14,12 +15,17 @@ const { Response } = fetch;
 let expectedValidResponse: LookupLargeResponse;
 let invalidResponse: LookupLargeResponse;
 let noDataForProvidedTokenError: LambdaResponses;
+let validLookupResponse: LookupLargeResponse;
+let notQualifiedResponse: LookupLargeResponse;
 
 describe('Lookup API', () => {
   beforeAll(() => {
     expectedValidResponse = LookupApiFixtures.validLookupApiResponse;
     invalidResponse = LookupApiFixtures.invalidLookupResponse;
     noDataForProvidedTokenError = LambdaResponses.noDataForProvidedToken;
+    validLookupResponse = LookupApiFixtures.validLookupApiResponse;
+    notQualifiedResponse =
+      LookupApiFixtures.validLookupApiButNotQualifiedResponse;
   });
 
   beforeEach(() => {
@@ -55,5 +61,15 @@ describe('Lookup API', () => {
     );
 
     expect(expirationDate).toEqual(expectedExpirationDate);
+  });
+
+  it('Should return status type value 1', () => {
+    const expectedStatus = 1;
+    expect(getStatusFromResponse(validLookupResponse)).toEqual(expectedStatus);
+  });
+
+  it('Should return status type value -1', () => {
+    const expectedStatus = -1;
+    expect(getStatusFromResponse(notQualifiedResponse)).toEqual(expectedStatus);
   });
 });
