@@ -4,10 +4,12 @@ import { LambdaResponses } from '../utils/lambda-responses';
 import { isTokenValid, isTokenExpired } from '../utils/token-validator';
 import {
   getResponseFromLookup,
-  getExpirationDateFromResponse,
+  getStatusFromResponse,
 } from '../services/lookup';
 import { getOrgId, getResponseFromConstraint } from '../services/constraint';
 import { LookupLargeResponse } from '../types/lookupLargeResponse';
+
+const QUALIFIED = 1;
 
 export const validate: APIGatewayProxyHandler = async (
   event: APIGatewayEvent,
@@ -42,6 +44,14 @@ export const validate: APIGatewayProxyHandler = async (
     )
   ) {
     return LambdaResponses.tokenExpired;
+  }
+
+  const orgStatus = getStatusFromResponse(
+    lookupResponse as LookupLargeResponse,
+  );
+
+  if (orgStatus !== QUALIFIED) {
+    return LambdaResponses.notQualified;
   }
 
   // Constraing API
