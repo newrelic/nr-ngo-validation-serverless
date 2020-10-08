@@ -2,11 +2,8 @@ import { APIGatewayProxyHandler, APIGatewayEvent, Context } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { isTokenValid, isTokenExpired } from '../utils/token-validator';
-import {
-  getResponseFromLookup,
-  getStatusFromResponse,
-} from '../services/lookup';
-import { getOrgId, getResponseFromConstraint } from '../services/constraint';
+import { getResponseFromLookup, getStatusFromResponse } from '../services/lookup';
+import { getOrgId, getResponseFromConstraint, checkEligibility } from '../services/constraint';
 import { LookupLargeResponse } from '../types/lookupLargeResponse';
 
 const QUALIFIED = 1;
@@ -16,6 +13,7 @@ export const validate: APIGatewayProxyHandler = async (
   _context: Context,
 ): Promise<LambdaResponse> => {
   const queryStringParams = event.queryStringParameters || {};
+  let response: LambdaResponse = null;
 
   // TODO: Handle sending request with pin and handle (check the excel)
 
@@ -37,18 +35,11 @@ export const validate: APIGatewayProxyHandler = async (
     return lookupResponse as LambdaResponse;
   }
 
-  if (
-    isTokenExpired(
-      queryStringParams.token,
-      lookupResponse as LookupLargeResponse,
-    )
-  ) {
+  if (isTokenExpired(queryStringParams.token, lookupResponse as LookupLargeResponse)) {
     return LambdaResponses.tokenExpired;
   }
 
-  const orgStatus = getStatusFromResponse(
-    lookupResponse as LookupLargeResponse,
-  );
+  const orgStatus = getStatusFromResponse(lookupResponse as LookupLargeResponse);
 
   if (orgStatus !== QUALIFIED) {
     return LambdaResponses.notQualified;
@@ -61,14 +52,11 @@ export const validate: APIGatewayProxyHandler = async (
   console.log(JSON.stringify(constraintResponse, null, 2));
 
   // TODO: check what is the value of eligibility_status and which error code was returned
+  response = checkEligibility(constraintResponse);
 
   // TODO: create frontend-backend contract and convert response
   return {
-    statusCode: 200,
-    body: JSON.stringify(
-      { data: constraintResponse.returnStatus.data },
-      null,
-      2,
-    ),
+    statusCode: response.statusCode,
+    body: response.body,
   };
 };

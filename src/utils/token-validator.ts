@@ -3,9 +3,7 @@ import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from './lambda-responses';
 import { getExpirationDateFromResponse } from '../services/lookup';
 
-export const validateLookupResponse = (
-  lookupResponse: LookupLargeResponse,
-): LookupLargeResponse | LambdaResponse => {
+export const validateLookupResponse = (lookupResponse: LookupLargeResponse): LookupLargeResponse | LambdaResponse => {
   if (lookupResponse.returnStatus.data.length === 0) {
     return LambdaResponses.noDataForProvidedToken;
   }
@@ -23,10 +21,7 @@ export const isTokenValid = (token: string): boolean => {
   return false;
 };
 
-export const isTokenExpired = (
-  token: string,
-  lookupResponse: LookupLargeResponse,
-): boolean => {
+export const isTokenExpired = (token: string, lookupResponse: LookupLargeResponse): boolean => {
   const pin = getPinFromToken(token);
   const expirationDate = getExpirationDateFromResponse(pin, lookupResponse);
 

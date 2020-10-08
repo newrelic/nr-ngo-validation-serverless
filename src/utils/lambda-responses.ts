@@ -23,15 +23,21 @@ export class LambdaResponses {
 
   public static readonly tokenExpired: LambdaResponse = {
     statusCode: 401,
-    body: JSON.stringify(
-      { message: 'Verified - TechSoup Token expired' },
-      null,
-      2,
-    ),
+    body: JSON.stringify({ message: 'Verified - TechSoup Token expired' }, null, 2),
   };
 
   public static readonly notQualified: LambdaResponse = {
     statusCode: 401,
-    body: JSON.stringify({ message: "Sorry you don't qualified. " }, null, 2),
+    body: JSON.stringify({ message: 'Sorry you do not qualified' }, null, 2),
+  };
+
+  public static readonly notEligible: LambdaResponse = {
+    statusCode: 401,
+    body: JSON.stringify({ message: 'Sorry you are not eligible' }, null, 2),
+  };
+
+  public static readonly eligible: LambdaResponse = {
+    statusCode: 200,
+    body: JSON.stringify({ message: 'Success, you qualify!' }, null, 2),
   };
 }
