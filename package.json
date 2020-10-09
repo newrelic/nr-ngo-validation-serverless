@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "test": "NODE_ENV=test jest --passWithNoTests",
+    "test": "NODE_ENV=test jest --passWithNoTests --coverage",
     "eslint-check": "eslint src/**/*.ts"
   },
   "repository": {
@@ -46,10 +46,6 @@
     "collectCoverageFrom": [
       "src/**/*.ts"
     ],
-    "coverageReporters": [
-      "html"
-    ],
-    "coverageDirectory": ".coverage",
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },

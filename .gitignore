@@ -6,6 +6,7 @@ jspm_packages
 .serverless
 .build
 .coverage
+coverage
 
 # Configs
 .eslintcache
