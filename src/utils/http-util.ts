@@ -17,9 +17,6 @@ export const createLookupApiUrl = (apiUrl: string, token: string): string => {
   return `${apiUrl}/${config.SESSION_KEY}/?token=${token}`;
 };
 
-export const createConstraintApiUrl = (
-  apiUrl: string,
-  orgId: string,
-): string => {
+export const createConstraintApiUrl = (apiUrl: string, orgId: string): string => {
   return `${apiUrl}/${config.SESSION_KEY}/?constraint_id=${config.CONSTRAINT_ID}&org_id=${orgId}`;
 };
