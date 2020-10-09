@@ -1,7 +1,4 @@
-import {
-  createConstraintApiUrl,
-  createLookupApiUrl,
-} from '../../src/utils/http-util';
+import { createConstraintApiUrl, createLookupApiUrl } from '../../src/utils/http-util';
 import { config } from '../../src/config';
 
 describe('HTTP util tests', () => {

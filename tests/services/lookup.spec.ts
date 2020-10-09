@@ -1,9 +1,5 @@
 import * as fetch from 'node-fetch';
-import {
-  getResponseFromLookup,
-  getExpirationDateFromResponse,
-  getStatusFromResponse,
-} from '../../src/services/lookup';
+import { getResponseFromLookup, getExpirationDateFromResponse, getStatusFromResponse } from '../../src/services/lookup';
 import { LookupLargeResponse } from '../../src/types/lookupLargeResponse';
 import { LambdaResponses } from '../../src/utils/lambda-responses';
 import { LookupApiFixtures } from '../fixtures/lookup-api-fixtures';
@@ -24,8 +20,7 @@ describe('Lookup API', () => {
     invalidResponse = LookupApiFixtures.invalidLookupResponse;
     noDataForProvidedTokenError = LambdaResponses.noDataForProvidedToken;
     validLookupResponse = LookupApiFixtures.validLookupApiResponse;
-    notQualifiedResponse =
-      LookupApiFixtures.validLookupApiButNotQualifiedResponse;
+    notQualifiedResponse = LookupApiFixtures.validLookupApiButNotQualifiedResponse;
   });
 
   beforeEach(() => {
@@ -33,9 +28,7 @@ describe('Lookup API', () => {
   });
 
   it('Should return valid response from Lookup API', async () => {
-    fetchMock.mockResolvedValue(
-      new Response(JSON.stringify(expectedValidResponse)),
-    );
+    fetchMock.mockResolvedValue(new Response(JSON.stringify(expectedValidResponse)));
 
     const response = await getResponseFromLookup('fake@token');
 
@@ -43,9 +36,7 @@ describe('Lookup API', () => {
   });
 
   it('Should return invalid response from Lookup API for given token', async () => {
-    fetchMock.mockResolvedValueOnce(
-      new Response(JSON.stringify(invalidResponse)),
-    );
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(invalidResponse)));
 
     const response = await getResponseFromLookup('bad@token');
 
@@ -55,10 +46,7 @@ describe('Lookup API', () => {
   it('Should return expiration date from valid response', () => {
     const pin = '1234';
     const expectedExpirationDate = 1605629838458;
-    const expirationDate = getExpirationDateFromResponse(
-      pin,
-      expectedValidResponse,
-    );
+    const expirationDate = getExpirationDateFromResponse(pin, expectedValidResponse);
 
     expect(expirationDate).toEqual(expectedExpirationDate);
   });
