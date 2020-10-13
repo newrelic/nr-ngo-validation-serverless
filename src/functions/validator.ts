@@ -1,21 +1,18 @@
-import { APIGatewayProxyHandler, APIGatewayEvent, Context } from 'aws-lambda';
+import { APIGatewayEvent, Context } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { isTokenValid, isTokenExpired } from '../utils/token-validator';
 import { getResponseFromLookup, getStatusFromResponse } from '../services/lookup';
-import { getOrgId, getResponseFromConstraint, checkEligibility } from '../services/constraint';
+import { getOrgId, getResponseFromConstraint } from '../services/constraint';
 import { LookupLargeResponse } from '../types/lookupLargeResponse';
+import { DataObject } from '../types/constraintResponse';
 
 const QUALIFIED = 1;
+const OK = 200;
 
-export const validate: APIGatewayProxyHandler = async (
-  event: APIGatewayEvent,
-  _context: Context,
-): Promise<LambdaResponse> => {
+export const validate = async (event: APIGatewayEvent, _context: Context): Promise<LambdaResponse> => {
   const queryStringParams = event.queryStringParameters || {};
-  let response: LambdaResponse = null;
-
-  // TODO: Handle sending request with pin and handle (check the excel)
+  let response: DataObject = null;
 
   // Token validation
   if (Object.keys(queryStringParams).length === 0) {
@@ -28,8 +25,6 @@ export const validate: APIGatewayProxyHandler = async (
 
   // Lookup API
   const lookupResponse = await getResponseFromLookup(queryStringParams.token);
-
-  console.log(`Data: ${JSON.stringify(lookupResponse, null, 2)}`);
 
   if (lookupResponse === LambdaResponses.noDataForProvidedToken) {
     return lookupResponse as LambdaResponse;
@@ -52,11 +47,11 @@ export const validate: APIGatewayProxyHandler = async (
   console.log(JSON.stringify(constraintResponse, null, 2));
 
   // TODO: check what is the value of eligibility_status and which error code was returned
-  response = checkEligibility(constraintResponse);
+  [response] = constraintResponse.returnStatus.data;
 
   // TODO: create frontend-backend contract and convert response
   return {
-    statusCode: response.statusCode,
-    body: response.body,
+    statusCode: OK,
+    body: JSON.stringify(response),
   };
 };
