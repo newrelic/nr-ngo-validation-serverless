@@ -1,12 +1,6 @@
-import { DataObject } from '../types/constraintResponse';
-
 export type LambdaResponse = {
   statusCode: number;
-  body: CorrectResponseBody | FailedResponseBody;
-};
-
-export type CorrectResponseBody = {
-  data: DataObject;
+  body: string;
 };
 
 export type FailedResponseBody = {
