@@ -1,3 +1,3 @@
 export const validateOrg = (org: string): Error => {
-  throw new Error('Not implemented yet. You need to implement this method yourself for your validation process');
+  throw new Error('You need to implement this method by yourself for your validation process');
 };
