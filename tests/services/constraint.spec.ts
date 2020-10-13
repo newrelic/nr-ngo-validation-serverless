@@ -1,9 +1,7 @@
 import * as fetch from 'node-fetch';
-import { getOrgId, getResponseFromConstraint, checkEligibility } from '../../src/services/constraint';
+import { getOrgId, getResponseFromConstraint } from '../../src/services/constraint';
 import { ConstraintResponse } from '../../src/types/constraintResponse';
 import { LookupLargeResponse } from '../../src/types/lookupLargeResponse';
-import { LambdaResponse } from '../../src/types/response';
-import { LambdaResponses } from '../../src/utils/lambda-responses';
 import { ConstraintApiFixtures } from '../fixtures/constraint-api-fixtures';
 import { LookupApiFixtures } from '../fixtures/lookup-api-fixtures';
 
@@ -12,18 +10,12 @@ const fetchMock = jest.spyOn(fetch, 'default');
 const { Response } = fetch;
 
 let positiveResponse: ConstraintResponse;
-let negativeResponse: ConstraintResponse;
 let validLookupApiResponse: LookupLargeResponse;
-let eligible: LambdaResponse;
-let notEligible: LambdaResponse;
 
 describe('Constraint API', () => {
   beforeAll(() => {
     positiveResponse = ConstraintApiFixtures.allPassResponse;
-    negativeResponse = ConstraintApiFixtures.eligibilityStatusFalse;
     validLookupApiResponse = LookupApiFixtures.validLookupApiResponse;
-    eligible = LambdaResponses.eligible;
-    notEligible = LambdaResponses.notEligible;
   });
 
   beforeEach(() => {
@@ -42,13 +34,5 @@ describe('Constraint API', () => {
     const expectedOrgId = '54321_0000';
 
     expect(getOrgId(validLookupApiResponse)).toEqual(expectedOrgId);
-  });
-
-  it('Should return eligibility true', () => {
-    expect(checkEligibility(positiveResponse)).toBe(eligible);
-  });
-
-  it('Should return eligibility false', () => {
-    expect(checkEligibility(negativeResponse)).toBe(notEligible);
   });
 });
