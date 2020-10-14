@@ -6,9 +6,7 @@ import { getResponseFromLookup, getStatusFromResponse } from '../services/lookup
 import { getOrgId, getResponseFromConstraint } from '../services/constraint';
 import { LookupLargeResponse } from '../types/lookupLargeResponse';
 import { DataObject } from '../types/constraintResponse';
-
-const QUALIFIED = 1;
-const OK = 200;
+import { Status } from '../utils/status';
 
 export const validate = async (event: APIGatewayEvent, _context: Context): Promise<LambdaResponse> => {
   const queryStringParams = event.queryStringParameters || {};
@@ -36,7 +34,7 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
 
   const orgStatus = getStatusFromResponse(lookupResponse as LookupLargeResponse);
 
-  if (orgStatus !== QUALIFIED) {
+  if (orgStatus !== Status.VerificationStatus.Qualified) {
     return LambdaResponses.notQualified;
   }
 
@@ -49,9 +47,8 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
   // TODO: check what is the value of eligibility_status and which error code was returned
   [response] = constraintResponse.returnStatus.data;
 
-  // TODO: create frontend-backend contract and convert response
   return {
-    statusCode: OK,
+    statusCode: Status.HttpStatus.Ok,
     body: JSON.stringify(response),
   };
 };
