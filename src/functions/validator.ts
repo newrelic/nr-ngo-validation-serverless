@@ -7,6 +7,7 @@ import { getOrgId, getResponseFromConstraint } from '../services/constraint';
 import { LookupLargeResponse } from '../types/lookupLargeResponse';
 import { DataObject } from '../types/constraintResponse';
 import { Status } from '../utils/status';
+import { StatusCodes } from 'http-status-codes';
 
 export const validate = async (event: APIGatewayEvent, _context: Context): Promise<LambdaResponse> => {
   const queryStringParams = event.queryStringParameters || {};
@@ -48,7 +49,7 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
   [response] = constraintResponse.returnStatus.data;
 
   return {
-    statusCode: Status.HttpStatus.Ok,
+    statusCode: StatusCodes.OK,
     body: JSON.stringify(response),
   };
 };
