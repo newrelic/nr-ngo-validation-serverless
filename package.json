@@ -36,7 +36,8 @@
   },
   "dependencies": {
     "envalid": "^6.0.2",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "http-status-codes": "^2.1.4"
   },
   "jest": {
     "moduleFileExtensions": [
