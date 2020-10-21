@@ -76,6 +76,10 @@ During the verification process the Lambda sends request to the Lookup API then 
 | E00_14 |         |                                            |                                                                                                                                     |
 | E00_15 |         |                                            |                                                                                                                                     |
 
+## Additional information
+
+If you want to validate if the organisation is matching in your system/flow you need to implement this method by yourself. The definition of this method you'll find in `src/utils/org-validator.ts`.
+
 ## Support
 
 New Relic hosts and moderates an online forum where customers can interact with New Relic employees as well as other customers to get help and share best practices. Like all official New Relic open source projects, there's a related Community topic in the New Relic Explorers Hub. You can find this project's topic/threads here:
