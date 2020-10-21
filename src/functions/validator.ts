@@ -43,7 +43,6 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
   const orgId = getOrgId(lookupResponse as LookupLargeResponse);
   const constraintResponse = await getResponseFromConstraint(orgId);
 
-  // TODO: check what is the value of eligibility_status and which error code was returned
   [response] = constraintResponse.returnStatus.data;
 
   return {
