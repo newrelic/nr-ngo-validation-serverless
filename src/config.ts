@@ -20,7 +20,7 @@ export const config = cleanEnv(
   {
     dotEnvPath: null,
     strict: true,
-  }
+  },
 );
 
 export type AppConfig = Readonly<{
