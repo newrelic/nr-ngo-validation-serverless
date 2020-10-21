@@ -31,8 +31,8 @@
     "serverless-dotenv-plugin": "^2.4.2",
     "serverless-offline": "^6.4.0",
     "serverless-plugin-typescript": "^1.1.9",
-    "ts-jest": "26.4.0",
-    "typescript": "4.0.2"
+    "ts-jest": "^26.4.0",
+    "typescript": "^4.0.2"
   },
   "dependencies": {
     "envalid": "^6.0.2",
@@ -50,6 +50,12 @@
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },
-    "testRegex": ".spec.ts$"
+    "testRegex": ".spec.ts$",
+    "modulePathIgnorePatterns": [
+      "src/types/",
+      "src/functions/",
+      "src/utils/org-validator.ts",
+      "src/utils/status.ts"
+    ]
   }
 }
