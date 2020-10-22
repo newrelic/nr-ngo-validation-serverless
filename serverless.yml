@@ -14,19 +14,29 @@ custom:
     include:
       - STAGE
       - REGION
+      - LOOKUP_API_URL
+      - CONSTRAINT_API_URL
+      - CONSTRAINT_ID
+      - SESSION_KEY
 
 provider:
   name: aws
   runtime: nodejs12.x
   stage: ${env:STAGE}
   region: ${env:REGION}
+  tracing:
+    apiGateway: true
+    lambda: true
   environment:
     TEST: ${env:TEST, 'default_value'}
 
 functions:
   handle:
     handler: src/functions/validator.validate
+    description: Validates organization with Tech Soup API
     events:
       - http:
           path: /validate
           method: get
+          cors: true
+    memorySize: 512
