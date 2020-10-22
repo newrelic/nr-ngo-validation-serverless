@@ -46,6 +46,9 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
   [response] = constraintResponse.returnStatus.data;
 
   return {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
     statusCode: StatusCodes.OK,
     body: JSON.stringify(response),
   };
