@@ -24,9 +24,6 @@ provider:
   runtime: nodejs12.x
   stage: ${env:STAGE}
   region: ${env:REGION}
-  tracing:
-    apiGateway: true
-    lambda: true
   environment:
     TEST: ${env:TEST, 'default_value'}
 
