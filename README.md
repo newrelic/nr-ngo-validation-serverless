@@ -2,7 +2,7 @@
 
 # NGO Validation Service [build badges go here when available]
 
-> [Brief description - what is the project and value does it provide? How often should users expect to get releases? How is versioning set up? Where does this project want to go?]
+The NGO Validation Service is responsible for check the eligibility of NGO by using TechSoup API.
 
 ## Installation
 
@@ -10,7 +10,6 @@
 
 - Serverless framework
 - NodeJS in version 12 minimum
-  > [Include a step-by-step procedure on how to get your code installed. Be sure to include any third-party dependencies that need to be installed separately]
 
 ## Getting Started
 
