@@ -49,10 +49,10 @@ jobs:
           exit 1
 
       - name: Run Repolinter
-          uses: newrelic/repolinter-action@v1
-          with:
-            config_url: https://raw.githubusercontent.com/newrelic/.github/main/repolinter-rulesets/community-plus.yml
-            output_type: issue
+        uses: newrelic/repolinter-action@v1
+        with:
+          config_url: https://raw.githubusercontent.com/newrelic/.github/main/repolinter-rulesets/community-plus.yml
+          output_type: issue
 
   build:
     name: Build and test
