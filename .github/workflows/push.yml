@@ -48,12 +48,6 @@ jobs:
           echo "::error::eslint-check failed. View output of _Run eslint-check and generate report_ step"
           exit 1
 
-      - name: Run Repolinter
-        uses: newrelic/repolinter-action@v1
-        with:
-          config_url: https://raw.githubusercontent.com/newrelic/.github/main/repolinter-rulesets/community-plus.yml
-          output_type: issue
-
   build:
     name: Build and test
     needs: eslint
