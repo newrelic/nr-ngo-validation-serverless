@@ -2,8 +2,14 @@
 node_modules
 jspm_packages
 
-# Serverless directories
+# Project directories
 .serverless
 .build
+.coverage
+coverage
 
+# Configs
 .eslintcache
+.env
+
+.DS_Store

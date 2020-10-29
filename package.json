@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "test": "jest --passWithNoTests"
+    "test": "NODE_ENV=test jest --passWithNoTests --coverage",
+    "eslint-check": "eslint src/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -16,17 +17,58 @@
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@newrelic/eslint-plugin-newrelic": "^0.3.1",
-    "@types/aws-lambda": "8.10.17",
-    "@types/jest": "22.2.3",
-    "@types/node": "10.12.18",
+    "@types/aws-lambda": "^8.10.17",
+    "@types/jest": "^22.2.3",
+    "@types/node": "^10.12.18",
+    "@types/node-fetch": "^2.5.7",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
     "eslint": "^7.9.0",
     "husky": "^4.3.0",
+    "jest": "^26.4.2",
     "lint-staged": "^10.4.0",
-    "jest": "26.4.2",
-    "prettier": "2.1.2",
-    "serverless-dotenv-plugin": "2.4.2",
+    "prettier": "^2.1.2",
+    "serverless-dotenv-plugin": "^2.4.2",
     "serverless-offline": "^6.4.0",
-    "serverless-plugin-typescript": "1.1.9",
-    "typescript": "4.0.2"
+    "serverless-plugin-typescript": "^1.1.9",
+    "ts-jest": "^26.4.0",
+    "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "envalid": "^6.0.2",
+    "node-fetch": "^2.6.1",
+    "http-status-codes": "^2.1.4"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": ".spec.ts$",
+    "modulePathIgnorePatterns": [
+      "src/types/",
+      "src/functions/",
+      "src/utils/org-validator.ts",
+      "src/utils/status.ts"
+    ]
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"],
+    "rules": {
+      "type-case": [2, "always", "lower-case"],
+      "type-enum": [2, "always", ["build", "chore", "feat", "fix", "refactor", "revert", "test", "deps"]],
+      "scope-empty": [2, "always"],
+      "type-empty": [2, "never"],
+      "subject-empty": [2, "never"],
+      "subject-min-length": [2, "always", 10],
+      "subject-full-stop": [2, "never", "."],
+      "subject-case": [2, "always", "lower-case"]
+    }
   }
 }
