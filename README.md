@@ -1,4 +1,4 @@
-[![Experimental Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Experimental.png)](https://opensource.newrelic.com/oss-category/#experimental)
+[![Community Plus header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Plus.png)](https://opensource.newrelic.com/oss-category/#community-plus)
 
 # NGO Validation Service [build badges go here when available]
 
@@ -88,6 +88,11 @@ New Relic hosts and moderates an online forum where customers can interact with 
 ## License
 
 This project is distributed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
+
+## Security
+
+As noted in our [security policy](https://github.com/newrelic/nr-ngo-validation-serverless/security/policy), New Relic is committed to the privacy and security of our customers and their data. We believe that providing coordinated disclosure by security researchers and engaging with the security community are important means to achieve our security goals.
+If you believe you have found a security vulnerability in this project or any of New Relic's products or websites, we welcome and greatly appreciate you reporting it to New Relic through [HackerOne](https://hackerone.com/newrelic).
 
 ## Contributing
 
