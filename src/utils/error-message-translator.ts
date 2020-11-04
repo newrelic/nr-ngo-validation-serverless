@@ -1,7 +1,7 @@
-import { ConstraintApiErrorCodes, ConstraintErrorCodes } from '../types/constraintApiErrorCodes';
+import { DescriptiveErrorCode, ConstraintErrorCodes } from '../types/constraintApiErrorCodes';
 
-export const translateErrorMessages = (errorsFromResponse: string[]): ConstraintApiErrorCodes[] => {
-  const errorCodes: ConstraintApiErrorCodes[] = [];
+export const translateErrorMessages = (errorsFromResponse: string[]): DescriptiveErrorCode[] => {
+  const errorCodes: DescriptiveErrorCode[] = [];
 
   for (const errorCode of errorsFromResponse) {
     const code = errorCode.toString();

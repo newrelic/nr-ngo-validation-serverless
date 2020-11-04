@@ -1,12 +1,12 @@
-type ConstraintApiErrorCodes = {
+type ConstraintErrorCodes = {
+  [code: string]: DescriptiveErrorCode;
+};
+
+export type DescriptiveErrorCode = {
   code: string;
   group: string;
   text: string;
   description: string;
-};
-
-type ConstraintErrorCodes = {
-  [code: string]: ConstraintApiErrorCodes;
 };
 
 export const ConstraintErrorCodes: ConstraintErrorCodes = {
