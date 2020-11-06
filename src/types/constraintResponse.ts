@@ -1,3 +1,5 @@
+import { DescriptiveErrorCode } from './constraintApiErrorCodes';
+
 export interface ConstraintResponse {
   returnStatus: ReturnStatus;
 }
@@ -12,9 +14,11 @@ export interface ReturnStatus {
 export interface DataObject {
   program_code: string;
   org_id: string;
-  error_code: ErrorCodes[];
+  error_code: ErrorCode;
   eligibility_status: boolean;
 }
+
+export type ErrorCode = DescriptiveErrorCode[] | string[];
 
 export enum StatusCode {
   Ok = 'ok',
