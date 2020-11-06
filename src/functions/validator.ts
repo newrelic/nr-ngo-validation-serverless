@@ -8,6 +8,7 @@ import { LookupLargeResponse } from '../types/lookupLargeResponse';
 import { DataObject } from '../types/constraintResponse';
 import { Status } from '../utils/status';
 import { StatusCodes } from 'http-status-codes';
+import { translateErrorMessages } from '../utils/error-message-translator';
 
 export const validate = async (event: APIGatewayEvent, _context: Context): Promise<LambdaResponse> => {
   const queryStringParams = event.queryStringParameters || {};
@@ -44,6 +45,9 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
   const constraintResponse = await getResponseFromConstraint(orgId);
 
   [response] = constraintResponse.returnStatus.data;
+
+  const errorCodes = translateErrorMessages(response.error_code as string[]);
+  response.error_code = errorCodes;
 
   return {
     headers: {
