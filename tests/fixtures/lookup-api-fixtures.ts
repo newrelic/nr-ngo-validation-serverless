@@ -37,7 +37,7 @@ export const LookupApiFixtures = {
           agents: [
             {
               expiration_date: 1605629838458,
-              pin: '1234ab',
+              pin: '1234abcd',
             },
           ],
           country_code: 'PL',
@@ -149,7 +149,7 @@ export const LookupApiFixtures = {
           agents: [
             {
               expiration_date: 1601898350507,
-              pin: '1234ab',
+              pin: '1234abcd',
             },
           ],
           country_code: 'PL',
