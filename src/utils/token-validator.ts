@@ -3,7 +3,7 @@ import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from './lambda-responses';
 import { getExpirationDateFromResponse } from '../services/lookup';
 
-const TOKEN_REGEX = /^[a-zA-Z0-9]+(@)[a-zA-Z0-9]+$/;
+const TOKEN_REGEX = /^([a-zA-Z0-9]{6})+(@)[a-zA-Z0-9]+$/;
 
 export const validateLookupResponse = (lookupResponse: LookupLargeResponse): LookupLargeResponse | LambdaResponse => {
   if (lookupResponse.returnStatus.data.length === 0) {
