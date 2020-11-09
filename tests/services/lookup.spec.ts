@@ -44,7 +44,7 @@ describe('Lookup API', () => {
   });
 
   it('Should return expiration date from valid response', () => {
-    const pin = '1234';
+    const pin = '1234abcd';
     const expectedExpirationDate = 1605629838458;
     const expirationDate = getExpirationDateFromResponse(pin, expectedValidResponse);
 
