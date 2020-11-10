@@ -14,8 +14,8 @@ export const config = cleanEnv(
     REGION: str(),
     LOOKUP_API_URL: url(),
     CONSTRAINT_API_URL: url(),
-    CONSTRAINT_ID: str(),
-    SESSION_KEY: str(),
+    CONSTRAINT_ID: str({ default: null }),
+    SESSION_KEY: str({ default: null }),
   },
   {
     dotEnvPath: null,
