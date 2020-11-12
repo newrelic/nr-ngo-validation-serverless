@@ -16,8 +16,22 @@ export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> 
   let lookupResponse: LookupLargeResponse | LambdaResponses;
   let constraintResponse: ConstraintResponse;
   let response: DataObject = null;
+  let sessionKey = '';
+  let constraintId = '';
 
-  if (config.SESSION_KEY === '' || config.CONSTRAINT_ID === '') {
+  if (config.SESSION_KEY === '') {
+    if (queryStringParams.session_key) {
+      sessionKey = queryStringParams.session_key;
+    }
+
+    return LambdaResponses.missingRequiredData;
+  }
+
+  if (config.CONSTRAINT_ID === '') {
+    if (queryStringParams.constraint_id) {
+      constraintId = queryStringParams.constraint_id;
+    }
+
     return LambdaResponses.missingRequiredData;
   }
 
@@ -34,7 +48,6 @@ export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> 
   if (config.SESSION_KEY !== '') {
     lookupResponse = await getResponseFromLookup(queryStringParams.token);
   } else {
-    const sessionKey = queryStringParams.session_key;
     lookupResponse = await getResponseFromLookup(queryStringParams.token, sessionKey);
   }
 
@@ -58,9 +71,6 @@ export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> 
   if (config.CONSTRAINT_ID !== '') {
     constraintResponse = await getResponseFromConstraint(orgId);
   } else {
-    const sessionKey = queryStringParams.session_key;
-    const constraintId = queryStringParams.constraint_id;
-
     constraintResponse = await getResponseFromConstraint(orgId, sessionKey, constraintId);
   }
 
