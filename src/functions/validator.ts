@@ -1,18 +1,25 @@
-import { APIGatewayEvent, Context } from 'aws-lambda';
+import { APIGatewayEvent } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { isTokenValid, isTokenExpired } from '../utils/token-validator';
 import { getResponseFromLookup, getStatusFromResponse } from '../services/lookup';
 import { getOrgId, getResponseFromConstraint } from '../services/constraint';
 import { LookupLargeResponse } from '../types/lookupLargeResponse';
-import { DataObject } from '../types/constraintResponse';
+import { ConstraintResponse, DataObject } from '../types/constraintResponse';
 import { Status } from '../utils/status';
 import { StatusCodes } from 'http-status-codes';
 import { translateErrorMessages } from '../utils/error-message-translator';
+import { config } from '../config';
 
-export const validate = async (event: APIGatewayEvent, _context: Context): Promise<LambdaResponse> => {
+export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> => {
   const queryStringParams = event.queryStringParameters || {};
+  let lookupResponse: LookupLargeResponse | LambdaResponses;
+  let constraintResponse: ConstraintResponse;
   let response: DataObject = null;
+
+  if (config.SESSION_KEY === '' || config.CONSTRAINT_ID === '') {
+    return LambdaResponses.missingRequiredData;
+  }
 
   // Token validation
   if (Object.keys(queryStringParams).length === 0) {
@@ -24,7 +31,12 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
   }
 
   // Lookup API
-  const lookupResponse = await getResponseFromLookup(queryStringParams.token);
+  if (config.SESSION_KEY !== '') {
+    lookupResponse = await getResponseFromLookup(queryStringParams.token);
+  } else {
+    const sessionKey = queryStringParams.session_key;
+    lookupResponse = await getResponseFromLookup(queryStringParams.token, sessionKey);
+  }
 
   if (lookupResponse === LambdaResponses.noDataForProvidedToken) {
     return lookupResponse as LambdaResponse;
@@ -42,7 +54,15 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
 
   // Constraing API
   const orgId = getOrgId(lookupResponse as LookupLargeResponse);
-  const constraintResponse = await getResponseFromConstraint(orgId);
+
+  if (config.CONSTRAINT_ID !== '') {
+    constraintResponse = await getResponseFromConstraint(orgId);
+  } else {
+    const sessionKey = queryStringParams.session_key;
+    const constraintId = queryStringParams.constraint_id;
+
+    constraintResponse = await getResponseFromConstraint(orgId, sessionKey, constraintId);
+  }
 
   [response] = constraintResponse.returnStatus.data;
 
