@@ -12,6 +12,8 @@ export const getResponseFromConstraint = async (
 
   if (sessionKey && constraindId) {
     constraintApiUrl = createConstraintApiUrl(config.CONSTRAINT_API_URL, orgId, sessionKey, constraindId);
+  } else {
+    constraintApiUrl = createConstraintApiUrl(config.CONSTRAINT_API_URL, orgId);
   }
 
   const constraintResponse = await sendGetRequest<ConstraintResponse>(constraintApiUrl);
