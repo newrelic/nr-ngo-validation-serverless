@@ -19,6 +19,9 @@ export class LambdaResponses {
   };
 
   public static readonly missingRequiredData: LambdaResponse = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
     statusCode: StatusCodes.BAD_REQUEST,
     body: JSON.stringify({
       internalStatusCode: 40003,
