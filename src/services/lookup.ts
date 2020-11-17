@@ -12,9 +12,9 @@ export const getResponseFromLookup = async (
 
   if (sessionKey) {
     lookUpApiUrl = createLookupApiUrl(config.LOOKUP_API_URL, token, sessionKey);
+  } else {
+    lookUpApiUrl = createLookupApiUrl(config.LOOKUP_API_URL, token);
   }
-
-  lookUpApiUrl = createLookupApiUrl(config.LOOKUP_API_URL, token);
 
   const lookupRes = await sendGetRequest<LookupLargeResponse>(lookUpApiUrl);
   const validatedLookupResponse = validateLookupResponse(lookupRes);

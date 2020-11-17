@@ -22,17 +22,17 @@ export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> 
   if (config.SESSION_KEY === '') {
     if (queryStringParams.session_key) {
       sessionKey = queryStringParams.session_key;
+    } else {
+      return LambdaResponses.missingRequiredData;
     }
-
-    return LambdaResponses.missingRequiredData;
   }
 
   if (config.CONSTRAINT_ID === '') {
     if (queryStringParams.constraint_id) {
       constraintId = queryStringParams.constraint_id;
+    } else {
+      return LambdaResponses.missingRequiredData;
     }
-
-    return LambdaResponses.missingRequiredData;
   }
 
   // Token validation
