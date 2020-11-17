@@ -1,5 +1,5 @@
 export type LambdaResponse = {
-  headers?: HeaderOption;
+  headers: HeaderOption;
   statusCode: number;
   body: string;
 };
