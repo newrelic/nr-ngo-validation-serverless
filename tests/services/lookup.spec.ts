@@ -35,6 +35,14 @@ describe('Lookup API', () => {
     expect(response).toEqual(expectedValidResponse);
   });
 
+  it('Should return valid response from Lookup API with extra parameters', async () => {
+    fetchMock.mockResolvedValue(new Response(JSON.stringify(expectedValidResponse)));
+
+    const response = await getResponseFromLookup('fake@token', 'yourSessionKey123');
+
+    expect(response).toEqual(expectedValidResponse);
+  });
+
   it('Should return invalid response from Lookup API for given token', async () => {
     fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(invalidResponse)));
 
