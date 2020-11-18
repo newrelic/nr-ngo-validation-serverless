@@ -30,6 +30,14 @@ describe('Constraint API', () => {
     expect(response).toEqual(positiveResponse);
   });
 
+  it('Should return valid response, with optional parameters', async () => {
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(positiveResponse)));
+
+    const response = await getResponseFromConstraint('thisShouldBeOrgId', 'yourSessionKey123', 'YOUR_ID');
+
+    expect(response).toEqual(positiveResponse);
+  });
+
   it('Should return orgId from the lookup response', () => {
     const expectedOrgId = '54321_0000';
 

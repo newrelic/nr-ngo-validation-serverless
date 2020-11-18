@@ -74,6 +74,10 @@ export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> 
     constraintResponse = await getResponseFromConstraint(orgId, sessionKey, constraintId);
   }
 
+  if (constraintResponse.returnStatus.data.length === 0) {
+    return LambdaResponses.wrongConfiguration;
+  }
+
   [response] = constraintResponse.returnStatus.data;
 
   const errorCodes = translateErrorMessages(response.error_code as string[]);
