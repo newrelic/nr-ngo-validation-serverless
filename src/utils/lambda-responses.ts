@@ -61,4 +61,15 @@ export class LambdaResponses {
     statusCode: StatusCodes.NOT_FOUND,
     body: JSON.stringify({ internalStatusCode: 40402, message: 'No data for provided token' }),
   };
+
+  public static readonly wrongConfiguration: LambdaResponse = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    body: JSON.stringify({
+      internalStatusCode: 50001,
+      message: 'There are issues with lambda configuration, please verify it',
+    }),
+  };
 }
