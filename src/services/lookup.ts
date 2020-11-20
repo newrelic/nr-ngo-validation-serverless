@@ -4,8 +4,18 @@ import { sendGetRequest, createLookupApiUrl } from '../utils/http-util';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { validateLookupResponse } from '../utils/token-validator';
 
-export const getResponseFromLookup = async (token: string): Promise<LookupLargeResponse | LambdaResponses> => {
-  const lookUpApiUrl = createLookupApiUrl(config.LOOKUP_API_URL, token);
+export const getResponseFromLookup = async (
+  token: string,
+  sessionKey?: string,
+): Promise<LookupLargeResponse | LambdaResponses> => {
+  let lookUpApiUrl: string;
+
+  if (sessionKey) {
+    lookUpApiUrl = createLookupApiUrl(config.LOOKUP_API_URL, token, sessionKey);
+  } else {
+    lookUpApiUrl = createLookupApiUrl(config.LOOKUP_API_URL, token);
+  }
+
   const lookupRes = await sendGetRequest<LookupLargeResponse>(lookUpApiUrl);
   const validatedLookupResponse = validateLookupResponse(lookupRes);
 
