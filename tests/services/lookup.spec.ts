@@ -59,6 +59,14 @@ describe('Lookup API', () => {
     expect(expirationDate).toEqual(expectedExpirationDate);
   });
 
+  it('Should return zero if there is no expiration date', () => {
+    const pin = '1111aaaa';
+    const expectedExpirationDate = 0;
+    const expirationDate = getExpirationDateFromResponse(pin, expectedValidResponse);
+
+    expect(expirationDate).toEqual(expectedExpirationDate);
+  });
+
   it('Should return status type value 1', () => {
     const expectedStatus = 1;
     expect(getStatusFromResponse(validLookupResponse)).toEqual(expectedStatus);

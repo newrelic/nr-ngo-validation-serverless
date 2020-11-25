@@ -3,7 +3,7 @@ import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { isTokenValid, isTokenExpired } from '../utils/token-validator';
 import { getResponseFromLookup, getStatusFromResponse } from '../services/lookup';
-import { getOrgId, getResponseFromConstraint } from '../services/constraint';
+import { getOrgId, getResponseFromConstraint, getOrgName } from '../services/constraint';
 import { LookupLargeResponse } from '../types/lookupLargeResponse';
 import { ConstraintResponse, DataObject } from '../types/constraintResponse';
 import { Status } from '../utils/status';
@@ -67,6 +67,7 @@ export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> 
 
   // Constraing API
   const orgId = getOrgId(lookupResponse as LookupLargeResponse);
+  const orgName = getOrgName(lookupResponse as LookupLargeResponse);
 
   if (config.CONSTRAINT_ID !== '') {
     constraintResponse = await getResponseFromConstraint(orgId);
@@ -82,6 +83,7 @@ export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> 
 
   const errorCodes = translateErrorMessages(response.error_code as string[]);
   response.error_code = errorCodes;
+  response.org_name = orgName;
 
   return {
     headers: {

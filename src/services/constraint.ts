@@ -24,3 +24,7 @@ export const getResponseFromConstraint = async (
 export const getOrgId = (lookupResponse: LookupLargeResponse): string => {
   return lookupResponse.returnStatus.data[0].org_id;
 };
+
+export const getOrgName = (lookupResponse: LookupLargeResponse): string => {
+  return lookupResponse.returnStatus.data[0].name.type_value as string;
+};
