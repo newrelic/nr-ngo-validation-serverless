@@ -16,6 +16,7 @@ export const config = cleanEnv(
     CONSTRAINT_API_URL: url(),
     CONSTRAINT_ID: str({ default: null }),
     SESSION_KEY: str({ default: null }),
+    RESPONSE_TYPE: str({ default: 'BASIC' }),
   },
   {
     dotEnvPath: null,
@@ -30,5 +31,6 @@ export type AppConfig = Readonly<{
   CONSTRAINT_API_URL: Url;
   CONSTRAINT_ID: string;
   SESSION_KEY: string;
+  RESPONSE_TYPE: string;
 }> &
   CleanEnv;
