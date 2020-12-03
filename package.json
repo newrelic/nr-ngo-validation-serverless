@@ -31,12 +31,13 @@
     "serverless-dotenv-plugin": "^2.4.2",
     "serverless-offline": "^6.4.0",
     "serverless-plugin-typescript": "^1.1.9",
-    "ts-jest": "26.4.0",
-    "typescript": "4.0.2"
+    "ts-jest": "^26.4.0",
+    "typescript": "^4.0.2"
   },
   "dependencies": {
     "envalid": "^6.0.2",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "http-status-codes": "^2.1.4"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -49,6 +50,25 @@
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },
-    "testRegex": ".spec.ts$"
+    "testRegex": ".spec.ts$",
+    "modulePathIgnorePatterns": [
+      "src/types/",
+      "src/functions/",
+      "src/utils/org-validator.ts",
+      "src/utils/status.ts"
+    ]
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"],
+    "rules": {
+      "type-case": [2, "always", "lower-case"],
+      "type-enum": [2, "always", ["build", "chore", "feat", "fix", "refactor", "revert", "test", "deps"]],
+      "scope-empty": [2, "always"],
+      "type-empty": [2, "never"],
+      "subject-empty": [2, "never"],
+      "subject-min-length": [2, "always", 10],
+      "subject-full-stop": [2, "never", "."],
+      "subject-case": [2, "always", "lower-case"]
+    }
   }
 }

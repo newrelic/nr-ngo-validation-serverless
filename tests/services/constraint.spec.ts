@@ -1,5 +1,5 @@
 import * as fetch from 'node-fetch';
-import { getOrgId, getResponseFromConstraint } from '../../src/services/constraint';
+import { getOrgId, getOrgName, getResponseFromConstraint } from '../../src/services/constraint';
 import { ConstraintResponse } from '../../src/types/constraintResponse';
 import { LookupLargeResponse } from '../../src/types/lookupLargeResponse';
 import { ConstraintApiFixtures } from '../fixtures/constraint-api-fixtures';
@@ -30,9 +30,23 @@ describe('Constraint API', () => {
     expect(response).toEqual(positiveResponse);
   });
 
+  it('Should return valid response, with optional parameters', async () => {
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(positiveResponse)));
+
+    const response = await getResponseFromConstraint('thisShouldBeOrgId', 'yourSessionKey123', 'YOUR_ID');
+
+    expect(response).toEqual(positiveResponse);
+  });
+
   it('Should return orgId from the lookup response', () => {
     const expectedOrgId = '54321_0000';
 
     expect(getOrgId(validLookupApiResponse)).toEqual(expectedOrgId);
+  });
+
+  it('Should return ornName from the lookup response', () => {
+    const expectedOrgName = 'TEAM BobJohn';
+
+    expect(getOrgName(validLookupApiResponse)).toEqual(expectedOrgName);
   });
 });
