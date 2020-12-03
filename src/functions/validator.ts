@@ -1,18 +1,39 @@
-import { APIGatewayEvent, Context } from 'aws-lambda';
+import { APIGatewayEvent } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { isTokenValid, isTokenExpired } from '../utils/token-validator';
 import { getResponseFromLookup, getStatusFromResponse } from '../services/lookup';
-import { getOrgId, getResponseFromConstraint } from '../services/constraint';
+import { getOrgId, getResponseFromConstraint, getOrgName } from '../services/constraint';
 import { LookupLargeResponse } from '../types/lookupLargeResponse';
-import { DataObject } from '../types/constraintResponse';
+import { ConstraintResponse, DataObject } from '../types/constraintResponse';
+import { Status } from '../utils/status';
+import { StatusCodes } from 'http-status-codes';
+import { translateErrorMessages } from '../utils/error-message-translator';
+import { config } from '../config';
 
-const QUALIFIED = 1;
-const OK = 200;
-
-export const validate = async (event: APIGatewayEvent, _context: Context): Promise<LambdaResponse> => {
+export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> => {
   const queryStringParams = event.queryStringParameters || {};
+  let lookupResponse: LookupLargeResponse | LambdaResponses;
+  let constraintResponse: ConstraintResponse;
   let response: DataObject = null;
+  let sessionKey = '';
+  let constraintId = '';
+
+  if (config.SESSION_KEY === '') {
+    if (queryStringParams.session_key) {
+      sessionKey = queryStringParams.session_key;
+    } else {
+      return LambdaResponses.missingRequiredData;
+    }
+  }
+
+  if (config.CONSTRAINT_ID === '') {
+    if (queryStringParams.constraint_id) {
+      constraintId = queryStringParams.constraint_id;
+    } else {
+      return LambdaResponses.missingRequiredData;
+    }
+  }
 
   // Token validation
   if (Object.keys(queryStringParams).length === 0) {
@@ -24,7 +45,11 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
   }
 
   // Lookup API
-  const lookupResponse = await getResponseFromLookup(queryStringParams.token);
+  if (config.SESSION_KEY !== '') {
+    lookupResponse = await getResponseFromLookup(queryStringParams.token);
+  } else {
+    lookupResponse = await getResponseFromLookup(queryStringParams.token, sessionKey);
+  }
 
   if (lookupResponse === LambdaResponses.noDataForProvidedToken) {
     return lookupResponse as LambdaResponse;
@@ -36,22 +61,35 @@ export const validate = async (event: APIGatewayEvent, _context: Context): Promi
 
   const orgStatus = getStatusFromResponse(lookupResponse as LookupLargeResponse);
 
-  if (orgStatus !== QUALIFIED) {
+  if (orgStatus !== Status.VerificationStatus.Qualified) {
     return LambdaResponses.notQualified;
   }
 
   // Constraing API
   const orgId = getOrgId(lookupResponse as LookupLargeResponse);
-  const constraintResponse = await getResponseFromConstraint(orgId);
+  const orgName = getOrgName(lookupResponse as LookupLargeResponse);
 
-  console.log(JSON.stringify(constraintResponse, null, 2));
+  if (config.CONSTRAINT_ID !== '') {
+    constraintResponse = await getResponseFromConstraint(orgId);
+  } else {
+    constraintResponse = await getResponseFromConstraint(orgId, sessionKey, constraintId);
+  }
 
-  // TODO: check what is the value of eligibility_status and which error code was returned
+  if (constraintResponse.returnStatus.data.length === 0) {
+    return LambdaResponses.wrongConfiguration;
+  }
+
   [response] = constraintResponse.returnStatus.data;
 
-  // TODO: create frontend-backend contract and convert response
+  const errorCodes = translateErrorMessages(response.error_code as string[]);
+  response.error_code = errorCodes;
+  response.org_name = orgName;
+
   return {
-    statusCode: OK,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    statusCode: StatusCodes.OK,
     body: JSON.stringify(response),
   };
 };

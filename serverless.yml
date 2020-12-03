@@ -14,6 +14,10 @@ custom:
     include:
       - STAGE
       - REGION
+      - LOOKUP_API_URL
+      - CONSTRAINT_API_URL
+      - CONSTRAINT_ID
+      - SESSION_KEY
 
 provider:
   name: aws
@@ -26,7 +30,10 @@ provider:
 functions:
   handle:
     handler: src/functions/validator.validate
+    description: Validates organization with Tech Soup API
     events:
       - http:
           path: /validate
           method: get
+          cors: true
+    memorySize: 512

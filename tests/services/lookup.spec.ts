@@ -35,6 +35,14 @@ describe('Lookup API', () => {
     expect(response).toEqual(expectedValidResponse);
   });
 
+  it('Should return valid response from Lookup API with extra parameters', async () => {
+    fetchMock.mockResolvedValue(new Response(JSON.stringify(expectedValidResponse)));
+
+    const response = await getResponseFromLookup('fake@token', 'yourSessionKey123');
+
+    expect(response).toEqual(expectedValidResponse);
+  });
+
   it('Should return invalid response from Lookup API for given token', async () => {
     fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(invalidResponse)));
 
@@ -44,8 +52,16 @@ describe('Lookup API', () => {
   });
 
   it('Should return expiration date from valid response', () => {
-    const pin = '1234';
+    const pin = '1234abcd';
     const expectedExpirationDate = 1605629838458;
+    const expirationDate = getExpirationDateFromResponse(pin, expectedValidResponse);
+
+    expect(expirationDate).toEqual(expectedExpirationDate);
+  });
+
+  it('Should return zero if there is no expiration date', () => {
+    const pin = '1111aaaa';
+    const expectedExpirationDate = 0;
     const expirationDate = getExpirationDateFromResponse(pin, expectedValidResponse);
 
     expect(expirationDate).toEqual(expectedExpirationDate);
