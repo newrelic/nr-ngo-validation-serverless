@@ -38,6 +38,11 @@ export enum StatusCodes {
   NotImplemented = 'not_implemented',
 }
 
+export enum ResponseType {
+  Basic = 'BASIC',
+  Full = 'FULL',
+}
+
 export interface Location {
   timestamp: number | string;
   version: string | number;

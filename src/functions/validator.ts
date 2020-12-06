@@ -10,8 +10,9 @@ import { Status } from '../utils/status';
 import { StatusCodes } from 'http-status-codes';
 import { translateErrorMessages } from '../utils/error-message-translator';
 import { config } from '../config';
+import { ResponseType } from '../types/common';
 
-export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> => {
+export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse | ConstraintResponse> => {
   const queryStringParams = event.queryStringParameters || {};
   let lookupResponse: LookupLargeResponse | LambdaResponses;
   let constraintResponse: ConstraintResponse;
@@ -77,6 +78,16 @@ export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse> 
 
   if (constraintResponse.returnStatus.data.length === 0) {
     return LambdaResponses.wrongConfiguration;
+  }
+
+  if (config.RESPONSE_TYPE === ResponseType.Full.toString()) {
+    return {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+      statusCode: StatusCodes.OK,
+      body: JSON.stringify(constraintResponse),
+    };
   }
 
   [response] = constraintResponse.returnStatus.data;
