@@ -8,6 +8,9 @@ plugins:
   - serverless-dotenv-plugin
 
 custom:
+  defaultStage: dev
+  environment: ${file(.env):S{self:provider.stage}, file(.env):default}
+
   dotenv:
     path: ./.env
     logging: false
