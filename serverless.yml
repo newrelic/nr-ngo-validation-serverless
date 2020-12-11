@@ -9,7 +9,7 @@ plugins:
 
 custom:
   defaultStage: dev
-  environment: ${file(.env):S{self:provider.stage}, file(.env):default}
+  environment: ${file(.env):${self:provider.stage}, file(.env):default}
 
   dotenv:
     path: ./.env
