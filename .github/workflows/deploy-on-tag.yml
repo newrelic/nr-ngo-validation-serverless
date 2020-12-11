@@ -26,4 +26,4 @@ jobs:
       - name: Install NPM Dependencies
         run: npm install
       - name: Deploy Lambda Functions
-        run: sls deploy
+        run: sls deploy -s staging
