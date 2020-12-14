@@ -1,0 +1,29 @@
+name: Deploy On Tag
+
+on:
+  push:
+    tags:
+      - "v*"
+    
+jobs:
+  serverless-deploy:
+    name: Deploy lambda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install Serverless Framework
+        run: npm install -g serverless
+      - name: Serverless Framework AWS authentication
+        run: sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
+      - name: Create env file
+        run: |
+          cat > .env << EOF
+          ${{ secrets.ENV }}
+          EOF
+      - name: Install NPM Dependencies
+        run: npm install
+      - name: Deploy Lambda Functions
+        run: sls deploy -s staging
