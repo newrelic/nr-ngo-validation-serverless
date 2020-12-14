@@ -1,6 +1,7 @@
 import { config as loadEnv } from 'dotenv';
 import { cleanEnv, str, url, CleanEnv } from 'envalid';
 import { Url } from 'url';
+import { ResponseType } from './types/common';
 
 const dotEnvPath = process.env.NODE_ENV === 'test' ? '.test.env' : '.env';
 
@@ -14,8 +15,9 @@ export const config = cleanEnv(
     REGION: str(),
     LOOKUP_API_URL: url(),
     CONSTRAINT_API_URL: url(),
-    CONSTRAINT_ID: str({ default: null }),
-    SESSION_KEY: str({ default: null }),
+    CONSTRAINT_ID: str(),
+    SESSION_KEY: str(),
+    RESPONSE_TYPE: str({ default: ResponseType.Basic }),
   },
   {
     dotEnvPath: null,
@@ -30,5 +32,6 @@ export type AppConfig = Readonly<{
   CONSTRAINT_API_URL: Url;
   CONSTRAINT_ID: string;
   SESSION_KEY: string;
+  RESPONSE_TYPE: ResponseType;
 }> &
   CleanEnv;
