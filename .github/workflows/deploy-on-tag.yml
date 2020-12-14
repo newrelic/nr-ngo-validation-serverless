@@ -3,7 +3,11 @@ name: Deploy On Tag
 on:
   push:
     tags:
+<<<<<<< HEAD
       - v*
+=======
+      - "v*"
+>>>>>>> dae2fb054b8010b75e48b27705d2c2bf3b18fcc2
     
 jobs:
   serverless-deploy:
