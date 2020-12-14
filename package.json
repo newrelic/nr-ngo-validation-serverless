@@ -1,6 +1,6 @@
 {
   "name": "nr-ngo-validation-serverless",
-  "version": "0.0.1",
+  "version": "1.0.2",
   "description": "",
   "scripts": {
     "test": "NODE_ENV=test jest --passWithNoTests --coverage",
