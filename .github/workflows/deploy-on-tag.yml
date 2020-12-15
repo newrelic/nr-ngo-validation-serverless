@@ -1,6 +1,9 @@
 name: Deploy On Tag
 
 on:
+  push:
+    branches-ignore:
+      - "!main"
   create:
     tags:
       - "**"
