@@ -11,7 +11,6 @@ jobs:
     name: Deploy lambda
     runs-on: ubuntu-latest
     steps:
-      - name: Create tag
       - uses: actions/checkout@v1
       - uses: butlerlogic/action-autotag@stable
         id: create-tag
