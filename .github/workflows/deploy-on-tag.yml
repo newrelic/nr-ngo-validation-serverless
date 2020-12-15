@@ -1,9 +1,7 @@
 name: Deploy On Tag
 
 on:
-  push:
-    branches:
-      - "main"
+  create:
     tags:
       - "**"
 
