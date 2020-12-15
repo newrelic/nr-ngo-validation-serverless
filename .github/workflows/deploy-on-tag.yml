@@ -7,7 +7,7 @@ on:
 
 jobs:
   serverless-deploy:
-    if: github.event.base_ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     name: Deploy lambda
     runs-on: ubuntu-latest
     steps:
