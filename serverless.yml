@@ -9,6 +9,7 @@ plugins:
 
 custom:
   defaultStage: dev
+  defaultRegion: eu-central-1
   environment: ${file(.env):${self:provider.stage}, file(.env):default}
 
   dotenv:
@@ -25,8 +26,8 @@ custom:
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: ${env:STAGE}
-  region: ${env:REGION}
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: ${opt:region, self:custom.defaultRegion}
   environment:
     TEST: ${env:TEST, 'default_value'}
 
