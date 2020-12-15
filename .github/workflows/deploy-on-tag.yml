@@ -1,14 +1,13 @@
 name: Deploy On Tag
 
 on:
-  push:
-    branches:
-      - "main"
+  create:
     tags:
-      - "**"
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   serverless-deploy:
+    if: github.event.base_ref == 'refs/heads/main'
     name: Deploy lambda
     runs-on: ubuntu-latest
     steps:
