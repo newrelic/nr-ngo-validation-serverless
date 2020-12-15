@@ -1,12 +1,9 @@
 name: Deploy On Tag
 
 on:
-  push:
-    branches-ignore:
-      - "!main"
   create:
     tags:
-      - "**"
+      - "v[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}"
 
 jobs:
   serverless-deploy:
