@@ -41,3 +41,12 @@ functions:
           method: get
           cors: true
     memorySize: 512
+  validate-token:
+    handler: src/functions/validate-token.validateToken
+    description: Validates token - checks if token was already used (checks the database)
+    events:
+      - http:
+          path: /validateToken
+          method: get
+          cors: true
+    memorySize: 512
