@@ -6,6 +6,7 @@ plugins:
   - serverless-offline
   - serverless-plugin-typescript
   - serverless-dotenv-plugin
+  - serverless-iam-role-per-function
 
 custom:
   defaultStage: dev
@@ -44,6 +45,14 @@ functions:
   validate-token:
     handler: src/functions/validate-token.validateToken
     description: Validates token - checks if token was already used (checks the database)
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action: 
+          - dynamodb:GetItem
+          - dynamodb:BatchGetItem
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:ConditionCheckItem
     events:
       - http:
           path: /validateToken
