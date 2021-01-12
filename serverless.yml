@@ -32,7 +32,7 @@ provider:
     TEST: ${env:TEST, 'default_value'}
 
 functions:
-  handle:
+  validate:
     handler: src/functions/validator.validate
     description: Validates organization with Tech Soup API
     events:
