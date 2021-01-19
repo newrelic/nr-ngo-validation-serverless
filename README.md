@@ -1,6 +1,6 @@
 [![Experimental header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Experimental.png)](https://opensource.newrelic.com/oss-category/#new-relic-experimental)
 
-# NewRelic.org Observability for Good Validation Service [build badges go here when available]
+# NewRelic.org 'For Good' NGO Validation Service [build badges go here when available]
 
 The Observability for Good Validation Service is responsible for checking the eligibility of any NGO using TechSoup's API. Additionally, it saves validation request costs by storing the history of all validated NGOs in database indexed by AccountID.
 
