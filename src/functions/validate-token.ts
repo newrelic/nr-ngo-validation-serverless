@@ -1,8 +1,17 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
-import { ValidationAttemptsModel } from '../model/validation-attempts';
-import { isTokenValid } from '../utils/token-validator';
-import { LambdaResponses } from '../utils/lambda-responses';
+import { RDSDataService } from 'aws-sdk';
+import { DatabaseContext } from '../types/database';
+import { getAllRecords } from '../utils/database';
+import { config } from '../config';
+
+const rds = new RDSDataService();
+
+const databaseContext: DatabaseContext = {
+  resourceArn: config.DATABASE_RESOURCE_ARN,
+  secretArn: config.DATABASE_SECRET_ARN,
+  database: config.DATABASE,
+};
 
 /**
  * Checks if the provided token exists in the database.
@@ -10,23 +19,13 @@ import { LambdaResponses } from '../utils/lambda-responses';
  * @param event Incoming event from API Gateway
  */
 export const validateToken = async (event: APIGatewayEvent): Promise<LambdaResponse> => {
-  const params = event.queryStringParameters || {};
-
-  if (!isTokenValid(params.token)) {
-    return LambdaResponses.badTokenProvided;
-  }
-
-  if (!params.account_id) {
-    return LambdaResponses.missingRequiredData;
-  }
-
-  const queryItem = await ValidationAttemptsModel.query('account_id').eq(params.account_id).exec();
+  const data = await getAllRecords(rds, databaseContext);
 
   return {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
     statusCode: 200,
-    body: JSON.stringify(queryItem),
+    body: JSON.stringify(data),
   };
 };
