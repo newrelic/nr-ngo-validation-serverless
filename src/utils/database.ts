@@ -1,7 +1,7 @@
 import { RDSDataService } from 'aws-sdk';
-import { DatabaseContext } from '../types/database';
+import { DatabaseContext, ValidationAttemptsRecord } from '../types/database';
 
-export const getAllRecords = async (
+export const getAllValidationAttempts = async (
   rds: RDSDataService,
   databaseContext: DatabaseContext,
 ): Promise<RDSDataService.SqlRecords | undefined> => {
@@ -15,4 +15,20 @@ export const getAllRecords = async (
 
   const result = await rds.executeStatement(query).promise();
   return result.records;
+};
+
+export const getValidationAttemptByAccountId = async (
+  rds: RDSDataService,
+  databaseContext: DatabaseContext,
+  accountId: string,
+): Promise<RDSDataService.SqlRecords | undefined> => {
+  throw new Error('Not implemented yet.');
+};
+
+export const saveValidationAttempt = async (
+  rds: RDSDataService,
+  databaseContext: DatabaseContext,
+  attempt: ValidationAttemptsRecord,
+): Promise<RDSDataService.SqlRecords | undefined> => {
+  throw new Error('Not implemented yet.');
 };
