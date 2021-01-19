@@ -6,7 +6,7 @@ export const getAllRecords = async (
   databaseContext: DatabaseContext,
 ): Promise<RDSDataService.SqlRecords | undefined> => {
   const query: RDSDataService.ExecuteStatementRequest = {
-    includeResultMetadata: true,
+    includeResultMetadata: false,
     resourceArn: databaseContext.resourceArn,
     secretArn: databaseContext.secretArn,
     database: databaseContext.database,
