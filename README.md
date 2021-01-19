@@ -2,7 +2,7 @@
 
 # NewRelic.org 'For Good' NGO Validation Service [build badges go here when available]
 
-The Observability for Good Validation Service is responsible for checking the eligibility of any NGO using TechSoup's API. Additionally, it saves validation request costs by storing the history of all validated NGOs in database indexed by AccountID.
+The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. Additionally, it saves money validation request costs by storing the history of all validated NGOs in database indexed by AccountID.
 
 ## Installation
 
@@ -10,6 +10,7 @@ The Observability for Good Validation Service is responsible for checking the el
 
 - Serverless framework
 - NodeJS in version 12 minimum
+- TechSoup API Access
 
 ## Getting Started
 
