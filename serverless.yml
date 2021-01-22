@@ -6,6 +6,7 @@ plugins:
   - serverless-offline
   - serverless-plugin-typescript
   - serverless-dotenv-plugin
+  - serverless-iam-roles-per-function
 
 custom:
   defaultStage: dev
@@ -22,6 +23,9 @@ custom:
       - CONSTRAINT_API_URL
       - CONSTRAINT_ID
       - SESSION_KEY
+      - DATABASE_RESOURCE_ARN
+      - DATABASE_SECRET_ARN
+      - DATABASE
 
 provider:
   name: aws
@@ -32,12 +36,31 @@ provider:
     TEST: ${env:TEST, 'default_value'}
 
 functions:
-  handle:
+  validate:
     handler: src/functions/validator.validate
     description: Validates organization with Tech Soup API
     events:
       - http:
           path: /validate
+          method: get
+          cors: true
+    memorySize: 512
+  validate-token:
+    handler: src/functions/validate-token.validateToken
+    description: Validates token - checks if token was already used (checks the database)
+    iamRoleStatementsName: rds
+    iamRoleStatements:
+      - Effect: "Allow"        
+        Action:
+          - rds-data:*
+        Resource: "arn:aws:rds:*:*:cluster:database-1"
+      - Effect: "Allow"
+        Action:
+          - secretsmanager:*
+        Resource: "arn:aws:secretsmanager:*:*:*"
+    events:
+      - http:
+          path: /validateToken
           method: get
           cors: true
     memorySize: 512
