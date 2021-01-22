@@ -4,7 +4,11 @@ export type DatabaseContext = {
   database: string;
 };
 
-export type ValidationAttemptsRecord = {
+export type ValidationAttempts = {
+  records: Array<ValidationAttempt>;
+};
+
+type ValidationAttempt = {
   id: number;
   account_id: number;
   validation_date: Date;
