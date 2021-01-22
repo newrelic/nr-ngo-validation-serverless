@@ -1,11 +1,10 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
-import { RDSDataService } from 'aws-sdk';
-import { DatabaseContext } from '../types/database';
-import { getAllRecords } from '../utils/database';
+import { DatabaseContext, ValidationAttempts } from '../types/database';
 import { config } from '../config';
-
-const rds = new RDSDataService();
+import { getValidationAttemptByToken } from '../utils/database';
+import DataApiClient from 'data-api-client';
+import { LambdaResponses } from '../utils/lambda-responses';
 
 const databaseContext: DatabaseContext = {
   resourceArn: config.DATABASE_RESOURCE_ARN,
@@ -13,19 +12,34 @@ const databaseContext: DatabaseContext = {
   database: config.DATABASE,
 };
 
+const data = DataApiClient(databaseContext);
+
 /**
  * Checks if the provided token exists in the database.
  *
  * @param event Incoming event from API Gateway
  */
 export const validateToken = async (event: APIGatewayEvent): Promise<LambdaResponse> => {
-  const data = await getAllRecords(rds, databaseContext);
+  const queryStringParams = event.queryStringParameters || {};
+  let token = '';
+
+  if (queryStringParams.token) {
+    token = queryStringParams.token;
+  } else {
+    return LambdaResponses.missingRequiredData;
+  }
+
+  const checkUsedTokenResult: ValidationAttempts = await getValidationAttemptByToken(data, token);
+
+  if (checkUsedTokenResult.records.length > 0) {
+    return LambdaResponses.tokenAlreadyUsed;
+  }
 
   return {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
     statusCode: 200,
-    body: JSON.stringify(data),
+    body: JSON.stringify(true),
   };
 };
