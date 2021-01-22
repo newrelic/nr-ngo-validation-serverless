@@ -6,7 +6,7 @@ export const getAllValidationAttempts = async (data: any): Promise<any | undefin
 
 export const getValidationAttemptByToken = async (data: any, token: string): Promise<any | undefined> => {
   const result = await data.query({
-    sql: `SELECT * FROM validate_attempts WHERE token = :token AND eligibility_status = TRUE`,
+    sql: `SELECT * FROM validation_attempts WHERE token = :token AND eligibility_status = TRUE`,
     parameters: [
       {
         token: token,
