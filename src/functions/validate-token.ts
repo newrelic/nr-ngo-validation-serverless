@@ -40,6 +40,6 @@ export const validateToken = async (event: APIGatewayEvent): Promise<LambdaRespo
       'Access-Control-Allow-Origin': '*',
     },
     statusCode: 200,
-    body: JSON.stringify(true),
+    body: JSON.stringify({ Allow: true }),
   };
 };
