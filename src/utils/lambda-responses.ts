@@ -46,6 +46,17 @@ export class LambdaResponses {
     body: JSON.stringify({ internalStatusCode: 40102, message: 'Sorry you do not qualified' }),
   };
 
+  public static readonly tokenAlreadyUsed: LambdaResponse = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    statusCode: StatusCodes.UNAUTHORIZED,
+    body: JSON.stringify({
+      internalStatusCode: 40103,
+      message: 'Token was already used',
+    }),
+  };
+
   public static readonly noEndpoint: LambdaResponse = {
     headers: {
       'Access-Control-Allow-Origin': '*',
