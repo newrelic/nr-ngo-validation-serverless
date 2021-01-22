@@ -1,34 +1,18 @@
-import { RDSDataService } from 'aws-sdk';
-import { DatabaseContext, ValidationAttemptsRecord } from '../types/database';
+export const getAllValidationAttempts = async (data: any): Promise<any | undefined> => {
+  const result = await data.query(`SELECT * FROM validation_attempts`);
 
-export const getAllValidationAttempts = async (
-  rds: RDSDataService,
-  databaseContext: DatabaseContext,
-): Promise<RDSDataService.SqlRecords | undefined> => {
-  const query: RDSDataService.ExecuteStatementRequest = {
-    includeResultMetadata: false,
-    resourceArn: databaseContext.resourceArn,
-    secretArn: databaseContext.secretArn,
-    database: databaseContext.database,
-    sql: `SELECT * FROM validation_attempts;`,
-  };
-
-  const result = await rds.executeStatement(query).promise();
-  return result.records;
+  return result;
 };
 
-export const getValidationAttemptByAccountId = async (
-  rds: RDSDataService,
-  databaseContext: DatabaseContext,
-  accountId: string,
-): Promise<RDSDataService.SqlRecords | undefined> => {
-  throw new Error('Not implemented yet.');
-};
+export const getValidationAttemptByToken = async (data: any, token: string): Promise<any | undefined> => {
+  const result = await data.query({
+    sql: `SELECT * FROM validate_attempts WHERE token = :token AND eligibility_status = TRUE`,
+    parameters: [
+      {
+        token: token,
+      },
+    ],
+  });
 
-export const saveValidationAttempt = async (
-  rds: RDSDataService,
-  databaseContext: DatabaseContext,
-  attempt: ValidationAttemptsRecord,
-): Promise<RDSDataService.SqlRecords | undefined> => {
-  throw new Error('Not implemented yet.');
+  return result;
 };
