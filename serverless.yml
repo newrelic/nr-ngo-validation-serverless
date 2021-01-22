@@ -48,7 +48,7 @@ functions:
   validate-token:
     handler: src/functions/validate-token.validateToken
     description: Validates token - checks if token was already used (checks the database)
-    iamRoleStatementsName: rds
+    iamRoleStatementsName: rds-${opt:stage, self:custom.defaultStage}
     iamRoleStatements:
       - Effect: "Allow"        
         Action:
