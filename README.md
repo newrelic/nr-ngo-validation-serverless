@@ -1,8 +1,8 @@
 [![Experimental header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Experimental.png)](https://opensource.newrelic.com/oss-category/#new-relic-experimental)
 
-# NGO Validation Service [build badges go here when available]
+# NewRelic.org 'For Good' NGO Validation Service [build badges go here when available]
 
-The NGO Validation Service is responsible for check the eligibility of NGO by using TechSoup API.
+The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. Additionally, it saves money validation request costs by storing the history of all validated NGOs in database indexed by AccountID.
 
 ## Installation
 
@@ -10,6 +10,7 @@ The NGO Validation Service is responsible for check the eligibility of NGO by us
 
 - Serverless framework
 - NodeJS in version 12 minimum
+- TechSoup API Access
 
 ## Getting Started
 
