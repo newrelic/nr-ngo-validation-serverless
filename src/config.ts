@@ -18,6 +18,9 @@ export const config = cleanEnv(
     CONSTRAINT_ID: str(),
     SESSION_KEY: str(),
     RESPONSE_TYPE: str({ default: ResponseType.Basic }),
+    DATABASE_RESOURCE_ARN: str(),
+    DATABASE_SECRET_ARN: str(),
+    DATABASE: str(),
   },
   {
     dotEnvPath: null,
@@ -33,5 +36,8 @@ export type AppConfig = Readonly<{
   CONSTRAINT_ID: string;
   SESSION_KEY: string;
   RESPONSE_TYPE: ResponseType;
+  DATABASE_RESOURCE_ARN: string;
+  DATABASE_SECRET_ARN: string;
+  DATABASE: string;
 }> &
   CleanEnv;
