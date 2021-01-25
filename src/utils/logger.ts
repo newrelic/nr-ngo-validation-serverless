@@ -7,15 +7,15 @@ export class Logger {
     this.context = context;
   }
 
-  public info(message: string, context: string) {
+  info = (message: string, context: string): void => {
     throw new Error('Not implemented yet...');
-  }
+  };
 
-  public error(message: string, context: string) {
+  error = (message: string, context: string): void => {
     throw new Error('Not implemented yet...');
-  }
+  };
 
-  public warn(message: string, context: string) {
+  warn = (message: string, context: string): void => {
     throw new Error('Not implemented yet...');
-  }
+  };
 }
