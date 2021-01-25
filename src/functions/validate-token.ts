@@ -1,19 +1,8 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
-import { DatabaseContext, ValidationAttempts } from '../types/database';
-import { config } from '../config';
+import { ValidationAttempts } from '../types/database';
 import { getValidationAttemptByToken } from '../utils/database';
-import DataApiClient from 'data-api-client';
 import { LambdaResponses } from '../utils/lambda-responses';
-
-const databaseContext: DatabaseContext = {
-  resourceArn: config.DATABASE_RESOURCE_ARN,
-  secretArn: config.DATABASE_SECRET_ARN,
-  database: config.DATABASE,
-};
-
-const data = DataApiClient(databaseContext);
-
 /**
  * Checks if the provided token exists in the database.
  *
@@ -29,7 +18,7 @@ export const validateToken = async (event: APIGatewayEvent): Promise<LambdaRespo
     return LambdaResponses.missingRequiredData;
   }
 
-  const checkUsedTokenResult: ValidationAttempts = await getValidationAttemptByToken(data, token);
+  const checkUsedTokenResult: ValidationAttempts = await getValidationAttemptByToken(token);
 
   if (checkUsedTokenResult.records.length > 0) {
     return LambdaResponses.tokenAlreadyUsed;
