@@ -1,16 +1,17 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
 import { ValidationAttempts } from '../types/database';
-
 import { getValidationAttemptByAccountId } from '../utils/database';
-
 import { LambdaResponses } from '../utils/lambda-responses';
+import { logger } from '../utils/logger';
+
 /**
  * Checks if the provided account exists in the database and what is the status.
  *
  * @param event Incoming event from API Gateway
  */
 export const validateAccount = async (event: APIGatewayEvent): Promise<LambdaResponse> => {
+  logger.info('Validation Account lambda start...');
   const queryStringParams = event.queryStringParameters || {};
   let accountId: number;
 
