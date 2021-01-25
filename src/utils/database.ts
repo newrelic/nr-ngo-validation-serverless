@@ -10,11 +10,8 @@ const databaseContext: DatabaseContext = {
 
 const dbClient = DataApiClient(databaseContext);
 
-console.log('Initialized db client.');
-
 export const getAllValidationAttempts = async (): Promise<any | undefined> => {
   const result = await dbClient.query(`SELECT * FROM validation_attempts`);
-
   return result;
 };
 
