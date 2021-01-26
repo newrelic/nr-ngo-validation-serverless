@@ -3,6 +3,7 @@ import { LambdaResponse } from '../types/response';
 import { ValidationAttempts } from '../types/database';
 import { getValidationAttemptByToken } from '../utils/database';
 import { LambdaResponses } from '../utils/lambda-responses';
+
 /**
  * Checks if the provided token exists in the database.
  *

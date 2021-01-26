@@ -29,8 +29,8 @@ export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse |
   }
 
   if (config.CONSTRAINT_ID === '') {
-    if (queryStringParams.constraint_id) {
-      constraintId = queryStringParams.constraint_id;
+    if (queryStringParams.constraintId) {
+      constraintId = queryStringParams.constraintId;
     } else {
       return LambdaResponses.missingRequiredData;
     }
