@@ -7,15 +7,27 @@ export class Logger {
     this.context = context;
   }
 
-  info = (message: string, context: string): void => {
-    throw new Error('Not implemented yet...');
+  info = (message: string): void => {
+    console.log({
+      requestId: this.context.awsRequestId,
+      message: message,
+      function: this.context.functionName,
+    });
   };
 
-  error = (message: string, context: string): void => {
-    throw new Error('Not implemented yet...');
+  error = (message: string): void => {
+    console.error({
+      requestId: this.context.awsRequestId,
+      message: message,
+      function: this.context.functionName,
+    });
   };
 
-  warn = (message: string, context: string): void => {
-    throw new Error('Not implemented yet...');
+  warn = (message: string): void => {
+    console.warn({
+      requestId: this.context.awsRequestId,
+      message: message,
+      function: this.context.functionName,
+    });
   };
 }
