@@ -1,33 +1,28 @@
 import { Context } from 'aws-lambda/handler';
-
+import { LoggerContext } from '../types/logger';
 export class Logger {
-  private context: Context;
+  private context: LoggerContext;
 
   constructor(context: Context) {
-    this.context = context;
+    this.context = {
+      requestId: context.awsRequestId,
+      function: context.functionName,
+      message: '',
+    };
   }
 
   info = (message: string): void => {
-    console.log({
-      requestId: this.context.awsRequestId,
-      message: message,
-      function: this.context.functionName,
-    });
+    this.context.message = message;
+    console.log(this.context);
   };
 
   error = (message: string): void => {
-    console.error({
-      requestId: this.context.awsRequestId,
-      message: message,
-      function: this.context.functionName,
-    });
+    this.context.message = message;
+    console.error(this.context);
   };
 
   warn = (message: string): void => {
-    console.warn({
-      requestId: this.context.awsRequestId,
-      message: message,
-      function: this.context.functionName,
-    });
+    this.context.message = message;
+    console.warn(this.context);
   };
 }
