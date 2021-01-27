@@ -10,8 +10,71 @@ const databaseContext: DatabaseContext = {
 
 const dbClient = DataApiClient(databaseContext);
 
-export const getAllValidationAttempts = async (): Promise<any | undefined> => {
-  const result = await dbClient.query(`SELECT * FROM validation_attempts`);
+export const getAll = async (): Promise<ValidationAttempts | undefined> => {
+  const result = dbClient.query(`SELECT * FROM validation_attempts`);
+  return result;
+};
+
+export const getAllValidationAttempts = async (
+  orderBy: string,
+  orderByDirection: boolean,
+  limit: number,
+  offset: number,
+): Promise<ValidationAttempts | undefined> => {
+  const result = dbClient.query({
+    sql: `SELECT * FROM validation_attempts
+    WHERE account_id = :account_id
+    ORDER BY :column ${orderByDirection ? 'ASC' : 'DESC'}
+    LIMIT :limit
+    OFFSET :offset`,
+    parameters: [
+      {
+        column: orderBy,
+      },
+      {
+        direction: orderByDirection,
+      },
+      {
+        limit: limit,
+      },
+      {
+        offset: offset,
+      },
+    ],
+  });
+
+  return result;
+};
+
+export const getValidationAttempts = async (
+  accountId: number,
+  orderBy: string,
+  orderByDirection: boolean,
+  limit: number,
+  offset: number,
+): Promise<ValidationAttempts | undefined> => {
+  const result = await dbClient.query({
+    sql: `SELECT * FROM validation_attempts
+    WHERE account_id = :account_id
+    ORDER BY :column ${orderByDirection ? 'ASC' : 'DESC'}
+    LIMIT :limit
+    OFFSET :offset`,
+    parameters: [
+      {
+        account_id: accountId,
+      },
+      {
+        column: orderBy,
+      },
+      {
+        limit: limit,
+      },
+      {
+        offset: offset,
+      },
+    ],
+  });
+
   return result;
 };
 
