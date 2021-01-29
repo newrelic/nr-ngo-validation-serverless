@@ -19,7 +19,7 @@ export const validateAccount = async (event: APIGatewayEvent, context: Context):
   if (queryStringParams.accountId) {
     accountId = Number(queryStringParams.accountId);
   } else {
-    return LambdaResponses.missingRequiredData;
+    return LambdaResponses.badRequest;
   }
 
   const checkUsedAccountResult: ValidationAttempts = await getValidationAttemptByAccountId(accountId);
