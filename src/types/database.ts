@@ -1,3 +1,12 @@
+export type SaveAttemptBody = {
+  accountId: number;
+  token: string;
+  orgId: string;
+  eligibilityStatus: boolean;
+  orgName: string;
+  reason?: string;
+};
+
 export type DatabaseContext = {
   resourceArn: string;
   secretArn: string;

@@ -16,7 +16,7 @@ export const validateToken = async (event: APIGatewayEvent): Promise<LambdaRespo
   if (queryStringParams.token) {
     token = queryStringParams.token;
   } else {
-    return LambdaResponses.missingRequiredData;
+    return LambdaResponses.badRequest;
   }
 
   const checkUsedTokenResult: ValidationAttempts = await getValidationAttemptByToken(token);

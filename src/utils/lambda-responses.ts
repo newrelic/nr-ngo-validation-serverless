@@ -18,6 +18,17 @@ export class LambdaResponses {
     body: JSON.stringify({ internalStatusCode: 40002, message: 'Bad token provided' }),
   };
 
+  public static readonly badRequest: LambdaResponse = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    statusCode: StatusCodes.BAD_REQUEST,
+    body: JSON.stringify({
+      internalStatusCode: 400,
+      message: 'Bad parameters provided to endpoint.',
+    }),
+  };
+
   public static readonly missingRequiredData: LambdaResponse = {
     headers: {
       'Access-Control-Allow-Origin': '*',

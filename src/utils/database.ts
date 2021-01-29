@@ -10,6 +10,32 @@ const databaseContext: DatabaseContext = {
 
 const dbClient = DataApiClient(databaseContext);
 
+export const saveValidationAttempt = async (
+  token: string,
+  accountId: number,
+  eligibilityStatus: boolean,
+  orgId: string,
+  orgName: string,
+  reason: string,
+): Promise<any | undefined> => {
+  const result = await dbClient.query({
+    sql: `INSERT INTO validation_attempts (eligibility_status, token, account_id, org_id, org_name, reason)
+      VALUES (:eligibility_status, :token, :account_id, :org_id, :org_name, :reason)`,
+    parameters: [
+      {
+        token: token,
+        account_id: accountId,
+        eligibility_status: eligibilityStatus,
+        org_id: orgId,
+        org_name: orgName,
+        reason: reason || '',
+      },
+    ],
+  });
+
+  return result;
+};
+
 export const getAllValidationAttempts = async (): Promise<any | undefined> => {
   const result = await dbClient.query(`SELECT * FROM validation_attempts`);
   return result;
