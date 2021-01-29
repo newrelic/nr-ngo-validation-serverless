@@ -25,9 +25,6 @@ export const getValidationHistory = async (event: APIGatewayProxyEvent, context:
     return LambdaResponses.missingRequiredData;
   }
 
-  logger.info(`limit: ${limit}`);
-  logger.info(`orderByDirection: ${orderByDirection}`);
-
   if (params.accountId) {
     accountId = Number(params.accountId);
 

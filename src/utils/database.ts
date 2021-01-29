@@ -23,10 +23,10 @@ export const getAllValidationAttempts = async (
 ): Promise<ValidationAttempts | undefined> => {
   const result = dbClient.query({
     sql: `SELECT * FROM validation_attempts
-    WHERE account_id = :account_id
-    ORDER BY :column ${orderByDirection ? 'ASC' : 'DESC'}
-    LIMIT :limit
-    OFFSET :offset`,
+          WHERE account_id = :account_id
+          ORDER BY :column ${orderByDirection ? 'ASC' : 'DESC'}
+          LIMIT :limit
+          OFFSET :offset`,
     parameters: [
       {
         column: orderBy,
@@ -55,10 +55,10 @@ export const getValidationAttempts = async (
 ): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts
-    WHERE account_id = :account_id
-    ORDER BY :column ${orderByDirection ? 'ASC' : 'DESC'}
-    LIMIT :limit
-    OFFSET :offset`,
+          WHERE account_id = :account_id
+          ORDER BY :column ${orderByDirection ? 'ASC' : 'DESC'}
+          LIMIT :limit
+          OFFSET :offset`,
     parameters: [
       {
         account_id: accountId,
@@ -94,9 +94,9 @@ export const getValidationAttemptByToken = async (token: string): Promise<Valida
 export const getValidationAttemptByAccountId = async (accountId: number): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts
-      WHERE account_id = :account_id
-      ORDER BY validation_date DESC
-      LIMIT 1`,
+          WHERE account_id = :account_id
+          ORDER BY validation_date DESC
+          LIMIT 1`,
     parameters: [
       {
         account_id: accountId,
