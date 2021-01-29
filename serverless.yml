@@ -95,8 +95,6 @@ functions:
         Resource: "arn:aws:secretsmanager:*:*:*"
     events:
       - http:
-          path: /get-validate-history
-          method: get
           path: /attempts
           method: post
           cors: true
@@ -115,9 +113,7 @@ functions:
         Resource: "arn:aws:secretsmanager:*:*:*"
     events:
       - http:
-          path: /get-validate-history
-          method: get
           path: /attempts
-          method: post
+          method: get
           cors: true
     memorySize: 512
