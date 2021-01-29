@@ -46,38 +46,6 @@ export const getAllValidationAttempts = async (
   return result;
 };
 
-export const getValidationAttempts = async (
-  accountId: number,
-  orderBy: string,
-  orderByDirection: boolean,
-  limit: number,
-  offset: number,
-): Promise<ValidationAttempts | undefined> => {
-  const result = await dbClient.query({
-    sql: `SELECT * FROM validation_attempts
-          WHERE account_id = :account_id
-          ORDER BY :column ${orderByDirection ? 'ASC' : 'DESC'}
-          LIMIT :limit
-          OFFSET :offset`,
-    parameters: [
-      {
-        account_id: accountId,
-      },
-      {
-        column: orderBy,
-      },
-      {
-        limit: limit,
-      },
-      {
-        offset: offset,
-      },
-    ],
-  });
-
-  return result;
-};
-
 export const getValidationAttemptByToken = async (token: string): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts WHERE token = :token AND eligibility_status = TRUE`,
