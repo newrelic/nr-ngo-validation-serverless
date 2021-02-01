@@ -1,5 +1,5 @@
 export type SaveAttemptBody = {
-  accountId: number;
+  accountId: string;
   token: string;
   orgId: string;
   eligibilityStatus: boolean;

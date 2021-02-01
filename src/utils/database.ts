@@ -16,7 +16,7 @@ export const getAll = async (): Promise<ValidationAttempts | undefined> => {
 };
 
 export const getValidationAttempts = async (
-  accountId: number,
+  accountId: string,
   orderBy: string,
   orderByDirection: boolean,
   limit: number,
@@ -50,23 +50,54 @@ export const getValidationAttempts = async (
   return result;
 };
 
-export const getAllValidationAttempts = async (
+export const getValidationAttemptsBySearchPhrase = async (
+  searchPhrase: string,
   orderBy: string,
-  orderByDirection: boolean,
+  orderAsc: boolean,
   limit: number,
   offset: number,
 ): Promise<ValidationAttempts | undefined> => {
   const result = dbClient.query({
     sql: `SELECT * FROM validation_attempts
-          ORDER BY :column ${orderByDirection ? 'ASC' : 'DESC'}
+          WHERE org_id ILIKE '%${searchPhrase}%' OR
+                org_name ILIKE '%${searchPhrase}%' OR
+                account_id ILIKE '%${searchPhrase}%'
+          ORDER BY :column ${orderAsc ? 'ASC' : 'DESC'}
+          LIMIT :limit
+          OFFSET :offset`,
+    parameters: [
+      {
+        search_phrase: searchPhrase,
+      },
+      {
+        column: orderBy,
+      },
+      {
+        limit: limit,
+      },
+      {
+        offset: offset,
+      },
+    ],
+  });
+
+  return result;
+};
+
+export const getAllValidationAttempts = async (
+  orderBy: string,
+  orderAsc: boolean,
+  limit: number,
+  offset: number,
+): Promise<ValidationAttempts | undefined> => {
+  const result = dbClient.query({
+    sql: `SELECT * FROM validation_attempts
+          ORDER BY :column ${orderAsc ? 'ASC' : 'DESC'}
           LIMIT :limit
           OFFSET :offset`,
     parameters: [
       {
         column: orderBy,
-      },
-      {
-        direction: orderByDirection,
       },
       {
         limit: limit,
@@ -93,7 +124,7 @@ export const getValidationAttemptByToken = async (token: string): Promise<Valida
   return result;
 };
 
-export const getValidationAttemptByAccountId = async (accountId: number): Promise<ValidationAttempts | undefined> => {
+export const getValidationAttemptByAccountId = async (accountId: string): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts
           WHERE account_id = :account_id
@@ -111,7 +142,7 @@ export const getValidationAttemptByAccountId = async (accountId: number): Promis
 
 export const getValidationAttemptByTokenAndAccountId = async (
   token: string,
-  accountId: number,
+  accountId: string,
 ): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts WHERE
@@ -132,7 +163,7 @@ export const getValidationAttemptByTokenAndAccountId = async (
 
 export const saveValidationAttempt = async (
   token: string,
-  accountId: number,
+  accountId: string,
   eligibilityStatus: boolean,
   orgId: string,
   orgName: string,
