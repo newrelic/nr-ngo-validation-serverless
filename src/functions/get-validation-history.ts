@@ -4,35 +4,42 @@ import { ValidationAttempts } from '../types/database';
 import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { Logger } from '../utils/logger';
-import { getAllValidationAttempts, getValidationAttempts } from '../utils/database';
+import { getValidationAttempts, getValidationAttemptsBySearchPhrase } from '../utils/database';
 
 export const getValidationHistory = async (event: APIGatewayProxyEvent, context: Context): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
-  let accountId: number;
+  let accountId: string;
+  let searchPhrase: string;
   let orderBy: string;
-  let orderByDirection: boolean;
+  let orderAsc: boolean;
   let limit: number;
   let offset: number;
   let validationHistory: ValidationAttempts;
 
-  if (params.orderBy && params.orderByDirection && params.limit && params.offset) {
+  if (params.searchPhrase && params.accountId) {
+    return LambdaResponses.badRequest;
+  }
+
+  if (params.searchPhrase) {
+    searchPhrase = params.searchPhrase;
+  }
+
+  if (params.orderBy && params.orderAsc && params.limit && params.offset) {
     orderBy = params.orderBy;
-    orderByDirection = !!params.orderByDirection;
+    orderAsc = !!params.orderAsc;
     limit = Number(params.limit);
     offset = Number(params.offset);
   } else {
-    return LambdaResponses.missingRequiredData;
+    return LambdaResponses.badRequest;
   }
 
   if (params.accountId) {
-    accountId = Number(params.accountId);
-
     logger.info('Getting validation history with account id');
-    validationHistory = await getValidationAttempts(accountId, orderBy, orderByDirection, limit, offset);
+    validationHistory = await getValidationAttempts(accountId, orderBy, orderAsc, limit, offset);
   } else {
     logger.info('There is no account id, getting all');
-    validationHistory = await getAllValidationAttempts(orderBy, orderByDirection, limit, offset);
+    validationHistory = await getValidationAttemptsBySearchPhrase(searchPhrase, orderBy, orderAsc, limit, offset);
   }
 
   return {

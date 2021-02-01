@@ -13,11 +13,11 @@ import { Logger } from '../utils/logger';
  */
 export const validateAccount = async (event: APIGatewayEvent, context: Context): Promise<LambdaResponse> => {
   const logger = new Logger(context);
-  const queryStringParams = event.queryStringParameters || {};
-  let accountId: number;
+  const params = event.queryStringParameters || {};
+  let accountId: string;
 
-  if (queryStringParams.accountId) {
-    accountId = Number(queryStringParams.accountId);
+  if (params.accountId) {
+    accountId = params.accountId;
   } else {
     return LambdaResponses.badRequest;
   }
