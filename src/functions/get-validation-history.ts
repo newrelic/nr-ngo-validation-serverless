@@ -21,6 +21,10 @@ export const getValidationHistory = async (event: APIGatewayProxyEvent, context:
     return LambdaResponses.badRequest;
   }
 
+  if (params.accountId) {
+    accountId = params.accountId;
+  }
+
   if (params.searchPhrase) {
     searchPhrase = params.searchPhrase;
   }
