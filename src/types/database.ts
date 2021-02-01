@@ -19,7 +19,7 @@ export type ValidationAttempts = {
 
 type ValidationAttempt = {
   id: number;
-  account_id: number;
+  account_id: string;
   validation_date: Date;
   org_id: string;
   org_name: string;
