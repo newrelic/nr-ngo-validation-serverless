@@ -60,7 +60,8 @@
       "src/types/",
       "src/functions/",
       "src/utils/org-validator.ts",
-      "src/utils/status.ts"
+      "src/utils/status.ts",
+      "src/utils/logger.ts"
     ]
   },
   "commitlint": {
