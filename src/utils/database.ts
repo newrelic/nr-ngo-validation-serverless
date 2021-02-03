@@ -1,6 +1,6 @@
 import { config } from '../config';
 import DataApiClient from 'data-api-client';
-import { DatabaseContext, ValidationAttempts } from '../types/database';
+import { DatabaseContext, ValidationAttempts, ValidationHistoryRequest, ValidationCount } from '../types/database';
 
 const databaseContext: DatabaseContext = {
   resourceArn: config.DATABASE_RESOURCE_ARN,
@@ -16,33 +16,35 @@ export const getAll = async (): Promise<ValidationAttempts | undefined> => {
 };
 
 export const getValidationAttempts = async (
-  accountId: string,
-  orderBy: string,
-  orderByDirection: boolean,
-  limit: number,
-  offset: number,
-): Promise<ValidationAttempts | undefined> => {
+  sqlQuery: string,
+  params: ValidationHistoryRequest,
+): Promise<ValidationAttempts | ValidationCount | undefined> => {
   const result = dbClient.query({
-    sql: `SELECT * FROM validation_attempts
-          WHERE account_id = :account_id
-          ORDER BY :column ${orderByDirection ? 'ASC' : 'DESC'}
-          LIMIT :limit
-          OFFSET :offset`,
+    sql: sqlQuery,
     parameters: [
       {
-        account_id: accountId,
+        account_id: params.accountId,
       },
       {
-        column: orderBy,
+        search_phrase: params.searchPhrase,
       },
       {
-        direction: orderByDirection,
+        column: params.orderBy,
       },
       {
-        limit: limit,
+        direction: params.orderAsc,
       },
       {
-        offset: offset,
+        limit: params.limit,
+      },
+      {
+        offset: params.offset,
+      },
+      {
+        start_date: params.startDate,
+      },
+      {
+        end_date: params.endDate,
       },
     ],
   });
@@ -51,59 +53,29 @@ export const getValidationAttempts = async (
 };
 
 export const getValidationAttemptsBySearchPhrase = async (
-  searchPhrase: string,
-  orderBy: string,
-  orderAsc: boolean,
-  limit: number,
-  offset: number,
+  sqlQuery: string,
+  params: ValidationHistoryRequest,
 ): Promise<ValidationAttempts | undefined> => {
   const result = dbClient.query({
-    sql: `SELECT * FROM validation_attempts
-          WHERE org_id ILIKE '%${searchPhrase}%' OR
-                org_name ILIKE '%${searchPhrase}%' OR
-                account_id ILIKE '%${searchPhrase}%'
-          ORDER BY :column ${orderAsc ? 'ASC' : 'DESC'}
-          LIMIT :limit
-          OFFSET :offset`,
+    sql: sqlQuery,
     parameters: [
       {
-        search_phrase: searchPhrase,
+        search_phrase: params.searchPhrase,
       },
       {
-        column: orderBy,
+        column: params.orderBy,
       },
       {
-        limit: limit,
+        limit: params.limit,
       },
       {
-        offset: offset,
-      },
-    ],
-  });
-
-  return result;
-};
-
-export const getAllValidationAttempts = async (
-  orderBy: string,
-  orderAsc: boolean,
-  limit: number,
-  offset: number,
-): Promise<ValidationAttempts | undefined> => {
-  const result = dbClient.query({
-    sql: `SELECT * FROM validation_attempts
-          ORDER BY :column ${orderAsc ? 'ASC' : 'DESC'}
-          LIMIT :limit
-          OFFSET :offset`,
-    parameters: [
-      {
-        column: orderBy,
+        offset: params.offset,
       },
       {
-        limit: limit,
+        start_date: params.startDate,
       },
       {
-        offset: offset,
+        end_date: params.endDate,
       },
     ],
   });
