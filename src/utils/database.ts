@@ -11,7 +11,7 @@ const databaseContext: DatabaseContext = {
 const dbClient = DataApiClient(databaseContext);
 
 export const getAll = async (): Promise<ValidationAttempts | undefined> => {
-  const result = dbClient.query(`SELECT * FROM validation_attempts`);
+  const result = await dbClient.query(`SELECT * FROM validation_attempts'`);
   return result;
 };
 
@@ -19,7 +19,7 @@ export const getValidationAttempts = async (
   sqlQuery: string,
   params: ValidationHistoryRequest,
 ): Promise<ValidationAttempts | ValidationCount | undefined> => {
-  const result = dbClient.query({
+  const result = await dbClient.query({
     sql: sqlQuery,
     parameters: [
       {
@@ -33,37 +33,6 @@ export const getValidationAttempts = async (
       },
       {
         direction: params.orderAsc,
-      },
-      {
-        limit: params.limit,
-      },
-      {
-        offset: params.offset,
-      },
-      {
-        start_date: params.startDate,
-      },
-      {
-        end_date: params.endDate,
-      },
-    ],
-  });
-
-  return result;
-};
-
-export const getValidationAttemptsBySearchPhrase = async (
-  sqlQuery: string,
-  params: ValidationHistoryRequest,
-): Promise<ValidationAttempts | undefined> => {
-  const result = dbClient.query({
-    sql: sqlQuery,
-    parameters: [
-      {
-        search_phrase: params.searchPhrase,
-      },
-      {
-        column: params.orderBy,
       },
       {
         limit: params.limit,

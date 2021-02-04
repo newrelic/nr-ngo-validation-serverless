@@ -7,7 +7,7 @@ import {
 } from '../types/database';
 import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
-import { getValidationAttempts } from '../utils/database';
+import { getValidationAttempts, getAll } from '../utils/database';
 import { createSql } from '../utils/sql';
 import { Logger } from '../utils/logger';
 import { Context } from 'aws-lambda';
@@ -28,25 +28,29 @@ export const getValidationHistory = async (event: APIGatewayProxyEvent, context:
     accountId: params.accountId ?? undefined,
     searchPhrase: params.searchPhrase ?? undefined,
     orderBy: params.orderBy ?? undefined,
-    orderAsc: !!params.orderAsc ?? undefined,
+    orderAsc: (params.orderAsc === 'true' ? true : false) ?? undefined,
     limit: Number(params.limit) ?? undefined,
     offset: Number(params.offset) ?? undefined,
     startDate: new Date(params.startDate),
     endDate: new Date(params.endDate),
   };
 
+  logger.info(`Request: ${JSON.stringify(validationHistoryRequest)}`);
+
   const sqlQuery = createSql(validationHistoryRequest, false);
   const countQuery = createSql(validationHistoryRequest, true);
 
   logger.info(`Query: ${sqlQuery}`);
+
+  const testData = await getAll();
+
+  logger.info(`ValidationHistory: ${JSON.stringify(testData, null, 2)}`);
 
   const validationHistory = (await getValidationAttempts(
     sqlQuery as string,
     validationHistoryRequest,
   )) as ValidationAttempts;
   const recordCount = (await getValidationAttempts(countQuery as string, validationHistoryRequest)) as ValidationCount;
-
-  logger.info(`ValidationHistory: ${JSON.stringify(validationHistory, null, 2)}`);
 
   const response: ValidationHistoryResponse = {
     attempts: validationHistory.records,
