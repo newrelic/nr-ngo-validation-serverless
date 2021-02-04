@@ -19,12 +19,14 @@ export const createSql = (params: ValidationHistoryRequest, isCountQuery: boolea
     query += `ORDER BY :column ${params.orderAsc ? 'ASC' : 'DESC'} `;
   }
 
-  if (params.limit) {
-    query += 'LIMIT :limit ';
-  }
+  if (!isCountQuery) {
+    if (params.limit) {
+      query += 'LIMIT :limit ';
+    }
 
-  if (params.offset) {
-    query += 'OFFSET :offset ';
+    if (params.offset) {
+      query += 'OFFSET :offset ';
+    }
   }
 
   return query;

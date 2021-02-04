@@ -9,8 +9,11 @@ import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { getValidationAttempts } from '../utils/database';
 import { createSql } from '../utils/sql';
+import { Logger } from '../utils/logger';
+import { Context } from 'aws-lambda';
 
-export const getValidationHistory = async (event: APIGatewayProxyEvent): Promise<LambdaResponse> => {
+export const getValidationHistory = async (event: APIGatewayProxyEvent, context: Context): Promise<LambdaResponse> => {
+  const logger = new Logger(context);
   const params = event.queryStringParameters || {};
 
   if (params.accountId && params.searchPhrase) {
@@ -35,15 +38,19 @@ export const getValidationHistory = async (event: APIGatewayProxyEvent): Promise
   const sqlQuery = createSql(validationHistoryRequest, false);
   const countQuery = createSql(validationHistoryRequest, true);
 
+  logger.info(`Query: ${sqlQuery}`);
+
   const validationHistory = (await getValidationAttempts(
     sqlQuery as string,
     validationHistoryRequest,
   )) as ValidationAttempts;
   const recordCount = (await getValidationAttempts(countQuery as string, validationHistoryRequest)) as ValidationCount;
 
+  logger.info(`ValidationHistory: ${JSON.stringify(validationHistory, null, 2)}`);
+
   const response: ValidationHistoryResponse = {
     attempts: validationHistory.records,
-    records: recordCount.records[0].count ?? 0,
+    records: recordCount.records.length > 0 ? recordCount.records[0].count : 0,
   };
 
   return {
