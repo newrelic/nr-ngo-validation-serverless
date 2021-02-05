@@ -1,4 +1,4 @@
-import { createQueryBegin, createSql } from '../../src/utils/sql';
+import { createQueryBegin, createSql, checkValidColumnName } from '../../src/utils/sql';
 import { SqlFixtures } from '../fixtures/sql-fixtures';
 import { ValidationHistoryFixtures } from '../fixtures/validation-history-fixtures';
 
@@ -34,6 +34,23 @@ describe('Sql utils', () => {
     it('Should return select query based on search phrase', () => {
       const query = createSql(ValidationHistoryFixtures.validationHistorySearchPhrase, false);
       expect(query).toEqual(SqlFixtures.queryWithSearchPhrase);
+    });
+  });
+
+  describe('Check if given column name is correct', () => {
+    it('Valid column name, should return true', () => {
+      const columnName = 'account_id';
+      expect(checkValidColumnName(columnName)).toBe(true);
+    });
+
+    it('Invalid column name, should return false', () => {
+      const columnName = 'account_uuid';
+      expect(checkValidColumnName(columnName)).toBe(false);
+    });
+
+    it('Non string and not existing column name, should return false', () => {
+      const columnName = 123 as any;
+      expect(checkValidColumnName(columnName)).toBe(false);
     });
   });
 });
