@@ -29,7 +29,7 @@ export const createSql = (params: ValidationHistoryRequest, isCountQuery: boolea
     }
   }
 
-  return (query += ';');
+  return query;
 };
 
 export const createQueryBegin = (isCountQuery: boolean): string => {
