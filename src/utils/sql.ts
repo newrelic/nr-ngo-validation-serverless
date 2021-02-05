@@ -39,3 +39,9 @@ export const createQueryBegin = (isCountQuery: boolean): string => {
 
   return `SELECT * FROM validation_attempts `;
 };
+
+export const checkValidColumnName = (columnName: string): boolean => {
+  const columnNames = ['account_id', 'validation_date', 'org_id', 'org_name', 'eligibility_status', 'reason', 'token'];
+
+  return columnNames.includes(columnName);
+};
