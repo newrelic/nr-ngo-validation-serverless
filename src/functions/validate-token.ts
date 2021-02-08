@@ -10,11 +10,11 @@ import { LambdaResponses } from '../utils/lambda-responses';
  * @param event Incoming event from API Gateway
  */
 export const validateToken = async (event: APIGatewayEvent): Promise<LambdaResponse> => {
-  const queryStringParams = event.queryStringParameters || {};
+  const params = event.queryStringParameters || {};
   let token = '';
 
-  if (queryStringParams.token) {
-    token = queryStringParams.token;
+  if (params.token) {
+    token = params.token;
   } else {
     return LambdaResponses.badRequest;
   }
