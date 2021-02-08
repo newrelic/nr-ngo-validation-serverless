@@ -1,6 +1,7 @@
 import { DatabaseContext, ValidationAttempts, ValidationHistoryRequest, ValidationCount } from '../types/database';
 import { config } from '../config';
 import DataApiClient from 'data-api-client';
+import { resourceLimits } from 'worker_threads';
 
 const databaseContext: DatabaseContext = {
   resourceArn: config.DATABASE_RESOURCE_ARN,
@@ -58,6 +59,29 @@ export const getValidationAttemptByToken = async (token: string): Promise<Valida
     parameters: [
       {
         token: token,
+      },
+    ],
+  });
+
+  return result;
+};
+
+export const checkValidationDate = async (
+  token: string,
+  accountId: string,
+): Promise<ValidationAttempts | undefined> => {
+  const result = await dbClient.query({
+    sql: `SELECT validation_date FROM validation_attempts
+          WHERE token = :token
+          AND accountId = :account_id
+          AND eligibility_status = FALSE
+          AND validation_date < (NOW() - INTERVAL '30' DAY)`,
+    parameters: [
+      {
+        token: token,
+      },
+      {
+        account_id: accountId,
       },
     ],
   });
