@@ -30,9 +30,9 @@ export const validateToken = async (event: APIGatewayEvent): Promise<LambdaRespo
     return LambdaResponses.tokenAlreadyUsed;
   }
 
-  const check: ValidationAttempts = await checkValidationDate(data.token, data.accountId);
+  const tokenRetention: ValidationAttempts = await checkValidationDate(data.token, data.accountId);
 
-  if (check.records.length === 0) {
+  if (tokenRetention.records.length === 0) {
     return LambdaResponses.tokenInRetentionPeriod;
   }
 

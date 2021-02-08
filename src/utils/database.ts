@@ -1,7 +1,6 @@
 import { DatabaseContext, ValidationAttempts, ValidationHistoryRequest, ValidationCount } from '../types/database';
 import { config } from '../config';
 import DataApiClient from 'data-api-client';
-import { resourceLimits } from 'worker_threads';
 
 const databaseContext: DatabaseContext = {
   resourceArn: config.DATABASE_RESOURCE_ARN,
