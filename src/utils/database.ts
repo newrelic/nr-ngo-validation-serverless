@@ -71,7 +71,7 @@ export const checkValidationDate = async (
   accountId: string,
 ): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
-    sql: `SELECT validation_date FROM validation_attempts
+    sql: `SELECT COUNT(*) FROM validation_attempts
           WHERE token = :token
           AND accountId = :account_id
           AND eligibility_status = FALSE
