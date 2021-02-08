@@ -12,7 +12,7 @@ export const createSql = (params: ValidationHistoryRequest, isCountQuery: boolea
   }
 
   if (params.searchPhrase) {
-    query += `AND (org_id ILIKE '%${params.searchPhrase}%' OR org_name ILIKE '%${params.searchPhrase}%' OR account_id ILIKE '%${params.searchPhrase}%') `;
+    query += `AND (org_id ILIKE CONCAT('%', :search_phrase, '%') OR org_name ILIKE CONCAT('%', :search_phrase, '%') OR account_id ILIKE CONCAT('%', :search_phrase, '%')) `;
   }
 
   if (!isCountQuery) {

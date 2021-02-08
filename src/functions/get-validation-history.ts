@@ -9,11 +9,8 @@ import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { getValidationAttempts } from '../utils/database';
 import { checkValidColumnName, createSql } from '../utils/sql';
-import { Logger } from '../utils/logger';
-import { Context } from 'aws-lambda';
 
-export const getValidationHistory = async (event: APIGatewayProxyEvent, context: Context): Promise<LambdaResponse> => {
-  const logger = new Logger(context);
+export const getValidationHistory = async (event: APIGatewayProxyEvent): Promise<LambdaResponse> => {
   const params = event.queryStringParameters || {};
 
   if (params.accountId && params.searchPhrase) {
