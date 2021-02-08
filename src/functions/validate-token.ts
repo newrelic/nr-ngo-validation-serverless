@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
-import { ValidationAttempts } from '../types/database';
-import { getValidationAttemptByToken } from '../utils/database';
+import { TokenAndAccountId, ValidationAttempts } from '../types/database';
+import { getValidationAttemptByToken, checkValidationDate } from '../utils/database';
 import { LambdaResponses } from '../utils/lambda-responses';
 
 /**
@@ -19,10 +19,21 @@ export const validateToken = async (event: APIGatewayEvent): Promise<LambdaRespo
     return LambdaResponses.badRequest;
   }
 
+  const data: TokenAndAccountId = {
+    token: token,
+    accountId: params.accountId ?? undefined,
+  };
+
   const checkUsedTokenResult: ValidationAttempts = await getValidationAttemptByToken(token);
 
   if (checkUsedTokenResult.records.length > 0) {
     return LambdaResponses.tokenAlreadyUsed;
+  }
+
+  const check: ValidationAttempts = await checkValidationDate(data.token, data.accountId);
+
+  if (check.records.length === 0) {
+    return LambdaResponses.tokenInRetentionPeriod;
   }
 
   return {

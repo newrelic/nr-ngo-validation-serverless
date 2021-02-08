@@ -73,7 +73,7 @@ export const checkValidationDate = async (
   const result = await dbClient.query({
     sql: `SELECT COUNT(*) FROM validation_attempts
           WHERE token = :token
-          AND accountId = :account_id
+          AND account_id = :account_id
           AND eligibility_status = FALSE
           AND validation_date < (NOW() - INTERVAL '30' DAY)`,
     parameters: [
