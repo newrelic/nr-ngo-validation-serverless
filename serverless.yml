@@ -81,3 +81,39 @@ functions:
           method: get
           cors: true
     memorySize: 512
+  save-attempt:
+    handler: src/functions/save-attempt.saveAttempt
+    description: Saves validation attempt to database
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - rds-data:*
+        Resource: "arn:aws:rds:*:*:cluster:database-1"
+      - Effect: "Allow"
+        Action:
+          - secretsmanager:*
+        Resource: "arn:aws:secretsmanager:*:*:*"
+    events:
+      - http:
+          path: /attempts
+          method: post
+          cors: true
+    memorySize: 512
+  get-validation-history:
+    handler: src/functions/get-validation-history.getValidationHistory
+    description: Returns the validation history from the database for selected account
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - rds-data:*
+        Resource: "arn:aws:rds:*:*:cluster:database-1"
+      - Effect: "Allow"
+        Action:
+          - secretsmanager:*
+        Resource: "arn:aws:secretsmanager:*:*:*"
+    events:
+      - http:
+          path: /attempts
+          method: get
+          cors: true
+    memorySize: 512

@@ -30,6 +30,17 @@ export class LambdaResponses {
     }),
   };
 
+  public static readonly badRequest: LambdaResponse = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    statusCode: StatusCodes.BAD_REQUEST,
+    body: JSON.stringify({
+      internalStatusCode: 40004,
+      message: 'Bad parameters provided to endpoint.',
+    }),
+  };
+
   public static readonly tokenExpired: LambdaResponse = {
     headers: {
       'Access-Control-Allow-Origin': '*',

@@ -1,6 +1,6 @@
+import { DatabaseContext, ValidationAttempts, ValidationHistoryRequest, ValidationCount } from '../types/database';
 import { config } from '../config';
 import DataApiClient from 'data-api-client';
-import { DatabaseContext, ValidationAttempts } from '../types/database';
 
 const databaseContext: DatabaseContext = {
   resourceArn: config.DATABASE_RESOURCE_ARN,
@@ -10,8 +10,45 @@ const databaseContext: DatabaseContext = {
 
 const dbClient = DataApiClient(databaseContext);
 
-export const getAllValidationAttempts = async (): Promise<any | undefined> => {
-  const result = await dbClient.query(`SELECT * FROM validation_attempts`);
+export const getAll = async (): Promise<ValidationAttempts | undefined> => {
+  const result = await dbClient.query(`SELECT * FROM validation_attempts'`);
+  return result;
+};
+
+export const getValidationAttempts = async (
+  sqlQuery: string,
+  params: ValidationHistoryRequest,
+): Promise<ValidationAttempts | ValidationCount | undefined> => {
+  const result = await dbClient.query({
+    sql: sqlQuery,
+    parameters: [
+      {
+        account_id: params.accountId,
+      },
+      {
+        search_phrase: params.searchPhrase,
+      },
+      {
+        column: params.orderBy,
+      },
+      {
+        direction: params.orderAsc,
+      },
+      {
+        limit: params.limit,
+      },
+      {
+        offset: params.offset,
+      },
+      {
+        start_date: params.startDate,
+      },
+      {
+        end_date: params.endDate,
+      },
+    ],
+  });
+
   return result;
 };
 
@@ -28,12 +65,12 @@ export const getValidationAttemptByToken = async (token: string): Promise<Valida
   return result;
 };
 
-export const getValidationAttemptByAccountId = async (accountId: number): Promise<ValidationAttempts | undefined> => {
+export const getValidationAttemptByAccountId = async (accountId: string): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts
-      WHERE account_id = :account_id
-      ORDER BY validation_date DESC
-      LIMIT 1`,
+          WHERE account_id = :account_id
+          ORDER BY validation_date DESC
+          LIMIT 1`,
     parameters: [
       {
         account_id: accountId,
@@ -46,7 +83,7 @@ export const getValidationAttemptByAccountId = async (accountId: number): Promis
 
 export const getValidationAttemptByTokenAndAccountId = async (
   token: string,
-  accountId: number,
+  accountId: string,
 ): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts WHERE
@@ -62,5 +99,30 @@ export const getValidationAttemptByTokenAndAccountId = async (
     ],
   });
 
+  return result;
+};
+
+export const saveValidationAttempt = async (
+  token: string,
+  accountId: string,
+  eligibilityStatus: boolean,
+  orgId: string,
+  orgName: string,
+  reason: string,
+): Promise<any | undefined> => {
+  const result = await dbClient.query({
+    sql: `INSERT INTO validation_attempts (eligibility_status, token, account_id, org_id, org_name, reason)
+      VALUES (:eligibility_status, :token, :account_id, :org_id, :org_name, :reason)`,
+    parameters: [
+      {
+        token: token,
+        account_id: accountId,
+        eligibility_status: eligibilityStatus,
+        org_id: orgId,
+        org_name: orgName,
+        reason: reason || '',
+      },
+    ],
+  });
   return result;
 };
