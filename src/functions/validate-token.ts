@@ -32,7 +32,7 @@ export const validateToken = async (event: APIGatewayEvent): Promise<LambdaRespo
 
   const tokenRetention: ValidationAttempts = await checkValidationDate(data.token, data.accountId);
 
-  if (tokenRetention.records.length === 0) {
+  if (tokenRetention.records.length > 0) {
     return LambdaResponses.tokenInRetentionPeriod;
   }
 
