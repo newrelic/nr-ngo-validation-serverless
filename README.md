@@ -2,7 +2,13 @@
 
 # NewRelic.org 'For Good' NGO Validation Service [build badges go here when available]
 
-The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. Additionally, it saves money validation request costs by storing the history of all validated NGOs in database indexed by AccountID.
+The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. Except that, the nr-ngo-validation-serverless project provides more functions like checking token and account validity and checking validation history. The repository contains 5 lambdas:
+
+- get-validation-history: allow user to fetch history of validation from database. We are supporting AuroraDB with Postgres right now,
+- save-attempts: allow user to save validation attempt to the database,
+- validate-account: check if the account already exist in the database, if yes then return the last validation date with the eligibility status,
+- validate-toke: check if token provided by user is correct and last use was 30 days ago,
+- validator: core function to check eligibility staus based on Tech Soup APIs (Lookup API and Constraint API). Fetches data from those two sources to return the result for the user
 
 ## Installation
 
@@ -22,6 +28,9 @@ Before installation set environmental variables in `.env` file. This file contai
 - CONSTRAINT_API_URL=<url_to_constraint_api>
 - CONSTRAINT_ID=<your_constraint_id>
 - SESSION_KEY=<your_session_key>
+- DATABASE_RESOURCE_ARN=<database_resource_arn>
+- DATABASE_SECRET_ARN=<database_secret_arn>
+- DATABASE=<database_name>
 
 If you have serverless framework installed, type `npm install` and `sls offline` in your terminal in the project folder.
 
@@ -39,6 +48,8 @@ After that you can deploy the lambda to your AWS space by using command `sls dep
 ## Testing
 
 To run all tests type `npm test` in your terminal in project folder.
+
+## Requests to each lambda function
 
 ## Defined Error Codes
 
