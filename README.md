@@ -53,18 +53,22 @@ To run all tests type `npm test` in your terminal in project folder.
 
 ## Defined Error Codes
 
-During the verification process the Lambda sends request to the Lookup API then to Constraint API. For each of those APIs there are defined responses (might be error response or valid response).
+During the verification process the Lambda sends request to the Lookup API then to Constraint API. We have defined internal response codes and error codes from the Constraint API. We are handling responses from Lookup API with our internal codes - for example invalid toke format.
 
-1. Lookup API
+1. Internal response codes
 
-|              Message              | Internal Error Code | Status Code |
-| :-------------------------------: | :-----------------: | :---------: |
-|         No token provided         |        40001        |     400     |
-|        Bad token provided         |        40002        |     400     |
-| Verified - TechSoup Token expired |        40101        |     401     |
-|    Sorry you do not qualified     |        40102        |     401     |
-|   This endpoint does not exist    |        40401        |     404     |
-|    No data for provided token     |        40402        |     404     |
+| Message                                                                                                         | Internal Code | Status Code |
+| :-------------------------------------------------------------------------------------------------------------- | :-----------: | :---------: |
+| No token provided                                                                                               |     40001     |     400     |
+| Bad token provided                                                                                              |     40002     |     400     |
+| The session_key and constraint_id are not defined. Please define them in .env or send them as params in request |     40003     |     400     |
+| Bad parameters provided to endpoint                                                                             |     40004     |     400     |
+| Verified - TechSoup Token expired                                                                               |     40101     |     401     |
+| Sorry you do not qualified                                                                                      |     40102     |     401     |
+| Token was already used                                                                                          |     40103     |     401     |
+| This endpoint does not exist                                                                                    |     40401     |     404     |
+| No data for provided token                                                                                      |     40402     |     404     |
+| There are issues with lambda configuration, please verify it                                                    |     50001     |     500     |
 
 2. Constraint API
    This API codes has been defined but there are not handled. The translation of error code to meaningful must be implemented by yourself. The table below presents the codes which are defined in code which you can use. In the API some of the codes were not described.
