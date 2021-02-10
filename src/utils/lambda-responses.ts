@@ -68,6 +68,17 @@ export class LambdaResponses {
     }),
   };
 
+  public static readonly tokenInRetentionPeriod: LambdaResponse = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    statusCode: StatusCodes.UNAUTHORIZED,
+    body: JSON.stringify({
+      internalStatusCode: 40104,
+      message: 'Token already used in the last 30 days',
+    }),
+  };
+
   public static readonly noEndpoint: LambdaResponse = {
     headers: {
       'Access-Control-Allow-Origin': '*',
