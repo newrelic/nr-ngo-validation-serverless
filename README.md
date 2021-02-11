@@ -59,6 +59,33 @@ In this section you can find description of each lambda (endpoint) with paramete
 
 Checks if token was already used by this account (is token in the database). Next checks if the account performed validation in last 30 days.
 
+<b>Request</b>
+
+```
+GET
+{
+  token: String
+  accountId: String
+}
+```
+
+<b>Response</b>
+
+```
+SUCCESS - 200
+{
+  Allow: true
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+- Token Already Used: 'Token was already used'
+- Token In Retention Period: 'Token already used in the last 30 days'
+```
+
 ### Validate account endpoint
 
 Validates account based on provided account id.
@@ -66,6 +93,49 @@ Validates account based on provided account id.
 ### Save attempts endpoint
 
 ### Get validation history endpoint
+
+Allows to fetch validation history data from the database.
+
+<b>Request</b>
+
+```
+GET
+{
+  orderBy: String
+  orderAsc: Boolean
+  limit: Number
+  offset: Number
+  searchPhrase: String
+  startDate: Date
+  endDate: Date
+}
+```
+
+<b>Response</b>
+
+```
+{
+  "attempts": [
+    {
+      "id": 1,
+      "account_id": "1",
+      "validation_date": "2021-02-06 13:30:00",
+      "org_id": "org-id-1",
+      "org_name": "The Organisation",
+      "eligibility_status": true,
+      "reason": "",
+      "token": "awesome@token"
+    }
+  ],
+  "records": 1
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+```
 
 ## Defined Error Codes
 
