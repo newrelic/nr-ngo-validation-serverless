@@ -51,6 +51,20 @@ To run all tests type `npm test` in your terminal in project folder.
 
 ## Requests to each lambda function
 
+In this section you can find description of each lambda (endpoint) with parameters required to make a call to API.
+
+### Validator endpoint
+
+### Validate token endpoint
+
+### Validate account endpoint
+
+Validates account based on provided account id.
+
+### Save attempts endpoint
+
+### Get validation history endpoint
+
 ## Defined Error Codes
 
 During the verification process the Lambda sends request to the Lookup API then to Constraint API. We have defined internal response codes and error codes from the Constraint API. We are handling responses from Lookup API with our internal codes - for example invalid toke format.
