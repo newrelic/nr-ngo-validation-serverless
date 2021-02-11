@@ -12,16 +12,18 @@ import { LambdaResponses } from '../utils/lambda-responses';
 export const validateToken = async (event: APIGatewayEvent): Promise<LambdaResponse> => {
   const params = event.queryStringParameters || {};
   let token = '';
+  let accountId = '';
 
-  if (params.token) {
+  if (params.token && params.accountId) {
     token = params.token;
+    accountId = params.accountId;
   } else {
     return LambdaResponses.badRequest;
   }
 
   const data: TokenAndAccountId = {
     token: token,
-    accountId: params.accountId ?? undefined,
+    accountId: accountId,
   };
 
   const checkUsedTokenResult: ValidationAttempts = await getValidationAttemptByToken(token);

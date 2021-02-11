@@ -57,6 +57,8 @@ In this section you can find description of each lambda (endpoint) with paramete
 
 ### Validate token endpoint
 
+Checks if token was already used by this account (is token in the database). Next checks if the account performed validation in last 30 days.
+
 ### Validate account endpoint
 
 Validates account based on provided account id.
