@@ -52,6 +52,41 @@ To run all tests type `npm test` in your terminal in project folder.
 ## Requests to each lambda function
 
 In this section you can find description of each lambda (endpoint) with parameters required to make a call to API.
+Validates the eligibility status of the NGO using Tech Soup APIs (Constraint API and Lookup API).
+
+<b>Request</b>
+
+```
+GET
+{
+  token: String
+  session_key: String
+  constraint_id: String
+}
+```
+
+<b>Response</b>
+
+```
+SUCCESS - 200
+{
+  "program_code": "PROG_CODE",
+  "org_id": "org-id-123",
+  "error_code": [],
+  "eligibility_status": true,
+  "org_name": "The Organization"
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Token expired: Verified: 'TechSoup Token expired'
+- Missing required data: 'The session_key and constraint_id are not defined. Please define them in .env or send them as params in request.'
+- Bad token provided: 'Bad token provided'
+- Not qualified: 'Sorry you do not qualified'
+- Wrong configuration: 'There are issues with lambda configuration, please verify it'
+```
 
 ### Validator endpoint
 
@@ -84,6 +119,66 @@ SUCCESS - 200
 - Bad request: 'Bad parameters provided to endpoint.'
 - Token Already Used: 'Token was already used'
 - Token In Retention Period: 'Token already used in the last 30 days'
+<b>Request</b>
+```
+
+POST
+{
+accountId: String
+}
+
+```
+
+<b>Response</b>
+```
+
+{
+SUCCESS - 200 (If account exists)
+}
+
+{
+NO CONTENT - 204 (If account not exists)
+}
+
+```
+
+<b>Possible custom errors</b>
+```
+
+- Bad request: 'Bad parameters provided to endpoint.'
+
+```
+
+```
+
+Saves the attempt to the database.
+
+<b>Request</b>
+
+```
+POST
+{
+  accountId: String
+  token: String
+  eligibilityStatus: Boolean
+  orgId: String
+  orgName: String
+  reason: String
+}
+```
+
+<b>Response</b>
+
+```
+{
+  CREATED - 201
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
 ```
 
 ### Validate account endpoint

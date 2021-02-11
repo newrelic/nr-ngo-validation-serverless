@@ -30,7 +30,7 @@ export const saveAttempt = async (event: APIGatewayProxyEvent): Promise<LambdaRe
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
-    statusCode: 200,
+    statusCode: 201,
     body: '',
   };
 };
