@@ -54,6 +54,8 @@ To run all tests type `npm test` in your terminal in project folder.
 In this section you can find description of each lambda (endpoint) with parameters required to make a call to API.
 Validates the eligibility status of the NGO using Tech Soup APIs (Constraint API and Lookup API).
 
+### Validator endpoint
+
 <b>Request</b>
 
 ```
@@ -88,8 +90,6 @@ SUCCESS - 200
 - Wrong configuration: 'There are issues with lambda configuration, please verify it'
 ```
 
-### Validator endpoint
-
 ### Validate token endpoint
 
 Checks if token was already used by this account (is token in the database). Next checks if the account performed validation in last 30 days.
@@ -119,19 +119,24 @@ SUCCESS - 200
 - Bad request: 'Bad parameters provided to endpoint.'
 - Token Already Used: 'Token was already used'
 - Token In Retention Period: 'Token already used in the last 30 days'
-<b>Request</b>
 ```
 
+### Validate account endpoint
+
+Validates account based on provided account id.
+
+<b>Request</b>
+
+```
 POST
 {
 accountId: String
 }
-
 ```
 
 <b>Response</b>
-```
 
+```
 {
 SUCCESS - 200 (If account exists)
 }
@@ -139,17 +144,15 @@ SUCCESS - 200 (If account exists)
 {
 NO CONTENT - 204 (If account not exists)
 }
-
 ```
 
 <b>Possible custom errors</b>
-```
 
+```
 - Bad request: 'Bad parameters provided to endpoint.'
-
 ```
 
-```
+### Save attempts endpoint
 
 Saves the attempt to the database.
 
@@ -180,12 +183,6 @@ POST
 ```
 - Bad request: 'Bad parameters provided to endpoint.'
 ```
-
-### Validate account endpoint
-
-Validates account based on provided account id.
-
-### Save attempts endpoint
 
 ### Get validation history endpoint
 
