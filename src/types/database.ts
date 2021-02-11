@@ -37,6 +37,11 @@ export type ValidationCount = {
   records: Array<Count>;
 };
 
+export type TokenAndAccountId = {
+  token: string;
+  accountId?: string;
+};
+
 type Count = {
   count: number;
 };
