@@ -65,6 +65,26 @@ export const getValidationAttemptByToken = async (token: string): Promise<Valida
   return result;
 };
 
+export const checkValidationDate = async (token: string, accountId: string): Promise<ValidationCount | undefined> => {
+  const result = await dbClient.query({
+    sql: `SELECT COUNT(*) FROM validation_attempts
+          WHERE token = :token
+          AND account_id = :account_id
+          AND eligibility_status = FALSE
+          AND validation_date < (NOW() - INTERVAL '30' DAY)`,
+    parameters: [
+      {
+        token: token,
+      },
+      {
+        account_id: accountId,
+      },
+    ],
+  });
+
+  return result;
+};
+
 export const getValidationAttemptByAccountId = async (accountId: string): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts
