@@ -2,7 +2,15 @@
 
 # NewRelic.org 'For Good' NGO Validation Service [build badges go here when available]
 
-The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. Additionally, it saves money validation request costs by storing the history of all validated NGOs in database indexed by AccountID.
+![CI](https://github.com/newrelic/nr-ngo-validation-serverless/workflows/Push/badge.svg) ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr-ngo-validation-serverless?include_prereleases&sort=semver) [![Snyk](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless/badge.svg)](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless)
+
+The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. Except that, the nr-ngo-validation-serverless project provides more functions like checking token and account validity and checking validation history. The repository contains 5 lambdas:
+
+- get-validation-history: allow user to fetch history of validation from database. We are supporting AuroraDB with Postgres right now,
+- save-attempts: allow user to save validation attempt to the database,
+- validate-account: check if the account already exist in the database, if yes then return the last validation date with the eligibility status,
+- validate-toke: check if token provided by user is correct and last use was 30 days ago,
+- validator: core function to check eligibility staus based on Tech Soup APIs (Lookup API and Constraint API). Fetches data from those two sources to return the result for the user
 
 ## Installation
 
@@ -22,6 +30,9 @@ Before installation set environmental variables in `.env` file. This file contai
 - CONSTRAINT_API_URL=<url_to_constraint_api>
 - CONSTRAINT_ID=<your_constraint_id>
 - SESSION_KEY=<your_session_key>
+- DATABASE_RESOURCE_ARN=<database_resource_arn>
+- DATABASE_SECRET_ARN=<database_secret_arn>
+- DATABASE=<database_name>
 
 If you have serverless framework installed, type `npm install` and `sls offline` in your terminal in the project folder.
 
@@ -40,23 +51,208 @@ After that you can deploy the lambda to your AWS space by using command `sls dep
 
 To run all tests type `npm test` in your terminal in project folder.
 
+## Requests to each lambda function
+
+In this section you can find description of each lambda (endpoint) with parameters required to make a call to API.
+Validates the eligibility status of the NGO using Tech Soup APIs (Constraint API and Lookup API).
+
+### Validator endpoint
+
+<b>Request</b>
+
+```
+GET
+{
+  token: String
+  session_key: String
+  constraint_id: String
+}
+```
+
+<b>Response</b>
+
+```
+SUCCESS - 200
+{
+  "program_code": "PROG_CODE",
+  "org_id": "org-id-123",
+  "error_code": [],
+  "eligibility_status": true,
+  "org_name": "The Organization"
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Token expired: Verified: 'TechSoup Token expired'
+- Missing required data: 'The session_key and constraint_id are not defined. Please define them in .env or send them as params in request.'
+- Bad token provided: 'Bad token provided'
+- Not qualified: 'Sorry you do not qualified'
+- Wrong configuration: 'There are issues with lambda configuration, please verify it'
+```
+
+### Validate token endpoint
+
+Checks if token was already used by this account (is token in the database). Next checks if the account performed validation in last 30 days.
+
+<b>Request</b>
+
+```
+GET
+{
+  token: String
+  accountId: String
+}
+```
+
+<b>Response</b>
+
+```
+SUCCESS - 200
+{
+  Allow: true
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+- Token Already Used: 'Token was already used'
+- Token In Retention Period: 'Token already used in the last 30 days'
+```
+
+### Validate account endpoint
+
+Validates account based on provided account id.
+
+<b>Request</b>
+
+```
+POST
+{
+  accountId: String
+}
+```
+
+<b>Response</b>
+
+```
+{
+  SUCCESS - 200 (If account exists)
+}
+
+{
+  NO CONTENT - 204 (If account not exists)
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+```
+
+### Save attempts endpoint
+
+Saves the attempt to the database.
+
+<b>Request</b>
+
+```
+POST
+{
+  accountId: String
+  token: String
+  eligibilityStatus: Boolean
+  orgId: String
+  orgName: String
+  reason: String
+}
+```
+
+<b>Response</b>
+
+```
+{
+  CREATED - 201
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+```
+
+### Get validation history endpoint
+
+Allows to fetch validation history data from the database.
+
+<b>Request</b>
+
+```
+GET
+{
+  orderBy: String
+  orderAsc: Boolean
+  limit: Number
+  offset: Number
+  searchPhrase: String
+  startDate: Date
+  endDate: Date
+}
+```
+
+<b>Response</b>
+
+```
+{
+  "attempts": [
+    {
+      "id": 1,
+      "account_id": "1",
+      "validation_date": "2021-02-06 13:30:00",
+      "org_id": "org-id-1",
+      "org_name": "The Organisation",
+      "eligibility_status": true,
+      "reason": "",
+      "token": "awesome@token"
+    }
+  ],
+  "records": 1
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+```
+
 ## Defined Error Codes
 
-During the verification process the Lambda sends request to the Lookup API then to Constraint API. For each of those APIs there are defined responses (might be error response or valid response).
+During the verification process the Lambda sends request to the Lookup API then to Constraint API. We have defined internal response codes and error codes from the Constraint API. We are handling responses from Lookup API with our internal codes - for example invalid toke format.
 
-1. Lookup API
+<br>
+1. Internal response codes
 
-|              Message              | Internal Error Code | Status Code |
-| :-------------------------------: | :-----------------: | :---------: |
-|         No token provided         |        40001        |     400     |
-|        Bad token provided         |        40002        |     400     |
-| Verified - TechSoup Token expired |        40101        |     401     |
-|    Sorry you do not qualified     |        40102        |     401     |
-|   This endpoint does not exist    |        40401        |     404     |
-|    No data for provided token     |        40402        |     404     |
+| Message                                                                                                         | Internal Code | Status Code |
+| :-------------------------------------------------------------------------------------------------------------- | :-----------: | :---------: |
+| No token provided                                                                                               |     40001     |     400     |
+| Bad token provided                                                                                              |     40002     |     400     |
+| The session_key and constraint_id are not defined. Please define them in .env or send them as params in request |     40003     |     400     |
+| Bad parameters provided to endpoint                                                                             |     40004     |     400     |
+| Verified - TechSoup Token expired                                                                               |     40101     |     401     |
+| Sorry you do not qualified                                                                                      |     40102     |     401     |
+| Token was already used                                                                                          |     40103     |     401     |
+| This endpoint does not exist                                                                                    |     40401     |     404     |
+| No data for provided token                                                                                      |     40402     |     404     |
+| There are issues with lambda configuration, please verify it                                                    |     50001     |     500     |
 
+<br>
 2. Constraint API
-   This API codes has been defined but there are not handled. The translation of error code to meaningful must be implemented by yourself. The table below presents the codes which are defined in code which you can use. In the API some of the codes were not described.
 
 |  Code  |  Group  |                    Text                    |                                                             Description                                                             |
 | :----: | :-----: | :----------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------: |
@@ -76,9 +272,13 @@ During the verification process the Lambda sends request to the Lookup API then 
 | E00_14 |         |                                            |                                                                                                                                     |
 | E00_15 |         |                                            |                                                                                                                                     |
 
+<br>
+
 ## Additional information
 
 If you want to validate if the organisation is matching in your system/flow you need to implement this method by yourself. The definition of this method you'll find in `src/utils/org-validator.ts`.
+
+<br>
 
 ## Support
 
@@ -86,19 +286,27 @@ New Relic hosts and moderates an online forum where customers can interact with 
 
 > Add the url for the support thread here
 
+<br>
+
 ## License
 
 This project is distributed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
+
+<br>
 
 ## Security
 
 As noted in our [security policy](https://github.com/newrelic/nr-ngo-validation-serverless/security/policy), New Relic is committed to the privacy and security of our customers and their data. We believe that providing coordinated disclosure by security researchers and engaging with the security community are important means to achieve our security goals.
 If you believe you have found a security vulnerability in this project or any of New Relic's products or websites, we welcome and greatly appreciate you reporting it to New Relic through [HackerOne](https://hackerone.com/newrelic).
 
+<br>
+
 ## Contributing
 
 We encourage your contributions to improve [project name]! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
 If you have any questions, or to execute our corporate CLA, required if your contribution is on behalf of a company, please drop us an email at opensource@newrelic.com.
+
+<br>
 
 ## Contributors ✨
 

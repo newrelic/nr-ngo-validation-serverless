@@ -39,7 +39,7 @@ export type ValidationCount = {
 
 export type TokenAndAccountId = {
   token: string;
-  accountId?: string;
+  accountId: string;
 };
 
 type Count = {

@@ -65,10 +65,7 @@ export const getValidationAttemptByToken = async (token: string): Promise<Valida
   return result;
 };
 
-export const checkValidationDate = async (
-  token: string,
-  accountId: string,
-): Promise<ValidationAttempts | undefined> => {
+export const checkValidationDate = async (token: string, accountId: string): Promise<ValidationCount | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT COUNT(*) FROM validation_attempts
           WHERE token = :token
