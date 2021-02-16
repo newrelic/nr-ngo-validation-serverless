@@ -2,6 +2,8 @@
 
 # NewRelic.org 'For Good' NGO Validation Service [build badges go here when available]
 
+![CI](https://github.com/newrelic/nr-ngo-validation-serverless/workflows/Push/badge.svg) ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr-ngo-validation-serverless?include_prereleases&sort=semver) [![Snyk](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless/badge.svg)](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless)
+
 The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. Except that, the nr-ngo-validation-serverless project provides more functions like checking token and account validity and checking validation history. The repository contains 5 lambdas:
 
 - get-validation-history: allow user to fetch history of validation from database. We are supporting AuroraDB with Postgres right now,
