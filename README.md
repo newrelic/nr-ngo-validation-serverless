@@ -130,7 +130,7 @@ Validates account based on provided account id.
 ```
 POST
 {
-accountId: String
+  accountId: String
 }
 ```
 
@@ -138,11 +138,11 @@ accountId: String
 
 ```
 {
-SUCCESS - 200 (If account exists)
+  SUCCESS - 200 (If account exists)
 }
 
 {
-NO CONTENT - 204 (If account not exists)
+  NO CONTENT - 204 (If account not exists)
 }
 ```
 
@@ -233,6 +233,7 @@ GET
 
 During the verification process the Lambda sends request to the Lookup API then to Constraint API. We have defined internal response codes and error codes from the Constraint API. We are handling responses from Lookup API with our internal codes - for example invalid toke format.
 
+<br>
 1. Internal response codes
 
 | Message                                                                                                         | Internal Code | Status Code |
@@ -248,8 +249,8 @@ During the verification process the Lambda sends request to the Lookup API then 
 | No data for provided token                                                                                      |     40402     |     404     |
 | There are issues with lambda configuration, please verify it                                                    |     50001     |     500     |
 
+<br>
 2. Constraint API
-   This API codes has been defined but there are not handled. The translation of error code to meaningful must be implemented by yourself. The table below presents the codes which are defined in code which you can use. In the API some of the codes were not described.
 
 |  Code  |  Group  |                    Text                    |                                                             Description                                                             |
 | :----: | :-----: | :----------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------: |
@@ -269,9 +270,13 @@ During the verification process the Lambda sends request to the Lookup API then 
 | E00_14 |         |                                            |                                                                                                                                     |
 | E00_15 |         |                                            |                                                                                                                                     |
 
+<br>
+
 ## Additional information
 
 If you want to validate if the organisation is matching in your system/flow you need to implement this method by yourself. The definition of this method you'll find in `src/utils/org-validator.ts`.
+
+<br>
 
 ## Support
 
@@ -279,19 +284,27 @@ New Relic hosts and moderates an online forum where customers can interact with 
 
 > Add the url for the support thread here
 
+<br>
+
 ## License
 
 This project is distributed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
+
+<br>
 
 ## Security
 
 As noted in our [security policy](https://github.com/newrelic/nr-ngo-validation-serverless/security/policy), New Relic is committed to the privacy and security of our customers and their data. We believe that providing coordinated disclosure by security researchers and engaging with the security community are important means to achieve our security goals.
 If you believe you have found a security vulnerability in this project or any of New Relic's products or websites, we welcome and greatly appreciate you reporting it to New Relic through [HackerOne](https://hackerone.com/newrelic).
 
+<br>
+
 ## Contributing
 
 We encourage your contributions to improve [project name]! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
 If you have any questions, or to execute our corporate CLA, required if your contribution is on behalf of a company, please drop us an email at opensource@newrelic.com.
+
+<br>
 
 ## Contributors ✨
 
