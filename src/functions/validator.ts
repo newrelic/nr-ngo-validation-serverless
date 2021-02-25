@@ -1,4 +1,4 @@
-import { APIGatewayEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { isTokenValid, isTokenExpired } from '../utils/token-validator';
@@ -12,7 +12,7 @@ import { translateErrorMessages } from '../utils/error-message-translator';
 import { config } from '../config';
 import { ResponseType } from '../types/common';
 
-export const validate = async (event: APIGatewayEvent): Promise<LambdaResponse | ConstraintResponse> => {
+export const validate = async (event: APIGatewayProxyEvent): Promise<LambdaResponse | ConstraintResponse> => {
   const queryStringParams = event.queryStringParameters || {};
   let lookupResponse: LookupLargeResponse | LambdaResponses;
   let constraintResponse: ConstraintResponse;
