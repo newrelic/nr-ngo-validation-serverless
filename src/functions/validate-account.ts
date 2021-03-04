@@ -1,4 +1,4 @@
-import { APIGatewayEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
 import { ValidationAttempts } from '../types/database';
 import { getValidationAttemptByAccountId } from '../utils/database';
@@ -11,7 +11,7 @@ import { Logger } from '../utils/logger';
  *
  * @param event Incoming event from API Gateway
  */
-export const validateAccount = async (event: APIGatewayEvent, context: Context): Promise<LambdaResponse> => {
+export const validateAccount = async (event: APIGatewayProxyEvent, context: Context): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
   let accountId: string;
