@@ -2,6 +2,7 @@
   "name": "nr-ngo-validation-serverless",
   "version": "1.0.13",
   "description": "",
+  "main": "index.ts",
   "scripts": {
     "test": "NODE_ENV=test jest --passWithNoTests --coverage",
     "eslint-check": "eslint src/**/*.ts"
