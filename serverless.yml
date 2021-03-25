@@ -7,31 +7,28 @@ plugins:
   - serverless-plugin-typescript
   - serverless-dotenv-plugin
   - serverless-iam-roles-per-function
+  - serverless-newrelic-lambda-layers
+
+useDotenv: true
 
 custom:
+  newRelic:
+    accountId: ${env:NR_ACCOUNT_ID}
+    apiKey: ${env:NR_API_KEY}
+    enableExtension: false
+    enableIntegration: true
+    logEnabled: true
+    cloudWatchFilter: "*"
+
   defaultStage: dev
   defaultRegion: eu-central-1
   environment: ${file(.env):${self:provider.stage}, file(.env):default}
 
-  dotenv:
-    path: ./.env
-    logging: false
-    include:
-      - STAGE
-      - REGION
-      - LOOKUP_API_URL
-      - CONSTRAINT_API_URL
-      - CONSTRAINT_ID
-      - SESSION_KEY
-      - DATABASE_RESOURCE_ARN
-      - DATABASE_SECRET_ARN
-      - DATABASE
-
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: ${opt:stage, self:custom.defaultStage}
-  region: ${opt:region, self:custom.defaultRegion}
+  stage: ${env:STAGE, self:custom.defaultStage}
+  region: ${env:REGION, self:custom.defaultRegion}
   environment:
     TEST: ${env:TEST, 'default_value'}
 
@@ -52,7 +49,7 @@ functions:
       - Effect: "Allow"
         Action:
           - rds-data:*
-        Resource: "arn:aws:rds:*:*:cluster:database-1"
+        Resource: "arn:aws:rds:*:*:cluster:${env:DATABASE_CLUSTER_NAME}"
       - Effect: "Allow"
         Action:
           - secretsmanager:*
@@ -70,7 +67,7 @@ functions:
       - Effect: "Allow"
         Action:
           - rds-data:*
-        Resource: "arn:aws:rds:*:*:cluster:database-1"
+        Resource: "arn:aws:rds:*:*:cluster:${env:DATABASE_CLUSTER_NAME}"
       - Effect: "Allow"
         Action:
           - secretsmanager:*
@@ -88,7 +85,7 @@ functions:
       - Effect: "Allow"
         Action:
           - rds-data:*
-        Resource: "arn:aws:rds:*:*:cluster:database-1"
+        Resource: "arn:aws:rds:*:*:cluster:${env:DATABASE_CLUSTER_NAME}"
       - Effect: "Allow"
         Action:
           - secretsmanager:*
@@ -106,7 +103,7 @@ functions:
       - Effect: "Allow"
         Action:
           - rds-data:*
-        Resource: "arn:aws:rds:*:*:cluster:database-1"
+        Resource: "arn:aws:rds:*:*:cluster:${env:DATABASE_CLUSTER_NAME}"
       - Effect: "Allow"
         Action:
           - secretsmanager:*

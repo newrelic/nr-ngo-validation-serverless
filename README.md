@@ -33,6 +33,9 @@ Before installation set environmental variables in `.env` file. This file contai
 - DATABASE_RESOURCE_ARN=<database_resource_arn>
 - DATABASE_SECRET_ARN=<database_secret_arn>
 - DATABASE=<database_name>
+- DATABASE_CLUSTER_NAME=<cluster_name>
+- NR_ACCOUNT_ID=<nr_account_id_for_monitoring>
+- NR_API_KEY=<nr_api_key_for_account_to_monitoring>
 
 If you have serverless framework installed, type `npm install` and `sls offline` in your terminal in the project folder.
 
