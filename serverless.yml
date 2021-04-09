@@ -15,8 +15,9 @@ custom:
   newRelic:
     accountId: ${env:NR_ACCOUNT_ID}
     apiKey: ${env:NR_API_KEY}
-    enableExtension: false
+    enableExtension: true
     enableIntegration: true
+    enableDistributedTracing: true
     logEnabled: true
     cloudWatchFilter: "*"
 
