@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import {
   ValidationHistoryRequest,
   ValidationHistoryResponse,
@@ -9,8 +9,10 @@ import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { getValidationAttempts } from '../utils/database';
 import { checkValidColumnName, createSql } from '../utils/sql';
+import { Logger } from '../utils/logger';
 
-export const getValidationHistory = async (event: APIGatewayProxyEvent): Promise<LambdaResponse> => {
+export const getValidationHistory = async (event: APIGatewayProxyEvent, context: Context): Promise<LambdaResponse> => {
+  const logger = new Logger(context);
   const params = event.queryStringParameters || {};
 
   if (params.accountId && params.searchPhrase) {
@@ -36,6 +38,7 @@ export const getValidationHistory = async (event: APIGatewayProxyEvent): Promise
     return LambdaResponses.badRequest;
   }
 
+  logger.info('Preparing get data query and count query...');
   const sqlQuery = createSql(validationHistoryRequest, false);
   const countQuery = createSql(validationHistoryRequest, true);
 
@@ -44,6 +47,8 @@ export const getValidationHistory = async (event: APIGatewayProxyEvent): Promise
     validationHistoryRequest,
   )) as ValidationAttempts;
   const recordCount = (await getValidationAttempts(countQuery as string, validationHistoryRequest)) as ValidationCount;
+
+  logger.info('Return results...', validationHistoryRequest.accountId);
 
   const response: ValidationHistoryResponse = {
     attempts: validationHistory.records,

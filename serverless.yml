@@ -46,7 +46,7 @@ functions:
   validate-token:
     handler: src/functions/validate-token.validateToken
     description: Validates token - checks if token was already used (checks the database)
-    timeout: 12
+    timeout: 90
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -65,7 +65,7 @@ functions:
   validate-account:
     handler: src/functions/validate-account.validateAccount
     description: Validates account - checks what is the status of provided account (checks the database)
-    timeout: 12
+    timeout: 90
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -84,7 +84,7 @@ functions:
   save-attempt:
     handler: src/functions/save-attempt.saveAttempt
     description: Saves validation attempt to database
-    timeout: 12
+    timeout: 90
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -103,7 +103,7 @@ functions:
   get-validation-history:
     handler: src/functions/get-validation-history.getValidationHistory
     description: Returns the validation history from the database for selected account
-    timeout: 12
+    timeout: 90
     iamRoleStatements:
       - Effect: "Allow"
         Action:
