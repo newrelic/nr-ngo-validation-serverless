@@ -12,6 +12,8 @@ import { translateErrorMessages } from '../utils/error-message-translator';
 import { config } from '../config';
 import { ResponseType } from '../types/common';
 import { Logger } from '../utils/logger';
+import { checkIfOrgIdExist } from '../utils/database';
+import { ValidationAttempts } from '../types/database';
 
 export const validate = async (
   event: APIGatewayProxyEvent,
@@ -79,7 +81,12 @@ export const validate = async (
   const orgId = getOrgId(lookupResponse as LookupLargeResponse);
   const orgName = getOrgName(lookupResponse as LookupLargeResponse);
 
+  logger.info('Checking if organisation already exists and is elibile...');
+  const result: ValidationAttempts = await checkIfOrgIdExist(orgId);
 
+  if (result.records.length > 0) {
+    return LambdaResponses.organisationAlreadyExist;
+  }
 
   if (config.CONSTRAINT_ID !== '') {
     constraintResponse = await getResponseFromConstraint(orgId);
