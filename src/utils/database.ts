@@ -152,10 +152,10 @@ export const checkIfOrgIdExist = async (orgId: string): Promise<ValidationAttemp
     sql: `SELECT * FROM validation_attempts WHERE org_id = :org_id AND eligibility_status = true LIMIT 1`,
     parameters: [
       {
-        org_id: orgId
-      }
-    ]
+        org_id: orgId,
+      },
+    ],
   });
 
   return result;
-}
+};
