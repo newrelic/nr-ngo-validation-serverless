@@ -70,6 +70,8 @@ export const validate = async (event: APIGatewayProxyEvent): Promise<LambdaRespo
   const orgId = getOrgId(lookupResponse as LookupLargeResponse);
   const orgName = getOrgName(lookupResponse as LookupLargeResponse);
 
+
+
   if (config.CONSTRAINT_ID !== '') {
     constraintResponse = await getResponseFromConstraint(orgId);
   } else {

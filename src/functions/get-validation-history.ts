@@ -12,6 +12,7 @@ import { checkValidColumnName, createSql } from '../utils/sql';
 
 export const getValidationHistory = async (event: APIGatewayProxyEvent): Promise<LambdaResponse> => {
   const params = event.queryStringParameters || {};
+  logger.info('Something is happening');
 
   if (params.accountId && params.searchPhrase) {
     return LambdaResponses.badRequest;
