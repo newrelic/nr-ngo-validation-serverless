@@ -8,21 +8,32 @@ export class Logger {
       requestId: context.awsRequestId,
       function: context.functionName,
       message: '',
+      accountId: '',
+      token: '',
     };
   }
 
-  info = (message: string): void => {
+  info = (message: string, accountId?: string, token?: string): void => {
     this.context.message = message;
+    this.context.accountId = accountId;
+    this.context.token = token;
+
     console.log(this.context);
   };
 
-  error = (message: string): void => {
+  error = (message: string, accountId?: string, token?: string): void => {
     this.context.message = message;
+    this.context.accountId = accountId;
+    this.context.token = token;
+
     console.error(this.context);
   };
 
-  warn = (message: string): void => {
+  warn = (message: string, accountId?: string, token?: string): void => {
     this.context.message = message;
+    this.context.accountId = accountId;
+    this.context.token = token;
+
     console.warn(this.context);
   };
 }

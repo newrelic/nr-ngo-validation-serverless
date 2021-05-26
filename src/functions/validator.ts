@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import { LambdaResponse } from '../types/response';
 import { LambdaResponses } from '../utils/lambda-responses';
 import { isTokenValid, isTokenExpired } from '../utils/token-validator';
@@ -11,8 +11,13 @@ import { StatusCodes } from 'http-status-codes';
 import { translateErrorMessages } from '../utils/error-message-translator';
 import { config } from '../config';
 import { ResponseType } from '../types/common';
+import { Logger } from '../utils/logger';
 
-export const validate = async (event: APIGatewayProxyEvent): Promise<LambdaResponse | ConstraintResponse> => {
+export const validate = async (
+  event: APIGatewayProxyEvent,
+  context: Context,
+): Promise<LambdaResponse | ConstraintResponse> => {
+  const logger = new Logger(context);
   const queryStringParams = event.queryStringParameters || {};
   let lookupResponse: LookupLargeResponse | LambdaResponses;
   let constraintResponse: ConstraintResponse;
@@ -20,6 +25,7 @@ export const validate = async (event: APIGatewayProxyEvent): Promise<LambdaRespo
   let sessionKey = '';
   let constraintId = '';
 
+  logger.info('Checking incoming request...');
   if (config.SESSION_KEY === '') {
     if (queryStringParams.session_key) {
       sessionKey = queryStringParams.session_key;
@@ -36,6 +42,7 @@ export const validate = async (event: APIGatewayProxyEvent): Promise<LambdaRespo
     }
   }
 
+  logger.info('Starting token validation...');
   // Token validation
   if (Object.keys(queryStringParams).length === 0) {
     return LambdaResponses.noTokenProvided;
@@ -45,6 +52,7 @@ export const validate = async (event: APIGatewayProxyEvent): Promise<LambdaRespo
     return LambdaResponses.badTokenProvided;
   }
 
+  logger.info('Sending request to Lookup API...', '', queryStringParams.token);
   // Lookup API
   if (config.SESSION_KEY !== '') {
     lookupResponse = await getResponseFromLookup(queryStringParams.token);
@@ -66,6 +74,7 @@ export const validate = async (event: APIGatewayProxyEvent): Promise<LambdaRespo
     return LambdaResponses.notQualified;
   }
 
+  logger.info('Sending request to Constraint API...', '', queryStringParams.token);
   // Constraing API
   const orgId = getOrgId(lookupResponse as LookupLargeResponse);
   const orgName = getOrgName(lookupResponse as LookupLargeResponse);
@@ -83,6 +92,8 @@ export const validate = async (event: APIGatewayProxyEvent): Promise<LambdaRespo
   }
 
   if (config.RESPONSE_TYPE === ResponseType.Full.toString()) {
+    logger.info('Returning basic response from constraint API');
+
     return {
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -94,10 +105,12 @@ export const validate = async (event: APIGatewayProxyEvent): Promise<LambdaRespo
 
   [response] = constraintResponse.returnStatus.data;
 
+  logger.info('Translating error messages');
   const errorCodes = translateErrorMessages(response.error_code as string[]);
   response.error_code = errorCodes;
   response.org_name = orgName;
 
+  logger.info('Returning the response');
   return {
     headers: {
       'Access-Control-Allow-Origin': '*',

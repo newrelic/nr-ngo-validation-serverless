@@ -22,7 +22,9 @@ export const validateAccount = async (event: APIGatewayProxyEvent, context: Cont
     return LambdaResponses.badRequest;
   }
 
+  logger.info('Getting information about account from database', accountId);
   const checkUsedAccountResult: ValidationAttempts = await getValidationAttemptByAccountId(accountId);
+  logger.info('Obtained information about account', accountId);
 
   let response = undefined;
   if (checkUsedAccountResult.records.length === 1) {
@@ -32,7 +34,7 @@ export const validateAccount = async (event: APIGatewayProxyEvent, context: Cont
       validation_date,
     };
 
-    logger.info('Found the account');
+    logger.info('Found the account', accountId);
     return {
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -42,7 +44,7 @@ export const validateAccount = async (event: APIGatewayProxyEvent, context: Cont
     };
   }
 
-  logger.info('Account not found');
+  logger.info('Account not found', accountId);
   return {
     headers: {
       'Access-Control-Allow-Origin': '*',
