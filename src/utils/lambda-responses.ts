@@ -79,6 +79,17 @@ export class LambdaResponses {
     }),
   };
 
+  public static readonly organisationAlreadyExist: LambdaResponse = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    statusCode: StatusCodes.UNAUTHORIZED,
+    body: JSON.stringify({
+      internalStatusCode: 40105,
+      message: 'Organisation already exists',
+    }),
+  };
+
   public static readonly noEndpoint: LambdaResponse = {
     headers: {
       'Access-Control-Allow-Origin': '*',

@@ -14,6 +14,7 @@ import { Logger } from '../utils/logger';
 export const getValidationHistory = async (event: APIGatewayProxyEvent, context: Context): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
+  logger.info('Something is happening');
 
   if (params.accountId && params.searchPhrase) {
     return LambdaResponses.badRequest;

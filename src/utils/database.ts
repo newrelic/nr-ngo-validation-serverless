@@ -146,3 +146,16 @@ export const saveValidationAttempt = async (
   });
   return result;
 };
+
+export const checkIfOrgIdExist = async (orgId: string): Promise<ValidationAttempts | undefined> => {
+  const result = await dbClient.query({
+    sql: `SELECT * FROM validation_attempts WHERE org_id = :org_id AND eligibility_status = true LIMIT 1`,
+    parameters: [
+      {
+        org_id: orgId,
+      },
+    ],
+  });
+
+  return result;
+};
