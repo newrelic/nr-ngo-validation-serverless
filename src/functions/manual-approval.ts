@@ -7,6 +7,8 @@ export const manualApprove = async (event: APIGatewayProxyEvent, context: Contex
   const logger = new Logger(context);
   logger.info('Manual approval lambda...');
 
+  const body = JSON.parse(event.body);
+
   // accountId, validationSource, description
 
   return {
