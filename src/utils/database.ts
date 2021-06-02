@@ -151,17 +151,18 @@ export const saveValidationAttempt = async (
 
 export const saveManualApproval = async (accountId: string, description: string): Promise<any | undefined> => {
   const result = await dbClient.query({
-    sql: `INSERT INTO validation_attempts (eligibility_status, accoount_id, reason, validation_source) VALUES (:eligibility_status, :account_id, :reason, :validation_source)`,
+    sql: `INSERT INTO validation_attempts (eligibility_status, account_id, reason, validation_source) VALUES (:eligibility_status, :account_id, :reason, :validation_source)`,
     parameters: [
       {
         account_id: accountId,
         reason: description,
         eligibility_status: true,
-        validation_source: ValidationSource.MANUAL,
+        validation_source: ValidationSource.MANUAL.toString(),
       },
     ],
   });
-  return null;
+
+  return result;
 };
 
 export const checkIfOrgIdExist = async (orgId: string): Promise<ValidationAttempts | undefined> => {
