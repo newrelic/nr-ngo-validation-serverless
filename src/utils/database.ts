@@ -1,6 +1,7 @@
 import { DatabaseContext, ValidationAttempts, ValidationHistoryRequest, ValidationCount } from '../types/database';
 import { config } from '../config';
 import DataApiClient from 'data-api-client';
+import { ValidationSource } from '../types/validationSource';
 
 const databaseContext: DatabaseContext = {
   resourceArn: config.DATABASE_RESOURCE_ARN,
@@ -131,8 +132,8 @@ export const saveValidationAttempt = async (
   reason: string,
 ): Promise<any | undefined> => {
   const result = await dbClient.query({
-    sql: `INSERT INTO validation_attempts (eligibility_status, token, account_id, org_id, org_name, reason)
-      VALUES (:eligibility_status, :token, :account_id, :org_id, :org_name, :reason)`,
+    sql: `INSERT INTO validation_attempts (eligibility_status, token, account_id, org_id, org_name, reason, validation_source)
+      VALUES (:eligibility_status, :token, :account_id, :org_id, :org_name, :reason, :validation_source)`,
     parameters: [
       {
         token: token,
@@ -141,9 +142,26 @@ export const saveValidationAttempt = async (
         org_id: orgId,
         org_name: orgName,
         reason: reason || '',
+        validation_source: ValidationSource.TECHSOUP,
       },
     ],
   });
+  return result;
+};
+
+export const saveManualApproval = async (accountId: string, description: string): Promise<any | undefined> => {
+  const result = await dbClient.query({
+    sql: `INSERT INTO validation_attempts (eligibility_status, account_id, reason, validation_source) VALUES (:eligibility_status, :account_id, :reason, :validation_source)`,
+    parameters: [
+      {
+        account_id: accountId,
+        reason: description,
+        eligibility_status: true,
+        validation_source: ValidationSource.MANUAL.toString(),
+      },
+    ],
+  });
+
   return result;
 };
 

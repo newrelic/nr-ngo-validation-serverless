@@ -1,6 +1,6 @@
 {
   "name": "nr-ngo-validation-serverless",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "",
   "main": "index.ts",
   "scripts": {
@@ -44,6 +44,7 @@
     "data-api-client": "1.2.0",
     "envalid": "^6.0.2",
     "http-status-codes": "^2.1.4",
+    "myzod": "1.7.4",
     "node-fetch": "^2.6.1",
     "npm-check": "^5.9.2"
   },

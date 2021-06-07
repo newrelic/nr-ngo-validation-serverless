@@ -90,6 +90,17 @@ export class LambdaResponses {
     }),
   };
 
+  public static readonly accountAlreadyExist: LambdaResponse = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    statusCode: StatusCodes.UNAUTHORIZED,
+    body: JSON.stringify({
+      internalStatusCode: 40106,
+      message: 'Probably the account is already manual approved',
+    }),
+  };
+
   public static readonly noEndpoint: LambdaResponse = {
     headers: {
       'Access-Control-Allow-Origin': '*',
