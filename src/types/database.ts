@@ -55,4 +55,5 @@ type ValidationAttempt = {
   eligibility_status: string;
   reason: string;
   token: string;
+  validation_source: string;
 };
