@@ -149,7 +149,11 @@ export const saveValidationAttempt = async (
   return result;
 };
 
-export const saveManualApproval = async (accountId: string, description: string): Promise<any | undefined> => {
+export const saveManualApproval = async (
+  accountId: string,
+  description: string,
+  validationSource: string,
+): Promise<any | undefined> => {
   const result = await dbClient.query({
     sql: `INSERT INTO validation_attempts (eligibility_status, account_id, reason, validation_source) VALUES (:eligibility_status, :account_id, :reason, :validation_source)`,
     parameters: [
@@ -157,7 +161,7 @@ export const saveManualApproval = async (accountId: string, description: string)
         account_id: accountId,
         reason: description,
         eligibility_status: true,
-        validation_source: ValidationSource.MANUAL.toString(),
+        validation_source: validationSource,
       },
     ],
   });
