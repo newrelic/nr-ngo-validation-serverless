@@ -27,7 +27,7 @@ export const validate = async (
   let sessionKey = '';
   let constraintId = '';
 
-  logger.info('Checking incoming request...');
+  logger.info('Checking incoming request from the platform...');
   if (config.SESSION_KEY === '') {
     if (queryStringParams.session_key) {
       sessionKey = queryStringParams.session_key;
