@@ -53,6 +53,7 @@ type ValidationAttempt = {
   org_id: string;
   org_name: string;
   eligibility_status: string;
+  validationSource: string;
   reason: string;
   token: string;
 };
