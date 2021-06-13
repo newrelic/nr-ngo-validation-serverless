@@ -44,7 +44,7 @@ export const validate = async (
     }
   }
 
-  logger.info('Starting token validation...');
+  logger.info('Starting token validation...', '', queryStringParams.token);
   // Token validation
   if (Object.keys(queryStringParams).length === 0) {
     return LambdaResponses.noTokenProvided;
@@ -81,7 +81,7 @@ export const validate = async (
   const orgId = getOrgId(lookupResponse as LookupLargeResponse);
   const orgName = getOrgName(lookupResponse as LookupLargeResponse);
 
-  logger.info('Checking if organisation already exists and is elibile...');
+  logger.info('Checking if organisation already exists and is elibile...', '', queryStringParams.token);
   const result: ValidationAttempts = await checkIfOrgIdExist(orgId);
 
   if (result.records.length > 0) {
@@ -99,7 +99,7 @@ export const validate = async (
   }
 
   if (config.RESPONSE_TYPE === ResponseType.Full.toString()) {
-    logger.info('Returning basic response from constraint API');
+    logger.info('Returning basic response from constraint API', '', queryStringParams.token);
 
     return {
       headers: {
@@ -112,12 +112,12 @@ export const validate = async (
 
   [response] = constraintResponse.returnStatus.data;
 
-  logger.info('Translating error messages');
+  logger.info('Translating error messages', '', queryStringParams.token);
   const errorCodes = translateErrorMessages(response.error_code as string[]);
   response.error_code = errorCodes;
   response.org_name = orgName;
 
-  logger.info('Returning the response');
+  logger.info('Returning the response', '', queryStringParams.token);
   return {
     headers: {
       'Access-Control-Allow-Origin': '*',

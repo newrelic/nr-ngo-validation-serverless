@@ -15,7 +15,7 @@ export const saveAttempt = async (event: APIGatewayProxyEvent, context: Context)
   const body = JSON.parse(event.body);
   const attempt = body as SaveAttemptBody;
 
-  logger.info('Checking incoming parameters...');
+  logger.info('Checking incoming parameters...', attempt.accountId, attempt.token);
   const { token, accountId, eligibilityStatus, orgId, orgName, reason } = attempt;
   if (
     token === undefined ||
@@ -27,7 +27,7 @@ export const saveAttempt = async (event: APIGatewayProxyEvent, context: Context)
     return LambdaResponses.badRequest;
   }
 
-  logger.info('Saving data to the database...');
+  logger.info('Saving data to the database...', accountId, token);
   await saveValidationAttempt(token, accountId, eligibilityStatus, orgId, orgName, reason);
 
   logger.info('Saved data...', accountId, token);
