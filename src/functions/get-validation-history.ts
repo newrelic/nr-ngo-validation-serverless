@@ -14,7 +14,6 @@ import { Logger } from '../utils/logger';
 export const getValidationHistory = async (event: APIGatewayProxyEvent, context: Context): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
-  logger.info('Obtaining validation history...');
 
   if (params.accountId && params.searchPhrase) {
     return LambdaResponses.badRequest;
@@ -23,6 +22,8 @@ export const getValidationHistory = async (event: APIGatewayProxyEvent, context:
   if (!params.startDate && !params.endDate) {
     return LambdaResponses.badRequest;
   }
+
+  logger.info('Obtaining validation history...', params.accountId);
 
   const validationHistoryRequest: ValidationHistoryRequest = {
     accountId: params.accountId ?? undefined,
@@ -39,7 +40,7 @@ export const getValidationHistory = async (event: APIGatewayProxyEvent, context:
     return LambdaResponses.badRequest;
   }
 
-  logger.info('Preparing get data query and count query...');
+  logger.info('Preparing get data query and count query...', validationHistoryRequest.accountId);
   const sqlQuery = createSql(validationHistoryRequest, false);
   const countQuery = createSql(validationHistoryRequest, true);
 

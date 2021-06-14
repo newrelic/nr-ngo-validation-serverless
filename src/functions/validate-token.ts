@@ -16,8 +16,6 @@ export const validateToken = async (event: APIGatewayProxyEvent, context: Contex
   let token = '';
   let accountId = '';
 
-  logger.info('Incoming request...');
-
   if (params.token && params.accountId) {
     token = params.token;
     accountId = params.accountId;
@@ -25,26 +23,28 @@ export const validateToken = async (event: APIGatewayProxyEvent, context: Contex
     return LambdaResponses.badRequest;
   }
 
+  logger.info('Incoming request to validate token lambda...', accountId, token);
+
   const data: TokenAndAccountId = {
     token: token,
     accountId: accountId,
   };
 
   const checkUsedTokenResult: ValidationAttempts = await getValidationAttemptByToken(token);
-  logger.info(`Token Result: ${JSON.stringify(checkUsedTokenResult)}`);
+  logger.info(`Token Result: ${JSON.stringify(checkUsedTokenResult)}`, accountId, token);
 
   if (checkUsedTokenResult.records.length > 0) {
     return LambdaResponses.tokenAlreadyUsed;
   }
 
   const tokenRetention: ValidationCount = await checkValidationDate(data.token, data.accountId);
-  logger.info(`Token Retention: ${JSON.stringify(tokenRetention)}`);
+  logger.info(`Token Retention: ${JSON.stringify(tokenRetention)}`, accountId, token);
 
   if (tokenRetention.records[0].count > 0) {
     return LambdaResponses.tokenInRetentionPeriod;
   }
 
-  logger.info('Before return value...');
+  logger.info('Before return value...', accountId, token);
 
   return {
     headers: {
