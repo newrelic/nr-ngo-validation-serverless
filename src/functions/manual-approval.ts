@@ -15,16 +15,16 @@ export const manualApprove = async (event: APIGatewayProxyEvent, context: Contex
     const manual = body as ManualApproval;
     logger.info(JSON.stringify(manual));
 
-    logger.info('Checking if accoount is existing already...');
+    logger.info('Checking if accoount is existing already...', manual.accountId);
     const result: ValidationAttempts = await getValidationAttemptByAccountId(manual.accountId);
 
     if (result.records.length > 0) {
       return LambdaResponses.accountAlreadyExist;
     }
 
-    logger.info('Saving user data for manual validation...');
+    logger.info('Saving user data for manual validation...', manual.accountId);
     await saveManualApproval(manual.accountId, manual.description, manual.validationSource);
-    logger.info('Saved user data...');
+    logger.info('Saved user data...', manual.accountId);
   } catch (error) {
     logger.error('Something happend while saving the data...');
     return LambdaResponses.badRequest;
