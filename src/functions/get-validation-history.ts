@@ -51,6 +51,7 @@ export const getValidationHistory = async (event: APIGatewayProxyEvent, context:
   const recordCount = (await getValidationAttempts(countQuery as string, validationHistoryRequest)) as ValidationCount;
 
   logger.info('Return results...', validationHistoryRequest.accountId);
+  logger.info(JSON.stringify(validationHistory.records));
 
   const response: ValidationHistoryResponse = {
     attempts: validationHistory.records,

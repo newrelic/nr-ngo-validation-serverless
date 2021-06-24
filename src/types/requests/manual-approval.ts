@@ -5,6 +5,7 @@ export const manualApprovalSchema = myzod
     accountId: myzod.string(),
     validationSource: myzod.string(),
     description: myzod.string(),
+    orgName: myzod.string(),
   })
   .collectErrors();
 
