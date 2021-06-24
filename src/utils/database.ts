@@ -153,15 +153,17 @@ export const saveManualApproval = async (
   accountId: string,
   description: string,
   validationSource: string,
+  orgName: string,
 ): Promise<any | undefined> => {
   const result = await dbClient.query({
-    sql: `INSERT INTO validation_attempts (eligibility_status, account_id, reason, validation_source) VALUES (:eligibility_status, :account_id, :reason, :validation_source)`,
+    sql: `INSERT INTO validation_attempts (eligibility_status, account_id, reason, validation_source, org_name) VALUES (:eligibility_status, :account_id, :reason, :validation_source, :org_name)`,
     parameters: [
       {
         account_id: accountId,
         reason: description,
         eligibility_status: true,
         validation_source: validationSource,
+        org_name: orgName,
       },
     ],
   });

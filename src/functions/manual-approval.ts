@@ -23,7 +23,7 @@ export const manualApprove = async (event: APIGatewayProxyEvent, context: Contex
     }
 
     logger.info('Saving user data for manual validation...', manual.accountId);
-    await saveManualApproval(manual.accountId, manual.description, manual.validationSource);
+    await saveManualApproval(manual.accountId, manual.description, manual.validationSource, manual.orgName);
     logger.info('Saved user data...', manual.accountId);
   } catch (error) {
     logger.error('Something happend while saving the data...');
