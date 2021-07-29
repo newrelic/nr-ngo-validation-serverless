@@ -58,8 +58,10 @@ export const validate = async (
   // Lookup API
   if (config.SESSION_KEY !== '') {
     lookupResponse = await getResponseFromLookup(queryStringParams.token);
+    logger.info(JSON.stringify(lookupResponse), '', queryStringParams.token);
   } else {
     lookupResponse = await getResponseFromLookup(queryStringParams.token, sessionKey);
+    logger.info(JSON.stringify(lookupResponse), '', queryStringParams.token);
   }
 
   if (lookupResponse === LambdaResponses.noDataForProvidedToken) {
