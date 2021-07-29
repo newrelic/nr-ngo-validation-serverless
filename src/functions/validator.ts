@@ -12,7 +12,7 @@ import { translateErrorMessages } from '../utils/error-message-translator';
 import { config } from '../config';
 import { ResponseType } from '../types/common';
 import { Logger } from '../utils/logger';
-import { checkIfOrgIdExist } from '../utils/database';
+import { checkIfOrgIdExist, saveLookupLargeResponse } from '../utils/database';
 import { ValidationAttempts } from '../types/database';
 
 export const validate = async (
@@ -64,6 +64,14 @@ export const validate = async (
     logger.info(JSON.stringify(lookupResponse), '', queryStringParams.token);
   }
 
+  // Constraing API
+  logger.info('Getting org_id and org_name...', queryStringParams.token);
+  const orgId = getOrgId(lookupResponse as LookupLargeResponse);
+  const orgName = getOrgName(lookupResponse as LookupLargeResponse);
+
+  logger.info('Saving LLR to the database...', queryStringParams.token);
+  await saveLookupLargeResponse(orgId, JSON.stringify(lookupResponse));
+
   if (lookupResponse === LambdaResponses.noDataForProvidedToken) {
     return lookupResponse as LambdaResponse;
   }
@@ -79,10 +87,6 @@ export const validate = async (
   }
 
   logger.info('Sending request to Constraint API...', '', queryStringParams.token);
-  // Constraing API
-  const orgId = getOrgId(lookupResponse as LookupLargeResponse);
-  const orgName = getOrgName(lookupResponse as LookupLargeResponse);
-
   logger.info('Checking if organisation already exists and is elibile...', '', queryStringParams.token);
   const result: ValidationAttempts = await checkIfOrgIdExist(orgId);
 
