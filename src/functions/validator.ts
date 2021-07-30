@@ -69,9 +69,6 @@ export const validate = async (
   const orgId = getOrgId(lookupResponse as LookupLargeResponse);
   const orgName = getOrgName(lookupResponse as LookupLargeResponse);
 
-  logger.info('Saving LLR to the database...', queryStringParams.token);
-  await saveLookupLargeResponse(orgId, JSON.stringify(lookupResponse));
-
   if (lookupResponse === LambdaResponses.noDataForProvidedToken) {
     return lookupResponse as LambdaResponse;
   }
@@ -93,6 +90,9 @@ export const validate = async (
   if (result.records.length > 0) {
     return LambdaResponses.organisationAlreadyExist;
   }
+
+  logger.info('Saving LLR to the database...', queryStringParams.token);
+  await saveLookupLargeResponse(orgId, JSON.stringify(lookupResponse));
 
   if (config.CONSTRAINT_ID !== '') {
     constraintResponse = await getResponseFromConstraint(orgId);
