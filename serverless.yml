@@ -143,7 +143,7 @@ functions:
           method: post
           cors: true
     memorySize: 512
-  get-lookup-large-response:
+  get-llr:
     handler: src/functions/get-lookup-response.getLookupLargeResponse
     description: Returns the lookup large response data for given org id
     iamRoleStatements:

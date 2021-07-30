@@ -93,6 +93,7 @@ export const validate = async (
 
   logger.info('Saving LLR to the database...', queryStringParams.token);
   await saveLookupLargeResponse(orgId, JSON.stringify(lookupResponse));
+  logger.info('Saved LLR to the database...', queryStringParams.token);
 
   if (config.CONSTRAINT_ID !== '') {
     constraintResponse = await getResponseFromConstraint(orgId);
