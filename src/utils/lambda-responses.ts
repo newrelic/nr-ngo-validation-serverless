@@ -117,6 +117,14 @@ export class LambdaResponses {
     body: JSON.stringify({ internalStatusCode: 40402, message: 'No data for provided token' }),
   };
 
+  public static readonly noDataForProvidedOrgId: LambdaResponse = {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    statusCode: StatusCodes.NOT_FOUND,
+    body: JSON.stringify({ internalStatusCode: 40403, message: 'No data for provided organisation id' }),
+  };
+
   public static readonly wrongConfiguration: LambdaResponse = {
     headers: {
       'Access-Control-Allow-Origin': '*',

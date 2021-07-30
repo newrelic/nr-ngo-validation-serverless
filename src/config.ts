@@ -1,5 +1,5 @@
 import { config as loadEnv } from 'dotenv';
-import { cleanEnv, str, url, CleanEnv } from 'envalid';
+import { cleanEnv, str, url } from 'envalid';
 import { Url } from 'url';
 import { ResponseType } from './types/common';
 
@@ -22,10 +22,6 @@ export const config = cleanEnv(
     DATABASE_SECRET_ARN: str(),
     DATABASE: str(),
   },
-  {
-    dotEnvPath: null,
-    strict: true,
-  },
 );
 
 export type AppConfig = Readonly<{
@@ -39,5 +35,4 @@ export type AppConfig = Readonly<{
   DATABASE_RESOURCE_ARN: string;
   DATABASE_SECRET_ARN: string;
   DATABASE: string;
-}> &
-  CleanEnv;
+}>;
