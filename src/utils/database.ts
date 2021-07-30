@@ -3,7 +3,6 @@ import {
   ValidationAttempts,
   ValidationHistoryRequest,
   ValidationCount,
-  LookupLargeResponse,
   LookupLargeResponses,
 } from '../types/database';
 import { config } from '../config';
