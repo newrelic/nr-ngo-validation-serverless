@@ -42,6 +42,15 @@ export type TokenAndAccountId = {
   accountId: string;
 };
 
+export type LookupLargeResponse = {
+  orgId: string;
+  response: string;
+};
+
+export type LookupLargeResponses = {
+  records: Array<LookupLargeResponse>;
+};
+
 type Count = {
   count: number;
 };

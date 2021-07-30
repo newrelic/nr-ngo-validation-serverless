@@ -1,4 +1,10 @@
-import { DatabaseContext, ValidationAttempts, ValidationHistoryRequest, ValidationCount } from '../types/database';
+import {
+  DatabaseContext,
+  ValidationAttempts,
+  ValidationHistoryRequest,
+  ValidationCount,
+  LookupLargeResponses,
+} from '../types/database';
 import { config } from '../config';
 import DataApiClient from 'data-api-client';
 import { ValidationSource } from '../types/validationSource';
@@ -46,6 +52,39 @@ export const getValidationAttempts = async (
       },
       {
         end_date: params.endDate,
+      },
+    ],
+  });
+
+  return result;
+};
+
+export const saveLookupLargeResponse = async (
+  orgId: string,
+  lookupLargeResponse: string,
+): Promise<LookupLargeResponses | undefined> => {
+  const result = await dbClient.query({
+    sql: `INSERT INTO lookup_large_responses (org_id, responses)
+      VALUES (:org_id, :response)`,
+    parameters: [
+      {
+        org_id: orgId,
+      },
+      {
+        response: lookupLargeResponse,
+      },
+    ],
+  });
+
+  return result;
+};
+
+export const getLookupLargeResponse = async (orgId: string): Promise<LookupLargeResponses | undefined> => {
+  const result = await dbClient.query({
+    sql: `SELECT * FROM lookup_large_responses WHERE org_id = :org_id`,
+    parameters: [
+      {
+        org_id: orgId,
       },
     ],
   });
@@ -156,7 +195,8 @@ export const saveManualApproval = async (
   orgName: string,
 ): Promise<any | undefined> => {
   const result = await dbClient.query({
-    sql: `INSERT INTO validation_attempts (eligibility_status, account_id, reason, validation_source, org_name) VALUES (:eligibility_status, :account_id, :reason, :validation_source, :org_name)`,
+    sql: `INSERT INTO validation_attempts (eligibility_status, account_id, org_name, reason, validation_source)
+      VALUES (:eligibility_status, :account_id, :org_name, :reason, :validation_source)`,
     parameters: [
       {
         account_id: accountId,
