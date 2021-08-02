@@ -4,10 +4,10 @@ import {
   ValidationHistoryRequest,
   ValidationCount,
   LookupLargeResponses,
-} from '../types/database';
-import { config } from '../config';
-import DataApiClient from 'data-api-client';
-import { ValidationSource } from '../types/validationSource';
+} from "../types/database";
+import { config } from "../config";
+import DataApiClient from "data-api-client";
+import { ValidationSource } from "../types/validationSource";
 
 const databaseContext: DatabaseContext = {
   resourceArn: config.DATABASE_RESOURCE_ARN,
@@ -24,7 +24,7 @@ export const getAll = async (): Promise<ValidationAttempts | undefined> => {
 
 export const getValidationAttempts = async (
   sqlQuery: string,
-  params: ValidationHistoryRequest,
+  params: ValidationHistoryRequest
 ): Promise<ValidationAttempts | ValidationCount | undefined> => {
   const result = await dbClient.query({
     sql: sqlQuery,
@@ -61,10 +61,10 @@ export const getValidationAttempts = async (
 
 export const saveLookupLargeResponse = async (
   orgId: string,
-  lookupLargeResponse: string,
+  lookupLargeResponse: string
 ): Promise<LookupLargeResponses | undefined> => {
   const result = await dbClient.query({
-    sql: `INSERT INTO lookup_large_responses (org_id, responses)
+    sql: `INSERT INTO lookup_large_responses (org_id, response)
       VALUES (:org_id, :response)`,
     parameters: [
       {
@@ -79,9 +79,11 @@ export const saveLookupLargeResponse = async (
   return result;
 };
 
-export const getLookupLargeResponse = async (orgId: string): Promise<LookupLargeResponses | undefined> => {
+export const getLookupLargeResponse = async (
+  orgId: string
+): Promise<LookupLargeResponses | undefined> => {
   const result = await dbClient.query({
-    sql: `SELECT * FROM lookup_large_responses WHERE org_id = :org_id`,
+    sql: `SELECT * FROM lookup_large_responses WHERE org_id = :org_id ORDER BY creation_date DESC LIMIT 1`,
     parameters: [
       {
         org_id: orgId,
@@ -92,7 +94,9 @@ export const getLookupLargeResponse = async (orgId: string): Promise<LookupLarge
   return result;
 };
 
-export const getValidationAttemptByToken = async (token: string): Promise<ValidationAttempts | undefined> => {
+export const getValidationAttemptByToken = async (
+  token: string
+): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts WHERE token = :token AND eligibility_status = TRUE`,
     parameters: [
@@ -105,7 +109,10 @@ export const getValidationAttemptByToken = async (token: string): Promise<Valida
   return result;
 };
 
-export const checkValidationDate = async (token: string, accountId: string): Promise<ValidationCount | undefined> => {
+export const checkValidationDate = async (
+  token: string,
+  accountId: string
+): Promise<ValidationCount | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT COUNT(*) FROM validation_attempts
           WHERE token = :token
@@ -125,7 +132,9 @@ export const checkValidationDate = async (token: string, accountId: string): Pro
   return result;
 };
 
-export const getValidationAttemptByAccountId = async (accountId: string): Promise<ValidationAttempts | undefined> => {
+export const getValidationAttemptByAccountId = async (
+  accountId: string
+): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts
           WHERE account_id = :account_id
@@ -143,7 +152,7 @@ export const getValidationAttemptByAccountId = async (accountId: string): Promis
 
 export const getValidationAttemptByTokenAndAccountId = async (
   token: string,
-  accountId: string,
+  accountId: string
 ): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts WHERE
@@ -168,7 +177,7 @@ export const saveValidationAttempt = async (
   eligibilityStatus: boolean,
   orgId: string,
   orgName: string,
-  reason: string,
+  reason: string
 ): Promise<any | undefined> => {
   const result = await dbClient.query({
     sql: `INSERT INTO validation_attempts (eligibility_status, token, account_id, org_id, org_name, reason, validation_source)
@@ -180,7 +189,7 @@ export const saveValidationAttempt = async (
         eligibility_status: eligibilityStatus,
         org_id: orgId,
         org_name: orgName,
-        reason: reason || '',
+        reason: reason || "",
         validation_source: ValidationSource.TECHSOUP,
       },
     ],
@@ -192,7 +201,7 @@ export const saveManualApproval = async (
   accountId: string,
   description: string,
   validationSource: string,
-  orgName: string,
+  orgName: string
 ): Promise<any | undefined> => {
   const result = await dbClient.query({
     sql: `INSERT INTO validation_attempts (eligibility_status, account_id, org_name, reason, validation_source)
@@ -211,7 +220,9 @@ export const saveManualApproval = async (
   return result;
 };
 
-export const checkIfOrgIdExist = async (orgId: string): Promise<ValidationAttempts | undefined> => {
+export const checkIfOrgIdExist = async (
+  orgId: string
+): Promise<ValidationAttempts | undefined> => {
   const result = await dbClient.query({
     sql: `SELECT * FROM validation_attempts WHERE org_id = :org_id AND eligibility_status = true LIMIT 1`,
     parameters: [

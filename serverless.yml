@@ -1,6 +1,6 @@
 service: validation-service
 
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 plugins:
   - serverless-offline
@@ -29,6 +29,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
   stage: ${env:STAGE, self:custom.defaultStage}
   region: ${env:REGION, self:custom.defaultRegion}
   environment:
@@ -144,7 +145,7 @@ functions:
           cors: true
     memorySize: 512
   get-llr:
-    handler: src/functions/get-lookup-response.getLookupLargeResponse
+    handler: src/functions/get-lookup-response.getLookupResponse
     description: Returns the lookup large response data for given org id
     iamRoleStatements:
       - Effect: "Allow"
