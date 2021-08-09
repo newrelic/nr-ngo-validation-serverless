@@ -164,7 +164,7 @@ functions:
     memorySize: 512
   update-llr:
     handler: src/functions/update-llr.updateLookupLargeResponse
-    description: Updates client data with LLR
+    description: Updates client data with LLR of existing clients
     iamRoleStatements:
       - Effect: "Allow"
         Action:
