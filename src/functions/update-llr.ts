@@ -8,7 +8,7 @@ import { saveLookupLargeResponse } from "../utils/database";
 import { LambdaResponses } from "../utils/lambda-responses";
 import { Logger } from "../utils/logger";
 
-export const getLookupResponse = async (
+export const updateLookupLargeResponse = async (
   event: APIGatewayProxyEvent,
   context: Context
 ): Promise<LambdaResponse> => {
