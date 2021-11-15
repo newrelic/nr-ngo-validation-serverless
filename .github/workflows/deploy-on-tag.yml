@@ -31,7 +31,7 @@ jobs:
         if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
 
       - name: Cache node_modules
         if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
@@ -51,7 +51,7 @@ jobs:
 
       - name: Install Serverless Framework
         if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
-        run: npm install -g serverless
+        run: npm install -g serverless@2.51.0
 
       - name: Serverless Framework AWS authentication
         if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}

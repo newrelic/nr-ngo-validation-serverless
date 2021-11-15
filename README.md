@@ -17,7 +17,7 @@ The 'For Good' Validation Service is designed to check the program eligibility o
 ### Requirements
 
 - Serverless framework
-- NodeJS in version 12 minimum
+- NodeJS in version 14 minimum
 - TechSoup API Access
 
 ## Getting Started
@@ -232,6 +232,111 @@ GET
 
 ```
 - Bad request: 'Bad parameters provided to endpoint.'
+```
+
+### Manual approval
+
+Saves information about account which should be validate mannually.
+
+<b>Request</b>
+
+```
+POST
+{
+  accountId: String
+  validationSource: String
+  description: String
+  orgName: String
+}
+```
+
+<b>Response</b>
+
+```
+{
+  CREATED - 201
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+```
+
+```
+- Unauthorized: 'Probably the account is already manual approved.'
+```
+
+### Get llr
+
+Returns the lookup large response data for given org id.
+
+<b>Request</b>
+
+```
+GET
+{
+  orgId: String
+}
+```
+
+<b>Response</b>
+
+```
+{
+  records: [
+    {
+      orgId: String
+      response: String
+    }
+  ]
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+```
+
+```
+- Not Found: 'No data for provided organisation id.'
+```
+
+### Update llr
+
+Updates client data with LLR of existing clients.
+
+<b>Request</b>
+
+```
+GET
+{
+  token: String
+}
+```
+
+<b>Response</b>
+
+```
+{
+  CREATED - 201
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'No token provided.'
+```
+
+```
+- Not Found: 'No data for provided token.'
+```
+
+```
+- Internal Server Error: 'Cannot save to the database...'
 ```
 
 ## Defined Error Codes
