@@ -25,7 +25,7 @@ export const updateLookupLargeResponse = async (
     lookupResponse = (await getResponseFromLookup(
       params.token
     )) as LookupLargeResponse;
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`Cannot fetch data from TS. Details: ${error}`);
     return LambdaResponses.noDataForProvidedToken;
   }
@@ -34,7 +34,7 @@ export const updateLookupLargeResponse = async (
 
   try {
     await saveLookupLargeResponse(orgId, JSON.stringify(lookupResponse));
-  } catch (error) {
+  } catch (error: any) {
     logger.error(`Cannot save the record to the database. Error: ${error}`);
     return LambdaResponses.cannotSaveToDB;
   }

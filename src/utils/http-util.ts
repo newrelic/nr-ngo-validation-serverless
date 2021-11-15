@@ -1,14 +1,14 @@
-import fetch from 'node-fetch';
-import { config } from '../config';
+import fetch from "node-fetch";
+import { config } from "../config";
 
 export const sendGetRequest = async <T>(url: string): Promise<T> => {
   try {
     const response = await fetch(url, {
-      method: 'get',
+      method: "get",
     });
 
     return response.json();
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error);
   }
 };
@@ -20,7 +20,11 @@ export const sendGetRequest = async <T>(url: string): Promise<T> => {
  * @param token Lookup token
  * @param sessionKey Your session key; also known as API Key.
  */
-export const createLookupApiUrl = (apiUrl: string, token: string, sessionKey?: string): string => {
+export const createLookupApiUrl = (
+  apiUrl: string,
+  token: string,
+  sessionKey?: string
+): string => {
   if (sessionKey) {
     return `${apiUrl}/${sessionKey}/?token=${token}`;
   }
@@ -40,7 +44,7 @@ export const createConstraintApiUrl = (
   apiUrl: string,
   orgId: string,
   sessionKey?: string,
-  constraintId?: string,
+  constraintId?: string
 ): string => {
   if (sessionKey && constraintId) {
     return `${apiUrl}/${sessionKey}/?constraint_id=${constraintId}&org_id=${orgId}`;
