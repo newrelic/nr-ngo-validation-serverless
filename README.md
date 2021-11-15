@@ -17,7 +17,7 @@ The 'For Good' Validation Service is designed to check the program eligibility o
 ### Requirements
 
 - Serverless framework
-- NodeJS in version 12 minimum
+- NodeJS in version 14 minimum
 - TechSoup API Access
 
 ## Getting Started
