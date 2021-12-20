@@ -50,6 +50,12 @@ The lambda can be used in two way - offline and from your AWS account. The offli
 
 After that you can deploy the lambda to your AWS space by using command `sls deploy --aws-profile <your_profile_name>`
 
+After deployment it is recommended to do a sync of terraform states with s3 bucket in case of staging environment the sync is done automatically, in case of production deplopyment the following command should be used:
+
+```bash
+aws s3 sync .serverless s3://${BUCKET_NAME} --exclude "*" --include "validation-service.zip"
+```
+
 ## Testing
 
 To run all tests type `npm test` in your terminal in project folder.
