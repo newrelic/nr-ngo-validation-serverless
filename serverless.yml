@@ -26,6 +26,13 @@ custom:
   defaultRegion: eu-central-1
   environment: ${file(.env):${self:provider.stage}, file(.env):default}
 
+cors:
+  origins: 
+    - https://*.newrelic.com
+    - https://*.newrelic.org
+  headers:
+   - origin
+   
 provider:
   name: aws
   runtime: nodejs14.x
