@@ -5,6 +5,7 @@ import { LambdaResponse } from "../types/response";
 import { getLookupLargeResponse } from "../utils/database";
 import { LambdaResponses } from "../utils/lambda-responses";
 import { Logger } from "../utils/logger";
+import { checker } from "../utils/cors-helper";
 
 export const getLookupResponse = async (
   event: APIGatewayProxyEvent,
@@ -12,6 +13,8 @@ export const getLookupResponse = async (
 ): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
+  const origin = [event.headers.origin];
+  let allowed = "https://newrelic.com";
 
   if (!params.orgId) {
     logger.error("No org id was given!");
@@ -21,6 +24,8 @@ export const getLookupResponse = async (
   logger.info(
     `Getting lookup large response from database for given orgid: ${params.orgId}...`
   );
+
+  logger.info(`Info: ${origin}`);
   const response: LookupLargeResponses = await getLookupLargeResponse(
     params.orgId
   );
@@ -32,13 +37,17 @@ export const getLookupResponse = async (
 
   logger.info(`Return object for orgId = ${params.orgId}`);
   const data: LookupLargeResponse = response.records[0];
-
   logger.info("Parsing data from llr...");
   const result = JSON.parse(data.response);
 
+  if (origin.filter(checker).length > 0) {
+    allowed = event.headers.origin;
+  }
+
+  logger.info(`Allowed: ${allowed}`);
   return {
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": allowed,
     },
     statusCode: StatusCodes.OK,
     body: JSON.stringify(result),
