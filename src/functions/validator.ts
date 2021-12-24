@@ -86,11 +86,15 @@ export const validate = async (
     );
     // Lookup API
     if (config.SESSION_KEY !== "") {
-      lookupResponse = await getResponseFromLookup(queryStringParams.token);
+      lookupResponse = await getResponseFromLookup(
+        queryStringParams.token,
+        allowed
+      );
       logger.info(JSON.stringify(lookupResponse), "", queryStringParams.token);
     } else {
       lookupResponse = await getResponseFromLookup(
         queryStringParams.token,
+        allowed,
         sessionKey
       );
       logger.info(JSON.stringify(lookupResponse), "", queryStringParams.token);
@@ -101,7 +105,7 @@ export const validate = async (
     const orgId = getOrgId(lookupResponse as LookupLargeResponse);
     const orgName = getOrgName(lookupResponse as LookupLargeResponse);
 
-    if (lookupResponse === LambdaResponses.noDataForProvidedToken) {
+    if (lookupResponse === LambdaResponses.noDataForProvidedToken(allowed)) {
       return lookupResponse as LambdaResponse;
     }
 

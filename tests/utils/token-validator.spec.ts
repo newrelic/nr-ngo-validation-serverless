@@ -71,13 +71,13 @@ describe("Token utils", () => {
 describe("Lookup response validation", () => {
   it("Correct response from lookup api should pass the validation check", () => {
     expect(
-      validateLookupResponse(LookupApiFixtures.validLookupApiResponse)
+      validateLookupResponse(LookupApiFixtures.validLookupApiResponse, allowed)
     ).toEqual(LookupApiFixtures.validLookupApiResponse);
   });
 
   it("Incorrect response (empty array) from lookup api should return no data for provided token", () => {
     expect(
-      validateLookupResponse(LookupApiFixtures.invalidLookupResponse)
+      validateLookupResponse(LookupApiFixtures.invalidLookupResponse, allowed)
     ).toEqual(LambdaResponses.noDataForProvidedToken(allowed));
   });
 });

@@ -40,7 +40,8 @@ export const updateLookupLargeResponse = async (
 
     try {
       lookupResponse = (await getResponseFromLookup(
-        params.token
+        params.token,
+        allowed
       )) as LookupLargeResponse;
     } catch (error: any) {
       logger.error(`Cannot fetch data from TS. Details: ${error}`);
