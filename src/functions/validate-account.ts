@@ -36,7 +36,7 @@ export const validateAccount = async (
 
   logger.info(`Allowed: ${allowed}`);
 
-  if (allowed != "Denied") {
+  if (allowed !== "Denied") {
     if (params.accountId) {
       accountId = params.accountId;
     } else {

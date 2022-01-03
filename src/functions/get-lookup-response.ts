@@ -29,7 +29,7 @@ export const getLookupResponse = async (
 
   logger.info(`Allowed: ${allowed}`);
 
-  if (allowed != "Denied") {
+  if (allowed !== "Denied") {
     if (!params.orgId) {
       logger.error("No org id was given!");
       return LambdaResponses.badRequest(allowed);

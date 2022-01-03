@@ -32,7 +32,7 @@ export const updateLookupLargeResponse = async (
 
   logger.info(`Allowed: ${allowed}`);
 
-  if (allowed != "Denied") {
+  if (allowed !== "Denied") {
     if (!params.token) {
       logger.error("No org id was given!");
       return LambdaResponses.noTokenProvided(allowed);

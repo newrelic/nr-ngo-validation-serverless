@@ -35,7 +35,7 @@ export const saveAttempt = async (
 
   logger.info(`Allowed: ${allowed}`);
 
-  if (allowed != "Denied") {
+  if (allowed !== "Denied") {
     logger.info(
       "Checking incoming parameters...",
       attempt.accountId,

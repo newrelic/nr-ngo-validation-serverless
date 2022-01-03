@@ -5,7 +5,7 @@ export class LambdaResponses {
   public static readonly noTokenProvided = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -30,7 +30,7 @@ export class LambdaResponses {
   public static readonly badTokenProvided = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -55,7 +55,7 @@ export class LambdaResponses {
   public static readonly missingRequiredData = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -79,7 +79,7 @@ export class LambdaResponses {
   };
 
   public static readonly badRequest = (allowed: string): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -102,7 +102,7 @@ export class LambdaResponses {
   };
 
   public static readonly tokenExpired = (allowed: string): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -125,7 +125,7 @@ export class LambdaResponses {
   };
 
   public static readonly notQualified = (allowed: string): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -150,7 +150,7 @@ export class LambdaResponses {
   public static readonly tokenAlreadyUsed = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -175,7 +175,7 @@ export class LambdaResponses {
   public static readonly tokenInRetentionPeriod = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -200,7 +200,7 @@ export class LambdaResponses {
   public static readonly organisationAlreadyExist = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -225,7 +225,7 @@ export class LambdaResponses {
   public static readonly accountAlreadyExist = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -248,7 +248,7 @@ export class LambdaResponses {
   };
 
   public static readonly noEndpoint = (allowed: string): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -273,7 +273,7 @@ export class LambdaResponses {
   public static readonly noDataForProvidedToken = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -298,7 +298,7 @@ export class LambdaResponses {
   public static readonly noDataForProvidedOrgId = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -322,7 +322,7 @@ export class LambdaResponses {
   public static readonly wrongConfiguration = (
     allowed: string
   ): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,
@@ -346,7 +346,7 @@ export class LambdaResponses {
   };
 
   public static readonly cannotSaveToDB = (allowed: string): LambdaResponse => {
-    if (allowed != "Denied") {
+    if (allowed !== "Denied") {
       return {
         headers: {
           "Access-Control-Allow-Origin": allowed,

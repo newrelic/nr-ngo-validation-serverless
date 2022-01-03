@@ -43,7 +43,7 @@ export const validateToken = async (
 
   logger.info(`Allowed: ${allowed}`);
 
-  if (allowed != "Denied") {
+  if (allowed !== "Denied") {
     if (params.token && params.accountId) {
       token = params.token;
       accountId = params.accountId;

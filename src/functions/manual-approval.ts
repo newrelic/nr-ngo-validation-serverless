@@ -34,7 +34,7 @@ export const manualApprove = async (
 
   logger.info(`Allowed: ${allowed}`);
 
-  if (allowed != "Denied") {
+  if (allowed !== "Denied") {
     try {
       const body = JSON.parse(event.body);
       const manual = body as ManualApproval;

@@ -35,7 +35,7 @@ export const getValidationHistory = async (
 
   logger.info(`Allowed: ${allowed}`);
 
-  if (allowed != "Denied") {
+  if (allowed !== "Denied") {
     if (params.accountId && params.searchPhrase) {
       return LambdaResponses.badRequest(allowed);
     }

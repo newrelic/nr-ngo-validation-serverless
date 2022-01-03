@@ -50,7 +50,7 @@ export const validate = async (
 
   logger.info(`Allowed: ${allowed}`);
 
-  if (allowed != "Denied") {
+  if (allowed !== "Denied") {
     logger.info("Checking incoming request from the platform...");
     if (config.SESSION_KEY === "") {
       if (queryStringParams.session_key) {
