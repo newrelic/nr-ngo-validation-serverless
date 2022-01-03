@@ -14,11 +14,13 @@ export const getLookupResponse = async (
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
   let origin = undefined;
+
   if (event.headers.origin) {
     origin = [event.headers.origin];
   } else {
     origin = [""];
   }
+
   let allowed = "Denied";
 
   logger.info(`Origin: ${origin}`);
@@ -50,6 +52,7 @@ export const getLookupResponse = async (
 
     logger.info(`Return object for orgId = ${params.orgId}`);
     const data: LookupLargeResponse = response.records[0];
+
     logger.info("Parsing data from llr...");
     const result = JSON.parse(data.response);
 
@@ -61,6 +64,7 @@ export const getLookupResponse = async (
       body: JSON.stringify(result),
     };
   }
+
   return {
     headers: {
       "Access-Control-Allow-Origin": allowed,

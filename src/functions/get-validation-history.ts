@@ -20,11 +20,13 @@ export const getValidationHistory = async (
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
   let origin = undefined;
+
   if (event.headers.origin) {
     origin = [event.headers.origin];
   } else {
     origin = [""];
   }
+
   let allowed = "Denied";
 
   logger.info(`Origin: ${origin}`);
@@ -94,6 +96,7 @@ export const getValidationHistory = async (
       body: JSON.stringify(response),
     };
   }
+
   return {
     headers: {
       "Access-Control-Allow-Origin": allowed,

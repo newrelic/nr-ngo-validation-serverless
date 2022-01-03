@@ -26,11 +26,13 @@ export const validateToken = async (
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
   let origin = undefined;
+
   if (event.headers.origin) {
     origin = [event.headers.origin];
   } else {
     origin = [""];
   }
+
   let allowed = "Denied";
   let token = "";
   let accountId = "";

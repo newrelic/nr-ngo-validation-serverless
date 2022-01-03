@@ -20,11 +20,13 @@ export const saveAttempt = async (
   const body = JSON.parse(event.body);
   const attempt = body as SaveAttemptBody;
   let origin = undefined;
+
   if (event.headers.origin) {
     origin = [event.headers.origin];
   } else {
     origin = [""];
   }
+
   let allowed = "Denied";
 
   logger.info(`Origin: ${origin}`);
@@ -43,6 +45,7 @@ export const saveAttempt = async (
     );
     const { token, accountId, eligibilityStatus, orgId, orgName, reason } =
       attempt;
+
     if (
       token === undefined ||
       accountId === undefined ||

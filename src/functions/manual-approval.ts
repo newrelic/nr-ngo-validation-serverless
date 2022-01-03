@@ -17,11 +17,13 @@ export const manualApprove = async (
 ): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   let origin = undefined;
+
   if (event.headers.origin) {
     origin = [event.headers.origin];
   } else {
     origin = [""];
   }
+
   let allowed = "Denied";
 
   logger.info("Manual approval lambda...");
