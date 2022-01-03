@@ -5,6 +5,7 @@ import { LambdaResponse } from "../types/response";
 import { getLookupLargeResponse } from "../utils/database";
 import { LambdaResponses } from "../utils/lambda-responses";
 import { Logger } from "../utils/logger";
+import { checker } from "../utils/cors-helper";
 
 export const getLookupResponse = async (
   event: APIGatewayProxyEvent,
@@ -12,35 +13,63 @@ export const getLookupResponse = async (
 ): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
+  let origin = undefined;
 
-  if (!params.orgId) {
-    logger.error("No org id was given!");
-    return LambdaResponses.badRequest;
+  if (event.headers.origin) {
+    origin = [event.headers.origin];
+  } else {
+    origin = [""];
   }
 
-  logger.info(
-    `Getting lookup large response from database for given orgid: ${params.orgId}...`
-  );
-  const response: LookupLargeResponses = await getLookupLargeResponse(
-    params.orgId
-  );
+  let allowed = "Denied";
 
-  if (response.records.length === 0) {
-    logger.error("There is no data for given orgId!");
-    return LambdaResponses.noDataForProvidedOrgId;
+  logger.info(`Origin: ${origin}`);
+
+  if (origin.filter(checker).length > 0) {
+    allowed = event.headers.origin;
   }
 
-  logger.info(`Return object for orgId = ${params.orgId}`);
-  const data: LookupLargeResponse = response.records[0];
+  logger.info(`Allowed: ${allowed}`);
 
-  logger.info("Parsing data from llr...");
-  const result = JSON.parse(data.response);
+  if (allowed !== "Denied") {
+    if (!params.orgId) {
+      logger.error("No org id was given!");
+      return LambdaResponses.badRequest(allowed);
+    }
+
+    logger.info(
+      `Getting lookup large response from database for given orgid: ${params.orgId}...`
+    );
+
+    const response: LookupLargeResponses = await getLookupLargeResponse(
+      params.orgId
+    );
+
+    if (response.records.length === 0) {
+      logger.error("There is no data for given orgId!");
+      return LambdaResponses.noDataForProvidedOrgId(allowed);
+    }
+
+    logger.info(`Return object for orgId = ${params.orgId}`);
+    const data: LookupLargeResponse = response.records[0];
+
+    logger.info("Parsing data from llr...");
+    const result = JSON.parse(data.response);
+
+    return {
+      headers: {
+        "Access-Control-Allow-Origin": allowed,
+      },
+      statusCode: StatusCodes.OK,
+      body: JSON.stringify(result),
+    };
+  }
 
   return {
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": allowed,
     },
-    statusCode: StatusCodes.OK,
-    body: JSON.stringify(result),
+    statusCode: StatusCodes.FORBIDDEN,
+    body: "Access Denied.",
   };
 };

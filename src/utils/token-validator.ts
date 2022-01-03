@@ -1,13 +1,16 @@
-import { LookupLargeResponse } from '../types/lookupLargeResponse';
-import { LambdaResponse } from '../types/response';
-import { LambdaResponses } from './lambda-responses';
-import { getExpirationDateFromResponse } from '../services/lookup';
+import { LookupLargeResponse } from "../types/lookupLargeResponse";
+import { LambdaResponse } from "../types/response";
+import { LambdaResponses } from "./lambda-responses";
+import { getExpirationDateFromResponse } from "../services/lookup";
 
 const TOKEN_REGEX = /^([a-zA-Z0-9]{8})+(@)[a-zA-Z0-9]+$/;
 
-export const validateLookupResponse = (lookupResponse: LookupLargeResponse): LookupLargeResponse | LambdaResponse => {
+export const validateLookupResponse = (
+  lookupResponse: LookupLargeResponse,
+  allowed: string
+): LookupLargeResponse | LambdaResponse => {
   if (lookupResponse.returnStatus.data.length === 0) {
-    return LambdaResponses.noDataForProvidedToken;
+    return LambdaResponses.noDataForProvidedToken(allowed);
   }
 
   return lookupResponse;
@@ -18,7 +21,10 @@ export const isTokenValid = (token: string): boolean => {
   return regex.test(token);
 };
 
-export const isTokenExpired = (token: string, lookupResponse: LookupLargeResponse): boolean => {
+export const isTokenExpired = (
+  token: string,
+  lookupResponse: LookupLargeResponse
+): boolean => {
   const pin = getPinFromToken(token);
   const expirationDate = getExpirationDateFromResponse(pin, lookupResponse);
 
@@ -30,7 +36,7 @@ export const isTokenExpired = (token: string, lookupResponse: LookupLargeRespons
 };
 
 export const getPinFromToken = (token: string): string => {
-  const splittedToken = token.split('@');
+  const splittedToken = token.split("@");
 
   return splittedToken[0];
 };
