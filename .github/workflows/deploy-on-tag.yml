@@ -71,3 +71,6 @@ jobs:
       - name: Deploy Lambda Functions
         if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         run: sls deploy -s staging
+
+      - name: Sync terraform state with s3 bucket
+        run: aws s3 sync .serverless s3://${{STAGING_BUCKET}} --exclude "*" --include "validation-service.zip"

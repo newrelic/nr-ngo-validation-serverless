@@ -1,12 +1,13 @@
-import { config } from '../config';
-import { LookupLargeResponse } from '../types/lookupLargeResponse';
-import { sendGetRequest, createLookupApiUrl } from '../utils/http-util';
-import { LambdaResponses } from '../utils/lambda-responses';
-import { validateLookupResponse } from '../utils/token-validator';
+import { config } from "../config";
+import { LookupLargeResponse } from "../types/lookupLargeResponse";
+import { sendGetRequest, createLookupApiUrl } from "../utils/http-util";
+import { LambdaResponses } from "../utils/lambda-responses";
+import { validateLookupResponse } from "../utils/token-validator";
 
 export const getResponseFromLookup = async (
   token: string,
-  sessionKey?: string,
+  allowed: string,
+  sessionKey?: string
 ): Promise<LookupLargeResponse | LambdaResponses> => {
   let lookUpApiUrl: string;
 
@@ -17,12 +18,15 @@ export const getResponseFromLookup = async (
   }
 
   const lookupRes = await sendGetRequest<LookupLargeResponse>(lookUpApiUrl);
-  const validatedLookupResponse = validateLookupResponse(lookupRes);
+  const validatedLookupResponse = validateLookupResponse(lookupRes, allowed);
 
   return validatedLookupResponse;
 };
 
-export const getExpirationDateFromResponse = (pin: string, lookupResponse: LookupLargeResponse): number => {
+export const getExpirationDateFromResponse = (
+  pin: string,
+  lookupResponse: LookupLargeResponse
+): number => {
   let expirationDate = 0;
 
   for (const agent of lookupResponse.returnStatus.data[0].agents) {
@@ -34,6 +38,8 @@ export const getExpirationDateFromResponse = (pin: string, lookupResponse: Looku
   return expirationDate;
 };
 
-export const getStatusFromResponse = (lookupResponse: LookupLargeResponse): number => {
+export const getStatusFromResponse = (
+  lookupResponse: LookupLargeResponse
+): number => {
   return lookupResponse.returnStatus.data[0].status.type_value as number;
 };
