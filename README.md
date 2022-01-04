@@ -4,12 +4,15 @@
 
 ![CI](https://github.com/newrelic/nr-ngo-validation-serverless/workflows/Push/badge.svg) ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr-ngo-validation-serverless?include_prereleases&sort=semver) [![Snyk](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless/badge.svg)](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless)
 
-The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. In addition the standard response provided by the Techsoup API, this project provides functions like checking token and account validity and checking validation history before issuing a request to TechSoup. The repository contains 5 lambdas:
+The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. In addition the standard response provided by the Techsoup API, this project provides functions like checking token and account validity and checking validation history before issuing a request to TechSoup. The repository contains 8 lambdas:
 
+- get-lookup-response: allow user to fetch LLR from the database,
 - get-validation-history: allow user to fetch history of validation from database. We are supporting AuroraDB with Postgres right now,
+- manual-approval: allow for manual approval of a user by NR employees,
+- update-llr: allows for an update of large lookup response on the database,
 - save-attempts: allow user to save validation attempt to the database,
 - validate-account: check if the account already exist in the database, if yes then return the last validation date with the eligibility status,
-- validate-toke: check if token provided by user is correct and last use was 30 days ago,
+- validate-token: check if token provided by user is correct and last use was 30 days ago,
 - validator: core function to check eligibility staus based on Tech Soup APIs (Lookup API and Constraint API). Fetches data from those two sources to return the result for the user
 
 ## Installation
