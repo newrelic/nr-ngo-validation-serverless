@@ -73,4 +73,4 @@ jobs:
         run: sls deploy -s staging
 
       - name: Sync terraform state with s3 bucket
-        run: aws s3 sync .serverless s3://${{ secrets.STAGING_BUCKET }} --exclude "*" --include "validation-service.zip"
+        run: aws s3 sync .serverless s3://${{ secrets.STAGING_BUCKET }} --exclude "*" --include "validation-service.zip" --region us-east-2
