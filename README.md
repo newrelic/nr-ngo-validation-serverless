@@ -2,7 +2,7 @@
 
 # NewRelic.org 'For Good' NGO Validation Service TechSoup Integration
 
-![CI](https://github.com/newrelic/nr-ngo-validation-serverless/workflows/Push/badge.svg) ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr-ngo-validation-serverless?include_prereleases&sort=semver) [![Snyk](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless/badge.svg)](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless)
+![CI](https://github.com/newrelic/nr-ngo-validation-serverless/workflows/Push/badge.svg) ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr-ngo-validation-serverless?include_prereleases&sort=semver) ![GitHub Tag](https://img.shields.io/github/v/tag/newrelic/nr-ngo-validation-serverless) [![Snyk](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless/badge.svg)](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless)
 
 The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. In addition the standard response provided by the Techsoup API, this project provides functions like checking token and account validity and checking validation history before issuing a request to TechSoup. The repository contains 8 lambdas:
 
