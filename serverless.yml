@@ -19,6 +19,7 @@ custom:
     enableIntegration: true
     enableDistributedTracing: true
     logEnabled: true
+    logLevel: trace
     cloudWatchFilter: "*"
     debug: true
 
