@@ -15,6 +15,6 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: 'lts/*'
+          node-version: '16.x'
       - name: Run semantic release
         run: npx semantic-release
