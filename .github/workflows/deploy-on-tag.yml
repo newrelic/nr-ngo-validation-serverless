@@ -2,8 +2,6 @@ name: Deploy On Tag
 
 on:
   push:
-    branches-ignore:
-      - 'develop'
     tags:
       - v*
 
