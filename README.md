@@ -2,14 +2,17 @@
 
 # NewRelic.org 'For Good' NGO Validation Service TechSoup Integration
 
-![CI](https://github.com/newrelic/nr-ngo-validation-serverless/workflows/Push/badge.svg) ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr-ngo-validation-serverless?include_prereleases&sort=semver) [![Snyk](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless/badge.svg)](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless)
+![CI](https://github.com/newrelic/nr-ngo-validation-serverless/workflows/Push/badge.svg) ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr-ngo-validation-serverless?include_prereleases&sort=semver) ![GitHub Tag](https://img.shields.io/github/v/tag/newrelic/nr-ngo-validation-serverless) [![Snyk](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless/badge.svg)](https://snyk.io/test/github/newrelic/nr-ngo-validation-serverless)
 
-The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. In addition the standard response provided by the Techsoup API, this project provides functions like checking token and account validity and checking validation history before issuing a request to TechSoup. The repository contains 5 lambdas:
+The 'For Good' Validation Service is designed to check the program eligibility of any NGO using TechSoup's API. In addition the standard response provided by the Techsoup API, this project provides functions like checking token and account validity and checking validation history before issuing a request to TechSoup. The repository contains 8 lambdas:
 
+- get-lookup-response: allow user to fetch LLR from the database,
 - get-validation-history: allow user to fetch history of validation from database. We are supporting AuroraDB with Postgres right now,
+- manual-approval: allow for manual approval of a user by NR employees,
+- update-llr: allows for an update of large lookup response on the database,
 - save-attempts: allow user to save validation attempt to the database,
 - validate-account: check if the account already exist in the database, if yes then return the last validation date with the eligibility status,
-- validate-toke: check if token provided by user is correct and last use was 30 days ago,
+- validate-token: check if token provided by user is correct and last use was 30 days ago,
 - validator: core function to check eligibility staus based on Tech Soup APIs (Lookup API and Constraint API). Fetches data from those two sources to return the result for the user
 
 ## Installation
@@ -433,6 +436,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://joelworrall.com"><img src="https://avatars0.githubusercontent.com/u/929261?v=4" width="100px;" alt="Joel Worrall"/><br /><sub><b>Joel Worrall</b></sub></a><br /><a href="https://github.com/newrelic/nr-ngo-validation-serverless/commits?author=tangollama" title="Code">💻</a> <a href="#ideas-tangollama" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/norbertsuski"><img src="https://avatars2.githubusercontent.com/u/5214156?v=4" width="100px;" alt="Norbert Suski"/><br /><sub><b>Norbert Suski</b></sub></a><br /><a href="#ideas-nsus" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/newrelic/nr-ngo-validation-serverless/commits?author=norbertsuski" title="Code">💻</a>
     <td align="center"><a href="https://github.com/DominikMarciniszyn"><img src="https://avatars3.githubusercontent.com/u/59443662?v=4" width="100px;" alt="Dominik Marciniszyn"/><br /><sub><b>Dominik Marciniszyn</b></sub></a><br /><a href="#ideas-dmar" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/newrelic/nr-ngo-validation-serverless/commits?author=DominikMarciniszyn" title="Code">💻</a></td>
+    <td align="center"><a href="http://github.com/jakubkotkowiak"><img src="https://avatars.githubusercontent.com/u/52407257?v=4" width="100px;" alt="Joel Worrall"/><br /><sub><b>Jakub Kotkowiak</b></sub></a><br /><a href="#ideas-jkotkowiak" title="Ideas, Planning, & Feedback">🤔</a><a href="https://github.com/newrelic/nr-ngo-validation-serverless/commits?author=jakubkotkowiak" title="Code">💻</a></td>
   </tr>
 </table>
 
