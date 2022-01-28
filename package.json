@@ -1,6 +1,6 @@
 {
   "name": "nr-ngo-validation-serverless",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "",
   "main": "index.ts",
   "scripts": {
@@ -31,6 +31,7 @@
     "jest": "26.6.3",
     "lint-staged": "10.5.3",
     "prettier": "2.3.0",
+    "semantic-release": "^19.0.2",
     "serverless-dotenv-plugin": "3.1.0",
     "serverless-iam-roles-per-function": "3.0.1",
     "serverless-newrelic-lambda-layers": "2.2.1",

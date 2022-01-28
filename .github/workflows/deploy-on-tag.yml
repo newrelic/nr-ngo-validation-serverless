@@ -2,8 +2,8 @@ name: Deploy On Tag
 
 on:
   push:
-    branches:
-      - 'main'
+    tags:
+      - v*
 
 jobs:
   serverless-deploy:
@@ -12,29 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: butlerlogic/action-autotag@stable
-        id: create-tag
-        with:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          strategy: package
-          tag_prefix: v
-          tag_message: "Version release"
-
-      - name: Show outputs once again
-        run: echo "{{ steps.create-tag.outputs.tagcreated }}"
 
       - name: Checkout repo
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         uses: actions/checkout@v2
 
       - name: Setup node
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
 
       - name: Cache node_modules
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         id: cache-node-modules
         uses: actions/cache@v1
         env:
@@ -46,32 +33,25 @@ jobs:
             ${{ runner.os }}-${{ env.cache-name }}-
 
       - name: Install dependencies
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         run: npm ci
 
       - name: Install Serverless Framework
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         run: npm install -g serverless@2.51.0
 
       - name: Serverless Framework AWS authentication
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         run: sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
 
       - name: Create env file
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         run: |
           cat > .env << EOF
           ${{ secrets.ENV }}
           EOF
 
       - name: Install NPM Dependencies
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         run: npm install
 
       - name: Deploy Lambda Functions
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         run: sls deploy -s staging
 
       - name: Sync terraform state with s3 bucket
-        if: ${{ steps.create-tag.outputs.tagcreated == 'yes' }}
         run: aws s3 sync .serverless s3://${{ secrets.STAGING_BUCKET }} --exclude "*" --include "validation-service.zip" --region us-east-2
