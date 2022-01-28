@@ -16,5 +16,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
+      - name: Install Dependencies
+        run: npm ci
       - name: Run semantic release
         run: npx semantic-release
