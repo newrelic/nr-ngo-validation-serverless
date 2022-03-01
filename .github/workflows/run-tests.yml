@@ -1,0 +1,30 @@
+name: Run integration tests
+
+on: push
+
+jobs:
+  IntegrationTests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Install newman
+        run: npm install -g newman
+
+      - name: Create test env file
+        run: |
+          cat > test.env.json << EOF
+          ${{ secrets.NEWMAN_ENV }}
+          EOF
+
+      - name: Run tests
+        run: newman run tests/integration_tests.json -e test.env.json
+
+

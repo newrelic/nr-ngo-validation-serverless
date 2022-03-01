@@ -1,0 +1,560 @@
+{
+	"info": {
+		"_postman_id": "9ed4b511-a2e8-403a-b935-9dd4920ca386",
+		"name": "O4G Testing Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Wake up db",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"setTimeout(function(){}, [50000]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "origin",
+						"value": "{{origin}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/large-response?orgId={{organizationId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"large-response"
+					],
+					"query": [
+						{
+							"key": "orgId",
+							"value": "{{organizationId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get LLR",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Response has reason success.\"] = jsonData.returnStatus.reason === \"success\";",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Status code has status OK\", function () {",
+							"    pm.response.to.have.status(\"OK\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "origin",
+						"value": "{{origin}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/large-response?orgId={{organizationId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"large-response"
+					],
+					"query": [
+						{
+							"key": "orgId",
+							"value": "{{organizationId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get LLR Not Found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Response has message.\"] = jsonData.message === \"No data for provided organisation id\";",
+							"tests[\"Response has internal status code 40403.\"] = jsonData.internalStatusCode === 40403;",
+							"",
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Status code has status Not Found\", function () {",
+							"    pm.response.to.have.status(\"Not Found\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "origin",
+						"value": "{{origin}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/large-response?orgId=badId",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"large-response"
+					],
+					"query": [
+						{
+							"key": "orgId",
+							"value": "badId"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get LLR No Origin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Response has Access Denied.\"] = responseBody === \"Access Denied.\";",
+							"",
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"Status code has status Forbidden\", function () {",
+							"    pm.response.to.have.status(\"Forbidden\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/large-response?orgId={{organizationId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"large-response"
+					],
+					"query": [
+						{
+							"key": "orgId",
+							"value": "{{organizationId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get LLR Bad Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Response has message.\"] = jsonData.message === \"Bad parameters provided to endpoint.\";",
+							"tests[\"Response has internal status code 40004.\"] = jsonData.internalStatusCode === 40004;",
+							"",
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Status code has status Bad Request\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "origin",
+						"value": "{{origin}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/large-response",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"large-response"
+					],
+					"query": [
+						{
+							"key": "orgId",
+							"value": "{{organizationId}}",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get validation history",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Response has validation source\"] = jsonData.attempts[0].validation_source === \"techsoup\";",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Status code has status OK\", function () {",
+							"    pm.response.to.have.status(\"OK\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "origin",
+						"value": "{{origin}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/attempts?orderBy=validation_date&orderAsc=true&limit=1&offset=0&startDate=2021-01-29T11:43:27.034Z&endDate=2022-01-29T11:43:27.034Z&accountId={{accountId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"attempts"
+					],
+					"query": [
+						{
+							"key": "orderBy",
+							"value": "validation_date"
+						},
+						{
+							"key": "orderAsc",
+							"value": "true"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "searchPhrase",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "startDate",
+							"value": "2021-01-29T11:43:27.034Z"
+						},
+						{
+							"key": "endDate",
+							"value": "2022-01-29T11:43:27.034Z"
+						},
+						{
+							"key": "accountId",
+							"value": "{{accountId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get validation history Bad Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Response has message.\"] = jsonData.message === \"Bad parameters provided to endpoint.\";",
+							"tests[\"Response has internal status code 40004.\"] = jsonData.internalStatusCode === 40004;",
+							"",
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Status code has status Bad Request\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "origin",
+						"value": "{{origin}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/attempts?orderBy=name&orderAsc=true&limit=1&offset=0&searchPhrase&startDate&endDate",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"attempts"
+					],
+					"query": [
+						{
+							"key": "orderBy",
+							"value": "name"
+						},
+						{
+							"key": "orderAsc",
+							"value": "true"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "searchPhrase",
+							"value": null
+						},
+						{
+							"key": "startDate",
+							"value": null
+						},
+						{
+							"key": "endDate",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manual approval Bad Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Response has message.\"] = jsonData.message === \"Bad parameters provided to endpoint.\";",
+							"tests[\"Response has internal status code 40004.\"] = jsonData.internalStatusCode === 40004;",
+							"",
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Status code has status Bad Request\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "origin",
+						"value": "{{origin}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/manual-approve?accountId&validationSource&description&orgName",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"manual-approve"
+					],
+					"query": [
+						{
+							"key": "accountId",
+							"value": null
+						},
+						{
+							"key": "validationSource",
+							"value": null
+						},
+						{
+							"key": "description",
+							"value": null
+						},
+						{
+							"key": "orgName",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Manual approval Unauthorized",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Response has message.\"] = jsonData.message === \"Probably the account is already manual approved\";",
+							"tests[\"Response has internal status code 40106.\"] = jsonData.internalStatusCode === 40106;",
+							"",
+							"pm.test(\"Status code is 401\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"Status code has status Unauthorized\", function () {",
+							"    pm.response.to.have.status(\"Unauthorized\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "origin",
+						"value": "{{origin}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accountId\": \"{{accountId}}\",\n    \"orgName\": \"TestOrg\",\n    \"description\": \"null\",\n    \"validationSource\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/manual-approve",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"manual-approve"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validate account Bad Request No token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Response has message.\"] = jsonData.message === \"Bad parameters provided to endpoint.\";",
+							"tests[\"Response has internal status code 40004.\"] = jsonData.internalStatusCode === 40004;",
+							"",
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Status code has status Bad Request\", function () {",
+							"    pm.response.to.have.status(\"Bad Request\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "origin",
+						"value": "{{origin}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/validate-account",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"validate-account"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
