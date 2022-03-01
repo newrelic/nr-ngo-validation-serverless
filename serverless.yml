@@ -1,6 +1,6 @@
 service: validation-service
 
-frameworkVersion: "2"
+frameworkVersion: "3"
 
 plugins:
   - serverless-offline
@@ -31,7 +31,7 @@ provider:
   name: aws
   runtime: nodejs14.x
   lambdaHashingVersion: 20201221
-  stage: ${env:STAGE, self:custom.defaultStage}
+  stage: staging
   region: ${env:REGION, self:custom.defaultRegion}
   environment:
     TEST: ${env:TEST, 'default_value'}

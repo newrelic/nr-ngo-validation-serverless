@@ -207,6 +207,7 @@ Allows to fetch validation history data from the database.
 ```
 GET
 {
+  accountId: String
   orderBy: String
   orderAsc: Boolean
   limit: Number
