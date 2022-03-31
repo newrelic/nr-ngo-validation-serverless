@@ -6,6 +6,8 @@ import { LambdaResponses } from "../utils/lambda-responses";
 import { Logger } from "../utils/logger";
 import { checker } from "../utils/cors-helper";
 import { StatusCodes } from "http-status-codes";
+import Newrelic from "newrelic";
+import { saveAttemptEvent } from "../types/nrEvents";
 
 /**
  * Saves provided data to database.
@@ -46,6 +48,21 @@ export const saveAttempt = async (
     const { token, accountId, eligibilityStatus, orgId, orgName, reason } =
       attempt;
 
+    const nrEvent: saveAttemptEvent = {
+      func: "SaveAttempt",
+      accountId: attempt?.accountId,
+      token: attempt?.token,
+      eligibilityStatus: attempt?.eligibilityStatus,
+      orgId: attempt?.orgId,
+      orgName: attempt?.orgName,
+      reason: attempt?.reason,
+    };
+
+    Newrelic.recordCustomEvent("NrO4GSaveAttempt", {
+      ...nrEvent,
+      ...{ action: "start" },
+    });
+
     if (
       token === undefined ||
       accountId === undefined ||
@@ -53,6 +70,10 @@ export const saveAttempt = async (
       orgId === undefined ||
       orgName === undefined
     ) {
+      Newrelic.recordCustomEvent("NrO4GSaveAttempt", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
       return LambdaResponses.badRequest(allowed);
     }
 
@@ -66,6 +87,10 @@ export const saveAttempt = async (
       reason
     );
 
+    Newrelic.recordCustomEvent("NrO4GSaveAttempt", {
+      ...nrEvent,
+      ...{ action: "success" },
+    });
     logger.info("Saved data...", accountId, token);
 
     return {

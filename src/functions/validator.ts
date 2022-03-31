@@ -22,6 +22,8 @@ import { Logger } from "../utils/logger";
 import { checkIfOrgIdExist, saveLookupLargeResponse } from "../utils/database";
 import { ValidationAttempts } from "../types/database";
 import { checker } from "../utils/cors-helper";
+import Newrelic from "newrelic";
+import { validatorEvent } from "../types/nrEvents";
 
 export const validate = async (
   event: APIGatewayProxyEvent,
@@ -30,6 +32,12 @@ export const validate = async (
   const logger = new Logger(context);
   const queryStringParams = event.queryStringParameters || {};
   let origin = undefined;
+  const nrEvent: validatorEvent = {
+    func: "Validator",
+    token: queryStringParams?.token,
+    session_key: queryStringParams?.session_key,
+    constraint_id: queryStringParams?.constraint_id,
+  };
 
   if (event.headers.origin) {
     origin = [event.headers.origin];
@@ -52,12 +60,21 @@ export const validate = async (
 
   logger.info(`Allowed: ${allowed}`);
 
+  Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+    ...nrEvent,
+    ...{ action: "start" },
+  });
+
   if (allowed !== "Denied") {
     logger.info("Checking incoming request from the platform...");
     if (config.SESSION_KEY === "") {
       if (queryStringParams.session_key) {
         sessionKey = queryStringParams.session_key;
       } else {
+        Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+          ...nrEvent,
+          ...{ action: "bad_request" },
+        });
         return LambdaResponses.missingRequiredData(allowed);
       }
     }
@@ -66,6 +83,10 @@ export const validate = async (
       if (queryStringParams.constraintId) {
         constraintId = queryStringParams.constraintId;
       } else {
+        Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+          ...nrEvent,
+          ...{ action: "bad_request" },
+        });
         return LambdaResponses.missingRequiredData(allowed);
       }
     }
@@ -73,11 +94,19 @@ export const validate = async (
     logger.info("Starting token validation...", "", queryStringParams.token);
     // Token validation
     if (Object.keys(queryStringParams).length === 0) {
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
       return LambdaResponses.noTokenProvided(allowed);
     }
 
     logger.info("Checking if token is valid given by user...");
     if (!isTokenValid(queryStringParams.token)) {
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
       return LambdaResponses.badTokenProvided(allowed);
     }
 
@@ -117,6 +146,10 @@ export const validate = async (
         lookupResponse as LookupLargeResponse
       )
     ) {
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "token_expired" },
+      });
       return LambdaResponses.tokenExpired(allowed);
     }
 
@@ -125,6 +158,10 @@ export const validate = async (
     );
 
     if (orgStatus !== Status.VerificationStatus.Qualified) {
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "not_qualified" },
+      });
       return LambdaResponses.notQualified(allowed);
     }
 
@@ -141,6 +178,10 @@ export const validate = async (
     const result: ValidationAttempts = await checkIfOrgIdExist(orgId);
 
     if (result.records.length > 0) {
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "org_exists" },
+      });
       return LambdaResponses.organisationAlreadyExist(allowed);
     }
 
@@ -159,6 +200,10 @@ export const validate = async (
     }
 
     if (constraintResponse.returnStatus.data.length === 0) {
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "lambda_misconfiguration" },
+      });
       return LambdaResponses.wrongConfiguration(allowed);
     }
 
@@ -186,6 +231,10 @@ export const validate = async (
     response.org_name = orgName;
 
     logger.info("Returning the response", "", queryStringParams.token);
+    Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+      ...nrEvent,
+      ...{ action: "success" },
+    });
     return {
       headers: {
         "Access-Control-Allow-Origin": allowed,

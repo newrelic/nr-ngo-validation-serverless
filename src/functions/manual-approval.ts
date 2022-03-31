@@ -10,6 +10,8 @@ import {
 } from "../utils/database";
 import { LambdaResponses } from "../utils/lambda-responses";
 import { Logger } from "../utils/logger";
+import Newrelic from "newrelic";
+import { manualApprovalEvent } from "../types/nrEvents";
 
 export const manualApprove = async (
   event: APIGatewayProxyEvent,
@@ -17,6 +19,12 @@ export const manualApprove = async (
 ): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   let origin = undefined;
+  const nrEvent: manualApprovalEvent = {
+    func: "ManualApproval",
+    accountId: undefined,
+    validationSource: undefined,
+    orgName: undefined,
+  };
 
   if (event.headers.origin) {
     origin = [event.headers.origin];
@@ -40,6 +48,11 @@ export const manualApprove = async (
     try {
       const body = JSON.parse(event.body);
       const manual = body as ManualApproval;
+
+      nrEvent.accountId = manual.accountId;
+      nrEvent.validationSource = manual.validationSource;
+      nrEvent.orgName = manual.orgName;
+
       logger.info(JSON.stringify(manual));
 
       logger.info(
@@ -51,6 +64,10 @@ export const manualApprove = async (
       );
 
       if (result.records.length > 0) {
+        Newrelic.recordCustomEvent("NrO4GManualApproval", {
+          ...nrEvent,
+          ...{ action: "bad_request" },
+        });
         logger.error("Account already exists in the database");
         return LambdaResponses.accountAlreadyExist(allowed);
       }
@@ -68,10 +85,19 @@ export const manualApprove = async (
       logger.info("Saved user data...", manual.accountId);
       logger.info(manualApproved);
     } catch (error: any) {
+      Newrelic.recordCustomEvent("NrO4GManualApproval", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
       logger.error("Something happend while saving the data...");
       logger.error(error.message);
       return LambdaResponses.badRequest(allowed);
     }
+
+    Newrelic.recordCustomEvent("NrO4GManualApproval", {
+      ...nrEvent,
+      ...{ action: "success" },
+    });
 
     return {
       headers: {

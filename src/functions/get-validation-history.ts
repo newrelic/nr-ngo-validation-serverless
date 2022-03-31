@@ -12,6 +12,8 @@ import { checkValidColumnName, createSql } from "../utils/sql";
 import { Logger } from "../utils/logger";
 import { checker } from "../utils/cors-helper";
 import { StatusCodes } from "http-status-codes";
+import Newrelic from "newrelic";
+import { getValidationHistoryEvent } from "../types/nrEvents";
 
 export const getValidationHistory = async (
   event: APIGatewayProxyEvent,
@@ -20,6 +22,17 @@ export const getValidationHistory = async (
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
   let origin = undefined;
+  const nrEvent: getValidationHistoryEvent = {
+    func: "getValidationHistory",
+    accountId: params.accountId ?? undefined,
+    searchPhrase: params.searchPhrase ?? undefined,
+    orderBy: params.orderBy ?? undefined,
+    orderAsc: (params.orderAsc === "true" ? true : false) ?? undefined,
+    limit: Number(params.limit) ?? undefined,
+    offset: Number(params.offset) ?? undefined,
+    startDate: new Date(params.startDate),
+    endDate: new Date(params.endDate),
+  };
 
   if (event.headers.origin) {
     origin = [event.headers.origin];
@@ -38,11 +51,24 @@ export const getValidationHistory = async (
   logger.info(`Allowed: ${allowed}`);
 
   if (allowed !== "Denied") {
+    Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+      ...nrEvent,
+      ...{ action: "start" },
+    });
+
     if (params.accountId && params.searchPhrase) {
+      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
       return LambdaResponses.badRequest(allowed);
     }
 
     if (!params.startDate && !params.endDate) {
+      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
       return LambdaResponses.badRequest(allowed);
     }
 
@@ -60,6 +86,10 @@ export const getValidationHistory = async (
     };
 
     if (!checkValidColumnName(validationHistoryRequest.orderBy)) {
+      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
       return LambdaResponses.badRequest(allowed);
     }
 
@@ -87,6 +117,11 @@ export const getValidationHistory = async (
       records:
         recordCount.records.length > 0 ? recordCount.records[0].count : 0,
     };
+
+    Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+      ...nrEvent,
+      ...{ action: "success" },
+    });
 
     return {
       headers: {
