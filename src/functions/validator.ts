@@ -34,9 +34,9 @@ export const validate = async (
   let origin = undefined;
   const nrEvent: validatorEvent = {
     func: "Validator",
-    token: queryStringParams?.token,
-    session_key: queryStringParams?.session_key,
-    constraint_id: queryStringParams?.constraint_id,
+    token: queryStringParams?.token ?? "undefined",
+    session_key: queryStringParams?.session_key ?? "undefined",
+    constraint_id: queryStringParams?.constraint_id ?? "undefined",
   };
 
   if (event.headers.origin) {

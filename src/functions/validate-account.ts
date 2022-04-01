@@ -24,7 +24,7 @@ export const validateAccount = async (
   let origin = undefined;
   const nrEvent: validateAccountEvent = {
     func: "ValidateAccount",
-    accountId: params?.accountId,
+    accountId: params?.accountId ?? "undefined",
   };
 
   if (event.headers.origin) {

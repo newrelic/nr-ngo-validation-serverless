@@ -24,14 +24,14 @@ export const getValidationHistory = async (
   let origin = undefined;
   const nrEvent: getValidationHistoryEvent = {
     func: "getValidationHistory",
-    accountId: params.accountId ?? undefined,
-    searchPhrase: params.searchPhrase ?? undefined,
-    orderBy: params.orderBy ?? undefined,
-    orderAsc: (params.orderAsc === "true" ? true : false) ?? undefined,
-    limit: Number(params.limit) ?? undefined,
-    offset: Number(params.offset) ?? undefined,
-    startDate: new Date(params.startDate),
-    endDate: new Date(params.endDate),
+    accountId: params.accountId ?? "undefined",
+    searchPhrase: params.searchPhrase ?? "undefined",
+    orderBy: params.orderBy ?? "undefined",
+    orderAsc: (params.orderAsc === "true" ? true : false) ?? "undefined",
+    limit: Number(params.limit) ?? "undefined",
+    offset: Number(params.offset) ?? "undefined",
+    eventStartDate: new Date(params.startDate).toString(),
+    eventEndDate: new Date(params.endDate).toString(),
   };
 
   if (event.headers.origin) {

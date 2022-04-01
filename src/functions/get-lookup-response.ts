@@ -18,7 +18,7 @@ export const getLookupResponse = async (
   let origin = undefined;
   const nrEvent: getLlrEvent = {
     func: "getLLR",
-    orgId: params.orgId ?? undefined,
+    orgId: params.orgId ?? "undefined",
   };
 
   if (event.headers.origin) {

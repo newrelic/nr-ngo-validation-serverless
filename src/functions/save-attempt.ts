@@ -50,12 +50,12 @@ export const saveAttempt = async (
 
     const nrEvent: saveAttemptEvent = {
       func: "SaveAttempt",
-      accountId: attempt?.accountId,
-      token: attempt?.token,
-      eligibilityStatus: attempt?.eligibilityStatus,
-      orgId: attempt?.orgId,
-      orgName: attempt?.orgName,
-      reason: attempt?.reason,
+      accountId: attempt?.accountId ?? "undefined",
+      token: attempt?.token ?? "undefined",
+      eligibilityStatus: attempt?.eligibilityStatus ?? "undefined",
+      orgId: attempt?.orgId ?? "undefined",
+      orgName: attempt?.orgName ?? "undefined",
+      reason: attempt?.reason ?? "undefined",
     };
 
     Newrelic.recordCustomEvent("NrO4GSaveAttempt", {

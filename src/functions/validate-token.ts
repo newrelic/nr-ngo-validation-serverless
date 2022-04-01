@@ -30,8 +30,8 @@ export const validateToken = async (
   let origin = undefined;
   const nrEvent: validateTokenEvent = {
     func: "ValidateToken",
-    token: params?.token,
-    accountId: params?.accountId,
+    token: params?.token ?? "undefined",
+    accountId: params?.accountId ?? "undefined",
   };
 
   if (event.headers.origin) {

@@ -20,7 +20,7 @@ export const updateLookupLargeResponse = async (
   let origin = undefined;
   const nrEvent: updateLlrEvent = {
     func: "UpdateLLR",
-    token: params?.token,
+    token: params?.token ?? "undefined",
   };
 
   Newrelic.recordCustomEvent("NrO4GUpdateLLR", {

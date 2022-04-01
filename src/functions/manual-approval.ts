@@ -21,9 +21,9 @@ export const manualApprove = async (
   let origin = undefined;
   const nrEvent: manualApprovalEvent = {
     func: "ManualApproval",
-    accountId: undefined,
-    validationSource: undefined,
-    orgName: undefined,
+    accountId: "undefined",
+    validationSource: "undefined",
+    orgName: "undefined",
   };
 
   if (event.headers.origin) {
@@ -49,9 +49,9 @@ export const manualApprove = async (
       const body = JSON.parse(event.body);
       const manual = body as ManualApproval;
 
-      nrEvent.accountId = manual.accountId;
-      nrEvent.validationSource = manual.validationSource;
-      nrEvent.orgName = manual.orgName;
+      nrEvent.accountId = manual.accountId ?? "undefined";
+      nrEvent.validationSource = manual.validationSource ?? "undefined";
+      nrEvent.orgName = manual.orgName ?? "undefined";
 
       logger.info(JSON.stringify(manual));
 

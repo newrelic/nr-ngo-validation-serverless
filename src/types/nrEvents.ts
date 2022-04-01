@@ -7,12 +7,12 @@ export type getValidationHistoryEvent = {
   func: string;
   accountId?: string;
   orderBy?: string;
-  orderAsc?: boolean;
-  limit?: number;
-  offset?: number;
+  orderAsc?: boolean | string;
+  limit?: number | string;
+  offset?: number | string;
   searchPhrase?: string;
-  startDate?: Date;
-  endDate?: Date;
+  eventStartDate?: string;
+  eventEndDate?: string;
 };
 
 export type manualApprovalEvent = {
@@ -27,7 +27,7 @@ export type saveAttemptEvent = {
   func: string;
   accountId?: string;
   token?: string;
-  eligibilityStatus?: boolean;
+  eligibilityStatus?: boolean | string;
   orgId?: string;
   orgName?: string;
   reason?: string;
