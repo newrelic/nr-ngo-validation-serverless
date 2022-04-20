@@ -13,6 +13,8 @@ import { LambdaResponses } from "../utils/lambda-responses";
 import { Logger } from "../utils/logger";
 import { checker } from "../utils/cors-helper";
 import { StatusCodes } from "http-status-codes";
+import Newrelic from "newrelic";
+import { validateTokenEvent } from "../types/nrEvents";
 
 /**
  * Checks if the provided token exists in the database.
@@ -26,6 +28,11 @@ export const validateToken = async (
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
   let origin = undefined;
+  const nrEvent: validateTokenEvent = {
+    func: "ValidateToken",
+    token: params?.token ?? "undefined",
+    accountId: params?.accountId ?? "undefined",
+  };
 
   if (event.headers.origin) {
     origin = [event.headers.origin];
@@ -45,11 +52,20 @@ export const validateToken = async (
 
   logger.info(`Allowed: ${allowed}`);
 
+  Newrelic.recordCustomEvent("NrO4GValidateToken", {
+    ...nrEvent,
+    ...{ action: "start" },
+  });
+
   if (allowed !== "Denied") {
     if (params.token && params.accountId) {
       token = params.token;
       accountId = params.accountId;
     } else {
+      Newrelic.recordCustomEvent("NrO4GValidateToken", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
       return LambdaResponses.badRequest(allowed);
     }
 
@@ -73,6 +89,10 @@ export const validateToken = async (
     );
 
     if (checkUsedTokenResult.records.length > 0) {
+      Newrelic.recordCustomEvent("NrO4GValidateToken", {
+        ...nrEvent,
+        ...{ action: "used_token" },
+      });
       return LambdaResponses.tokenAlreadyUsed(allowed);
     }
 
@@ -87,10 +107,19 @@ export const validateToken = async (
     );
 
     if (tokenRetention.records[0].count > 0) {
+      Newrelic.recordCustomEvent("NrO4GValidateToken", {
+        ...nrEvent,
+        ...{ action: "token_used_recently" },
+      });
       return LambdaResponses.tokenInRetentionPeriod(allowed);
     }
 
     logger.info("Before return value...", accountId, token);
+
+    Newrelic.recordCustomEvent("NrO4GValidateToken", {
+      ...nrEvent,
+      ...{ action: "success" },
+    });
 
     return {
       headers: {
