@@ -6,6 +6,8 @@ import { getLookupLargeResponse } from "../utils/database";
 import { LambdaResponses } from "../utils/lambda-responses";
 import { Logger } from "../utils/logger";
 import { checker } from "../utils/cors-helper";
+import Newrelic from "newrelic";
+import { getLlrEvent } from "../types/nrEvents";
 
 export const getLookupResponse = async (
   event: APIGatewayProxyEvent,
@@ -14,6 +16,10 @@ export const getLookupResponse = async (
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
   let origin = undefined;
+  const nrEvent: getLlrEvent = {
+    func: "getLLR",
+    orgId: params.orgId ?? "undefined",
+  };
 
   if (event.headers.origin) {
     origin = [event.headers.origin];
@@ -33,9 +39,18 @@ export const getLookupResponse = async (
 
   if (allowed !== "Denied") {
     if (!params.orgId) {
+      Newrelic.recordCustomEvent("NrO4GLookupResponse", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
       logger.error("No org id was given!");
       return LambdaResponses.badRequest(allowed);
     }
+
+    Newrelic.recordCustomEvent("NrO4GLookupResponse", {
+      ...nrEvent,
+      ...{ action: "start" },
+    });
 
     logger.info(
       `Getting lookup large response from database for given orgid: ${params.orgId}...`
@@ -56,6 +71,10 @@ export const getLookupResponse = async (
     logger.info("Parsing data from llr...");
     const result = JSON.parse(data.response);
 
+    Newrelic.recordCustomEvent("NrO4GLookupResponse", {
+      ...nrEvent,
+      ...{ action: "success" },
+    });
     return {
       headers: {
         "Access-Control-Allow-Origin": allowed,

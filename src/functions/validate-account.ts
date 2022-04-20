@@ -7,6 +7,8 @@ import { Context } from "aws-lambda/handler";
 import { Logger } from "../utils/logger";
 import { checker } from "../utils/cors-helper";
 import { StatusCodes } from "http-status-codes";
+import Newrelic from "newrelic";
+import { validateAccountEvent } from "../types/nrEvents";
 
 /**
  * Checks if the provided account exists in the database and what is the status.
@@ -20,6 +22,11 @@ export const validateAccount = async (
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
   let origin = undefined;
+  const nrEvent: validateAccountEvent = {
+    func: "ValidateAccount",
+    accountId: params?.accountId ?? "undefined",
+  };
+
   if (event.headers.origin) {
     origin = [event.headers.origin];
   } else {
@@ -40,6 +47,10 @@ export const validateAccount = async (
     if (params.accountId) {
       accountId = params.accountId;
     } else {
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "start" },
+      });
       return LambdaResponses.badRequest(allowed);
     }
 
@@ -56,6 +67,10 @@ export const validateAccount = async (
         eligibility_status,
         validation_date,
       };
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "success" },
+      });
       logger.info("Found the account", accountId);
       return {
         headers: {
@@ -67,6 +82,10 @@ export const validateAccount = async (
     }
 
     logger.info("Account not found", accountId);
+    Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+      ...nrEvent,
+      ...{ action: "not_found" },
+    });
     return {
       headers: {
         "Access-Control-Allow-Origin": allowed,

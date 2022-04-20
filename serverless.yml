@@ -25,7 +25,7 @@ custom:
 
   defaultStage: dev
   defaultRegion: eu-central-1
-  environment: ${file(.env):${self:provider.stage}, file(.env):default}
+  environment: ${file(.env)}
 
 provider:
   name: aws
