@@ -214,16 +214,32 @@ export const validate = async (
         queryStringParams.token
       );
 
-      return {
-        headers: {
-          "Access-Control-Allow-Origin": allowed,
-        },
-        statusCode: StatusCodes.OK,
-        body: JSON.stringify(constraintResponse),
-      };
+      if (!constraintResponse) {
+        Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+          ...nrEvent,
+          ...{ action: "no_data" },
+        });
+        return LambdaResponses.noDataForProvidedToken(allowed);
+      } else {
+        return {
+          headers: {
+            "Access-Control-Allow-Origin": allowed,
+          },
+          statusCode: StatusCodes.OK,
+          body: JSON.stringify(constraintResponse),
+        };
+      }
     }
 
-    [response] = constraintResponse.returnStatus.data;
+    if (!constraintResponse.returnStatus.data) {
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "no_data" },
+      });
+      return LambdaResponses.noDataForProvidedToken(allowed);
+    } else {
+      [response] = constraintResponse.returnStatus.data;
+    }
 
     logger.info("Translating the error messages", "", queryStringParams.token);
     const errorCodes = translateErrorMessages(response.error_code as string[]);
