@@ -29,9 +29,12 @@ export const validateAccount = async (
 
   if (event.headers.origin) {
     origin = [event.headers.origin];
+  } else if (event.headers.referrer) {
+    origin = [event.headers.referrer];
   } else {
     origin = [""];
   }
+
   let allowed = "Denied";
   let accountId: string;
 
@@ -46,6 +49,7 @@ export const validateAccount = async (
   if (allowed !== "Denied") {
     if (params.accountId) {
       accountId = params.accountId;
+      logger.info(`Acc id: ${accountId}`, "Debugging");
     } else {
       Newrelic.recordCustomEvent("NrO4GValidateAccount", {
         ...nrEvent,
@@ -67,6 +71,10 @@ export const validateAccount = async (
         eligibility_status,
         validation_date,
       };
+      logger.info(
+        `Response all good case: ${JSON.stringify(response)}`,
+        "Debugging"
+      );
       Newrelic.recordCustomEvent("NrO4GValidateAccount", {
         ...nrEvent,
         ...{ action: "success" },
