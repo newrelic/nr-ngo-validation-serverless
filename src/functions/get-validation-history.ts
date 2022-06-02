@@ -36,6 +36,8 @@ export const getValidationHistory = async (
 
   if (event.headers.origin) {
     origin = [event.headers.origin];
+  } else if (event.headers.referrer) {
+    origin = [event.headers.referrer];
   } else {
     origin = [""];
   }

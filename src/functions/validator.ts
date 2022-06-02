@@ -41,6 +41,8 @@ export const validate = async (
 
   if (event.headers.origin) {
     origin = [event.headers.origin];
+  } else if (event.headers.referrer) {
+    origin = [event.headers.referrer];
   } else {
     origin = [""];
   }
@@ -75,6 +77,7 @@ export const validate = async (
           ...nrEvent,
           ...{ action: "bad_request" },
         });
+        logger.info(`Missing data`, "Debugging");
         return LambdaResponses.missingRequiredData(allowed);
       }
     }
@@ -87,6 +90,7 @@ export const validate = async (
           ...nrEvent,
           ...{ action: "bad_request" },
         });
+        logger.info(`Missing data`, "Debugging");
         return LambdaResponses.missingRequiredData(allowed);
       }
     }
@@ -98,6 +102,7 @@ export const validate = async (
         ...nrEvent,
         ...{ action: "bad_request" },
       });
+      logger.info("No token provided", "Debugging");
       return LambdaResponses.noTokenProvided(allowed);
     }
 
@@ -107,6 +112,7 @@ export const validate = async (
         ...nrEvent,
         ...{ action: "bad_request" },
       });
+      logger.info("Bad token provided", "Debugging");
       return LambdaResponses.badTokenProvided(allowed);
     }
 
@@ -150,6 +156,7 @@ export const validate = async (
         ...nrEvent,
         ...{ action: "token_expired" },
       });
+      logger.info("Dead token provided", "Debugging");
       return LambdaResponses.tokenExpired(allowed);
     }
 
@@ -162,6 +169,7 @@ export const validate = async (
         ...nrEvent,
         ...{ action: "not_qualified" },
       });
+      logger.info("Not qualified", "Debugging");
       return LambdaResponses.notQualified(allowed);
     }
 
@@ -182,6 +190,7 @@ export const validate = async (
         ...nrEvent,
         ...{ action: "org_exists" },
       });
+      logger.info("Organisation used", "Debugging");
       return LambdaResponses.organisationAlreadyExist(allowed);
     }
 
@@ -204,6 +213,7 @@ export const validate = async (
         ...nrEvent,
         ...{ action: "lambda_misconfiguration" },
       });
+      logger.info("Wrong configuration provided", "Debugging");
       return LambdaResponses.wrongConfiguration(allowed);
     }
 
@@ -240,11 +250,15 @@ export const validate = async (
     } else {
       [response] = constraintResponse.returnStatus.data;
     }
+    logger.info(`Response: ${response}`, "Debugging");
 
     logger.info("Translating the error messages", "", queryStringParams.token);
     const errorCodes = translateErrorMessages(response.error_code as string[]);
+    logger.info(`Error codes: ${errorCodes}`, "Debugging");
     response.error_code = errorCodes;
     response.org_name = orgName;
+
+    logger.info(`Final response: ${response}`, "Debugging");
 
     logger.info("Returning the response", "", queryStringParams.token);
     Newrelic.recordCustomEvent("NrO4GValidateAccount", {
