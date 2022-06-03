@@ -17,7 +17,7 @@ export const updateLookupLargeResponse = async (
 ): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
-  let origin = undefined;
+  let origin = [""];
   const nrEvent: updateLlrEvent = {
     func: "UpdateLLR",
     token: params?.token ?? "undefined",
@@ -28,12 +28,10 @@ export const updateLookupLargeResponse = async (
     ...{ action: "start" },
   });
 
-  if (event.headers.origin) {
-    origin = [event.headers.origin];
-  } else if (event.headers.referrer) {
-    origin = [event.headers.referrer];
-  } else {
-    origin = [""];
+  if (event.headers.origin || event.headers.Origin) {
+    origin = event.headers.origin
+      ? [event.headers.origin]
+      : [event.headers.Origin];
   }
 
   let allowed = "Denied";

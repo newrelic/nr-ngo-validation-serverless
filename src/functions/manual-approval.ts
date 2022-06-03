@@ -18,7 +18,7 @@ export const manualApprove = async (
   context: Context
 ): Promise<LambdaResponse> => {
   const logger = new Logger(context);
-  let origin = undefined;
+  let origin = [""];
   const nrEvent: manualApprovalEvent = {
     func: "ManualApproval",
     accountId: "undefined",
@@ -26,12 +26,10 @@ export const manualApprove = async (
     orgName: "undefined",
   };
 
-  if (event.headers.origin) {
-    origin = [event.headers.origin];
-  } else if (event.headers.referrer) {
-    origin = [event.headers.referrer];
-  } else {
-    origin = [""];
+  if (event.headers.origin || event.headers.Origin) {
+    origin = event.headers.origin
+      ? [event.headers.origin]
+      : [event.headers.Origin];
   }
 
   let allowed = "Denied";
