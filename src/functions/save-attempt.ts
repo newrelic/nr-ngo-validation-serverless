@@ -21,14 +21,12 @@ export const saveAttempt = async (
   const logger = new Logger(context);
   const body = JSON.parse(event.body);
   const attempt = body as SaveAttemptBody;
-  let origin = undefined;
+  let origin = [""];
 
-  if (event.headers.origin) {
-    origin = [event.headers.origin];
-  } else if (event.headers.Referer) {
-    origin = [event.headers.Referer];
-  } else {
-    origin = [""];
+  if (event.headers.origin || event.headers.Origin) {
+    origin = event.headers.origin
+      ? [event.headers.origin]
+      : [event.headers.Origin];
   }
 
   let allowed = "Denied";

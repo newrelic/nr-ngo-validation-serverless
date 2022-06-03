@@ -15,18 +15,16 @@ export const getLookupResponse = async (
 ): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
-  let origin = undefined;
+  let origin = [""];
   const nrEvent: getLlrEvent = {
     func: "getLLR",
     orgId: params.orgId ?? "undefined",
   };
 
-  if (event.headers.origin) {
-    origin = [event.headers.origin];
-  } else if (event.headers.Referer) {
-    origin = [event.headers.Referer];
-  } else {
-    origin = [""];
+  if (event.headers.origin || event.headers.Origin) {
+    origin = event.headers.origin
+      ? [event.headers.origin]
+      : [event.headers.Origin];
   }
 
   let allowed = "Denied";

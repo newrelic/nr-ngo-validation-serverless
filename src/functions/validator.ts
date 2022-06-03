@@ -31,7 +31,7 @@ export const validate = async (
 ): Promise<LambdaResponse | ConstraintResponse> => {
   const logger = new Logger(context);
   const queryStringParams = event.queryStringParameters || {};
-  let origin = undefined;
+  let origin = [""];
   const nrEvent: validatorEvent = {
     func: "Validator",
     token: queryStringParams?.token ?? "undefined",
@@ -39,12 +39,10 @@ export const validate = async (
     constraint_id: queryStringParams?.constraint_id ?? "undefined",
   };
 
-  if (event.headers.origin) {
-    origin = [event.headers.origin];
-  } else if (event.headers.Referer) {
-    origin = [event.headers.Referer];
-  } else {
-    origin = [""];
+  if (event.headers.origin || event.headers.Origin) {
+    origin = event.headers.origin
+      ? [event.headers.origin]
+      : [event.headers.Origin];
   }
 
   let allowed = "Denied";
