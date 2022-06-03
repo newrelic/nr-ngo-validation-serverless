@@ -21,7 +21,7 @@ export const getValidationHistory = async (
 ): Promise<LambdaResponse> => {
   const logger = new Logger(context);
   const params = event.queryStringParameters || {};
-  let origin = undefined;
+  let origin = [""];
   const nrEvent: getValidationHistoryEvent = {
     func: "getValidationHistory",
     accountId: params.accountId ?? "undefined",
@@ -34,12 +34,10 @@ export const getValidationHistory = async (
     eventEndDate: new Date(params.endDate).toString(),
   };
 
-  if (event.headers.origin) {
-    origin = [event.headers.origin];
-  } else if (event.headers.referrer) {
-    origin = [event.headers.referrer];
-  } else {
-    origin = [""];
+  if (event.headers.origin || event.headers.Origin) {
+    origin = event.headers.origin
+      ? [event.headers.origin]
+      : [event.headers.Origin];
   }
 
   let allowed = "Denied";
