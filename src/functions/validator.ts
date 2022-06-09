@@ -46,7 +46,7 @@ export const validate = async (
   }
 
   let allowed = "Denied";
-  let lookupResponse: LookupLargeResponse | LambdaResponses;
+  let lookupResponse: any;
   let constraintResponse: ConstraintResponse;
   let response: DataObject = null;
   let sessionKey = "";
@@ -135,14 +135,14 @@ export const validate = async (
       logger.info(JSON.stringify(lookupResponse), "", queryStringParams.token);
     }
 
+    if (lookupResponse.body) {
+      return LambdaResponses.noDataForProvidedToken(allowed);
+    }
+
     // Constraing API
     logger.info("Getting org_id and org_name...", queryStringParams.token);
     const orgId = getOrgId(lookupResponse as LookupLargeResponse);
     const orgName = getOrgName(lookupResponse as LookupLargeResponse);
-
-    if (lookupResponse === LambdaResponses.noDataForProvidedToken(allowed)) {
-      return lookupResponse as LambdaResponse;
-    }
 
     if (
       isTokenExpired(
