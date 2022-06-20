@@ -1,6 +1,6 @@
 {
   "name": "nr-ngo-validation-serverless",
-  "version": "1.5.3",
+  "version": "1.6.1",
   "description": "",
   "main": "index.ts",
   "scripts": {
@@ -34,7 +34,7 @@
     "semantic-release": "^19.0.2",
     "serverless-dotenv-plugin": "3.1.0",
     "serverless-iam-roles-per-function": "3.0.1",
-    "serverless-newrelic-lambda-layers": "2.2.1",
+    "serverless-newrelic-lambda-layers": "3.3.2",
     "serverless-offline": "6.4.0",
     "serverless-plugin-typescript": "1.1.9",
     "ts-jest": "26.4.4",
@@ -46,7 +46,7 @@
     "envalid": "6.0.2",
     "http-status-codes": "2.1.4",
     "myzod": "1.7.4",
-    "node-fetch": "2.6.1",
+    "node-fetch": "2.6.7",
     "npm-check": "5.9.2"
   },
   "jest": {
