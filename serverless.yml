@@ -38,6 +38,7 @@ provider:
     TEST: ${env:TEST, 'default_value'}
 
 functions:
+
   validate:
     handler: src/functions/validator.validate
     description: Validates organization with Tech Soup API
@@ -55,7 +56,12 @@ functions:
           path: /validate
           method: get
           cors: true
+          authorizer:
+            name: authorizer
+            type: token
+            resultTtlInSeconds: 0
     memorySize: 512
+
   validate-token:
     handler: src/functions/validate-token.validateToken
     description: Validates token - checks if token was already used (checks the database)
@@ -73,7 +79,12 @@ functions:
           path: /validate-token
           method: get
           cors: true
+          authorizer:
+            name: authorizer
+            type: token
+            resultTtlInSeconds: 0
     memorySize: 512
+
   validate-account:
     handler: src/functions/validate-account.validateAccount
     description: Validates account - checks what is the status of provided account (checks the database)
@@ -91,7 +102,12 @@ functions:
           path: /validate-account
           method: get
           cors: true
+          authorizer:
+            name: authorizer
+            type: token
+            resultTtlInSeconds: 0
     memorySize: 512
+
   save-attempt:
     handler: src/functions/save-attempt.saveAttempt
     description: Saves validation attempt to database
@@ -109,7 +125,12 @@ functions:
           path: /attempts
           method: post
           cors: true
+          authorizer:
+            name: authorizer
+            type: token
+            resultTtlInSeconds: 0
     memorySize: 512
+
   get-validation-history:
     handler: src/functions/get-validation-history.getValidationHistory
     description: Returns the validation history from the database for selected account
@@ -127,7 +148,12 @@ functions:
           path: /attempts
           method: get
           cors: true
+          authorizer:
+            name: authorizer
+            type: token
+            resultTtlInSeconds: 0
     memorySize: 512
+
   manual-approval:
     handler: src/functions/manual-approval.manualApprove
     description: Saves information about account which should be validate mannually
@@ -145,7 +171,12 @@ functions:
           path: /manual-approve
           method: post
           cors: true
+          authorizer:
+            name: authorizer
+            type: token
+            resultTtlInSeconds: 0
     memorySize: 512
+
   get-llr:
     handler: src/functions/get-lookup-response.getLookupResponse
     description: Returns the lookup large response data for given org id
@@ -163,7 +194,12 @@ functions:
           path: /large-response
           method: get
           cors: true
+          authorizer:
+            name: authorizer
+            type: token
+            resultTtlInSeconds: 0
     memorySize: 512
+
   update-llr:
     handler: src/functions/update-llr.updateLookupLargeResponse
     description: Updates client data with LLR of existing clients
@@ -181,4 +217,18 @@ functions:
           path: /update
           method: get
           cors: true
+          authorizer:
+            name: authorizer
+            type: token
+            resultTtlInSeconds: 0
     memorySize: 512
+
+  authorizer:
+    handler: src/functions/authorizer.authorize
+    description: Authorizer for API gateway
+    memorySize: 512
+    environment:
+      API_KEY: ${env:API_KEY, 'default_value'}
+    tags:
+      use_aurora: false
+      use_github_api: false
