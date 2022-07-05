@@ -40,7 +40,7 @@ export const validateAccount = async (
   logger.info(`Origin: ${origin}`);
 
   if (origin.filter(checker).length > 0) {
-    allowed = origin[1];
+    allowed = origin[0];
   }
 
   logger.info(`Allowed: ${allowed}`);
