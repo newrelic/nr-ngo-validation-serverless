@@ -22,6 +22,7 @@ custom:
     logLevel: trace
     cloudWatchFilter: "*"
     debug: true
+    linkedAccount: 587989906310
 
   defaultStage: dev
   defaultRegion: eu-central-1
