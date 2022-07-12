@@ -14,129 +14,132 @@ import { checker } from "../utils/cors-helper";
 import { StatusCodes } from "http-status-codes";
 import Newrelic from "newrelic";
 import { getValidationHistoryEvent } from "../types/nrEvents";
+import { handleDistributedTracing } from "../utils/distributed_tracing";
 
 export const getValidationHistory = async (
   event: APIGatewayProxyEvent,
   context: Context
 ): Promise<LambdaResponse> => {
-  const logger = new Logger(context);
-  const params = event.queryStringParameters || {};
-  let origin = [""];
-  const nrEvent: getValidationHistoryEvent = {
-    func: "getValidationHistory",
-    accountId: params.accountId ?? "undefined",
-    searchPhrase: params.searchPhrase ?? "undefined",
-    orderBy: params.orderBy ?? "undefined",
-    orderAsc: (params.orderAsc === "true" ? true : false) ?? "undefined",
-    limit: Number(params.limit) ?? "undefined",
-    offset: Number(params.offset) ?? "undefined",
-    eventStartDate: new Date(params.startDate).toString(),
-    eventEndDate: new Date(params.endDate).toString(),
-  };
-
-  if (event.headers.origin || event.headers.Origin) {
-    origin = event.headers.origin
-      ? [event.headers.origin]
-      : [event.headers.Origin];
-  }
-
-  let allowed = "Denied";
-
-  logger.info(`Origin: ${origin}`);
-
-  if (origin.filter(checker).length > 0) {
-    allowed = origin[0];
-  }
-
-  logger.info(`Allowed: ${allowed}`);
-
-  if (allowed !== "Denied") {
-    Newrelic.recordCustomEvent("NrO4GValidationHistory", {
-      ...nrEvent,
-      ...{ action: "start" },
-    });
-
-    if (params.accountId && params.searchPhrase) {
-      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
-        ...nrEvent,
-        ...{ action: "bad_request" },
-      });
-      return LambdaResponses.badRequest(allowed);
-    }
-
-    if (!params.startDate && !params.endDate) {
-      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
-        ...nrEvent,
-        ...{ action: "bad_request" },
-      });
-      return LambdaResponses.badRequest(allowed);
-    }
-
-    logger.info("Obtaining validation history...", params.accountId);
-
-    const validationHistoryRequest: ValidationHistoryRequest = {
-      accountId: params.accountId ?? undefined,
-      searchPhrase: params.searchPhrase ?? undefined,
-      orderBy: params.orderBy ?? undefined,
-      orderAsc: (params.orderAsc === "true" ? true : false) ?? undefined,
-      limit: Number(params.limit) ?? undefined,
-      offset: Number(params.offset) ?? undefined,
-      startDate: new Date(params.startDate),
-      endDate: new Date(params.endDate),
+  return handleDistributedTracing("nr-o4g-get-validation-history", async () => {
+    const logger = new Logger(context);
+    const params = event.queryStringParameters || {};
+    let origin = [""];
+    const nrEvent: getValidationHistoryEvent = {
+      func: "getValidationHistory",
+      accountId: params.accountId ?? "undefined",
+      searchPhrase: params.searchPhrase ?? "undefined",
+      orderBy: params.orderBy ?? "undefined",
+      orderAsc: (params.orderAsc === "true" ? true : false) ?? "undefined",
+      limit: Number(params.limit) ?? "undefined",
+      offset: Number(params.offset) ?? "undefined",
+      eventStartDate: new Date(params.startDate).toString(),
+      eventEndDate: new Date(params.endDate).toString(),
     };
 
-    if (!checkValidColumnName(validationHistoryRequest.orderBy)) {
-      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
-        ...nrEvent,
-        ...{ action: "bad_request" },
-      });
-      return LambdaResponses.badRequest(allowed);
+    if (event.headers.origin || event.headers.Origin) {
+      origin = event.headers.origin
+        ? [event.headers.origin]
+        : [event.headers.Origin];
     }
 
-    logger.info(
-      "Preparing get data query and count query...",
-      validationHistoryRequest.accountId
-    );
-    const sqlQuery = createSql(validationHistoryRequest, false);
-    const countQuery = createSql(validationHistoryRequest, true);
+    let allowed = "Denied";
 
-    const validationHistory = (await getValidationAttempts(
-      sqlQuery as string,
-      validationHistoryRequest
-    )) as ValidationAttempts;
-    const recordCount = (await getValidationAttempts(
-      countQuery as string,
-      validationHistoryRequest
-    )) as ValidationCount;
+    logger.info(`Origin: ${origin}`);
 
-    logger.info("Return results...", validationHistoryRequest.accountId);
-    logger.info(JSON.stringify(validationHistory.records));
+    if (origin.filter(checker).length > 0) {
+      allowed = origin[0];
+    }
 
-    const response: ValidationHistoryResponse = {
-      attempts: validationHistory.records,
-      records:
-        recordCount.records.length > 0 ? recordCount.records[0].count : 0,
-    };
+    logger.info(`Allowed: ${allowed}`);
 
-    Newrelic.recordCustomEvent("NrO4GValidationHistory", {
-      ...nrEvent,
-      ...{ action: "success" },
-    });
+    if (allowed !== "Denied") {
+      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+        ...nrEvent,
+        ...{ action: "start" },
+      });
+
+      if (params.accountId && params.searchPhrase) {
+        Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+          ...nrEvent,
+          ...{ action: "bad_request" },
+        });
+        return LambdaResponses.badRequest(allowed);
+      }
+
+      if (!params.startDate && !params.endDate) {
+        Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+          ...nrEvent,
+          ...{ action: "bad_request" },
+        });
+        return LambdaResponses.badRequest(allowed);
+      }
+
+      logger.info("Obtaining validation history...", params.accountId);
+
+      const validationHistoryRequest: ValidationHistoryRequest = {
+        accountId: params.accountId ?? undefined,
+        searchPhrase: params.searchPhrase ?? undefined,
+        orderBy: params.orderBy ?? undefined,
+        orderAsc: (params.orderAsc === "true" ? true : false) ?? undefined,
+        limit: Number(params.limit) ?? undefined,
+        offset: Number(params.offset) ?? undefined,
+        startDate: new Date(params.startDate),
+        endDate: new Date(params.endDate),
+      };
+
+      if (!checkValidColumnName(validationHistoryRequest.orderBy)) {
+        Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+          ...nrEvent,
+          ...{ action: "bad_request" },
+        });
+        return LambdaResponses.badRequest(allowed);
+      }
+
+      logger.info(
+        "Preparing get data query and count query...",
+        validationHistoryRequest.accountId
+      );
+      const sqlQuery = createSql(validationHistoryRequest, false);
+      const countQuery = createSql(validationHistoryRequest, true);
+
+      const validationHistory = (await getValidationAttempts(
+        sqlQuery as string,
+        validationHistoryRequest
+      )) as ValidationAttempts;
+      const recordCount = (await getValidationAttempts(
+        countQuery as string,
+        validationHistoryRequest
+      )) as ValidationCount;
+
+      logger.info("Return results...", validationHistoryRequest.accountId);
+      logger.info(JSON.stringify(validationHistory.records));
+
+      const response: ValidationHistoryResponse = {
+        attempts: validationHistory.records,
+        records:
+          recordCount.records.length > 0 ? recordCount.records[0].count : 0,
+      };
+
+      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+        ...nrEvent,
+        ...{ action: "success" },
+      });
+
+      return {
+        headers: {
+          "Access-Control-Allow-Origin": allowed,
+        },
+        statusCode: StatusCodes.OK,
+        body: JSON.stringify(response),
+      };
+    }
 
     return {
       headers: {
         "Access-Control-Allow-Origin": allowed,
       },
-      statusCode: StatusCodes.OK,
-      body: JSON.stringify(response),
+      statusCode: StatusCodes.FORBIDDEN,
+      body: "Access Denied.",
     };
-  }
-
-  return {
-    headers: {
-      "Access-Control-Allow-Origin": allowed,
-    },
-    statusCode: StatusCodes.FORBIDDEN,
-    body: "Access Denied.",
-  };
+  });
 };
