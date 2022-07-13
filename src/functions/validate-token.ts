@@ -15,6 +15,7 @@ import { checker } from "../utils/cors-helper";
 import { StatusCodes } from "http-status-codes";
 import Newrelic from "newrelic";
 import { validateTokenEvent } from "../types/nrEvents";
+import { handleDistributedTracing } from "../utils/distributed_tracing";
 
 /**
  * Checks if the provided token exists in the database.
@@ -25,116 +26,118 @@ export const validateToken = async (
   event: APIGatewayProxyEvent,
   context: Context
 ): Promise<LambdaResponse> => {
-  const logger = new Logger(context);
-  const params = event.queryStringParameters || {};
-  let origin = [""];
-  const nrEvent: validateTokenEvent = {
-    func: "ValidateToken",
-    token: params?.token ?? "undefined",
-    accountId: params?.accountId ?? "undefined",
-  };
-
-  if (event.headers.origin || event.headers.Origin) {
-    origin = event.headers.origin
-      ? [event.headers.origin]
-      : [event.headers.Origin];
-  }
-
-  let allowed = "Denied";
-  let token = "";
-  let accountId = "";
-
-  logger.info(`Origin: ${origin}`);
-
-  if (origin.filter(checker).length > 0) {
-    allowed = origin[0];
-  }
-
-  logger.info(`Allowed: ${allowed}`);
-
-  Newrelic.recordCustomEvent("NrO4GValidateToken", {
-    ...nrEvent,
-    ...{ action: "start" },
-  });
-
-  if (allowed !== "Denied") {
-    if (params.token && params.accountId) {
-      token = params.token;
-      accountId = params.accountId;
-    } else {
-      Newrelic.recordCustomEvent("NrO4GValidateToken", {
-        ...nrEvent,
-        ...{ action: "bad_request" },
-      });
-      return LambdaResponses.badRequest(allowed);
-    }
-
-    logger.info(
-      "Incoming request to validate token lambda...",
-      accountId,
-      token
-    );
-
-    const data: TokenAndAccountId = {
-      token: token,
-      accountId: accountId,
+  return handleDistributedTracing("nr-o4g-validate-token", async () => {
+    const logger = new Logger(context);
+    const params = event.queryStringParameters || {};
+    let origin = [""];
+    const nrEvent: validateTokenEvent = {
+      func: "ValidateToken",
+      token: params?.token ?? "undefined",
+      accountId: params?.accountId ?? "undefined",
     };
 
-    const checkUsedTokenResult: ValidationAttempts =
-      await getValidationAttemptByToken(token);
-    logger.info(
-      `Token Result: ${JSON.stringify(checkUsedTokenResult)}`,
-      accountId,
-      token
-    );
-
-    if (checkUsedTokenResult.records.length > 0) {
-      Newrelic.recordCustomEvent("NrO4GValidateToken", {
-        ...nrEvent,
-        ...{ action: "used_token" },
-      });
-      return LambdaResponses.tokenAlreadyUsed(allowed);
+    if (event.headers.origin || event.headers.Origin) {
+      origin = event.headers.origin
+        ? [event.headers.origin]
+        : [event.headers.Origin];
     }
 
-    const tokenRetention: ValidationCount = await checkValidationDate(
-      data.token,
-      data.accountId
-    );
-    logger.info(
-      `Token Retention: ${JSON.stringify(tokenRetention)}`,
-      accountId,
-      token
-    );
+    let allowed = "Denied";
+    let token = "";
+    let accountId = "";
 
-    if (tokenRetention.records[0].count > 0) {
-      Newrelic.recordCustomEvent("NrO4GValidateToken", {
-        ...nrEvent,
-        ...{ action: "token_used_recently" },
-      });
-      return LambdaResponses.tokenInRetentionPeriod(allowed);
+    logger.info(`Origin: ${origin}`);
+
+    if (origin.filter(checker).length > 0) {
+      allowed = origin[0];
     }
 
-    logger.info("Before return value...", accountId, token);
+    logger.info(`Allowed: ${allowed}`);
 
     Newrelic.recordCustomEvent("NrO4GValidateToken", {
       ...nrEvent,
-      ...{ action: "success" },
+      ...{ action: "start" },
     });
 
-    return {
-      headers: {
-        "Access-Control-Allow-Origin": allowed,
-      },
-      statusCode: StatusCodes.OK,
-      body: JSON.stringify({ Allow: true }),
-    };
-  } else {
-    return {
-      headers: {
-        "Access-Control-Allow-Origin": allowed,
-      },
-      statusCode: StatusCodes.FORBIDDEN,
-      body: "Access Denied.",
-    };
-  }
+    if (allowed !== "Denied") {
+      if (params.token && params.accountId) {
+        token = params.token;
+        accountId = params.accountId;
+      } else {
+        Newrelic.recordCustomEvent("NrO4GValidateToken", {
+          ...nrEvent,
+          ...{ action: "bad_request" },
+        });
+        return LambdaResponses.badRequest(allowed);
+      }
+
+      logger.info(
+        "Incoming request to validate token lambda...",
+        accountId,
+        token
+      );
+
+      const data: TokenAndAccountId = {
+        token: token,
+        accountId: accountId,
+      };
+
+      const checkUsedTokenResult: ValidationAttempts =
+        await getValidationAttemptByToken(token);
+      logger.info(
+        `Token Result: ${JSON.stringify(checkUsedTokenResult)}`,
+        accountId,
+        token
+      );
+
+      if (checkUsedTokenResult.records.length > 0) {
+        Newrelic.recordCustomEvent("NrO4GValidateToken", {
+          ...nrEvent,
+          ...{ action: "used_token" },
+        });
+        return LambdaResponses.tokenAlreadyUsed(allowed);
+      }
+
+      const tokenRetention: ValidationCount = await checkValidationDate(
+        data.token,
+        data.accountId
+      );
+      logger.info(
+        `Token Retention: ${JSON.stringify(tokenRetention)}`,
+        accountId,
+        token
+      );
+
+      if (tokenRetention.records[0].count > 0) {
+        Newrelic.recordCustomEvent("NrO4GValidateToken", {
+          ...nrEvent,
+          ...{ action: "token_used_recently" },
+        });
+        return LambdaResponses.tokenInRetentionPeriod(allowed);
+      }
+
+      logger.info("Before return value...", accountId, token);
+
+      Newrelic.recordCustomEvent("NrO4GValidateToken", {
+        ...nrEvent,
+        ...{ action: "success" },
+      });
+
+      return {
+        headers: {
+          "Access-Control-Allow-Origin": allowed,
+        },
+        statusCode: StatusCodes.OK,
+        body: JSON.stringify({ Allow: true }),
+      };
+    } else {
+      return {
+        headers: {
+          "Access-Control-Allow-Origin": allowed,
+        },
+        statusCode: StatusCodes.FORBIDDEN,
+        body: "Access Denied.",
+      };
+    }
+  });
 };
