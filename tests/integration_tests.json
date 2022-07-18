@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9ed4b511-a2e8-403a-b935-9dd4920ca386",
+		"_postman_id": "6ab51c01-538e-4064-b358-e5a1b430c1bf",
 		"name": "O4G Testing Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -24,6 +24,11 @@
 					{
 						"key": "origin",
 						"value": "{{origin}}",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
 						"type": "default"
 					}
 				],
@@ -74,6 +79,11 @@
 					{
 						"key": "origin",
 						"value": "{{origin}}",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
 						"type": "default"
 					}
 				],
@@ -126,6 +136,11 @@
 						"key": "origin",
 						"value": "{{origin}}",
 						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
+						"type": "default"
 					}
 				],
 				"url": {
@@ -169,7 +184,13 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
+						"type": "default"
+					}
+				],
 				"url": {
 					"raw": "{{base_url}}/large-response?orgId={{organizationId}}",
 					"host": [
@@ -218,6 +239,11 @@
 					{
 						"key": "origin",
 						"value": "{{origin}}",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
 						"type": "default"
 					}
 				],
@@ -269,6 +295,11 @@
 					{
 						"key": "origin",
 						"value": "{{origin}}",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
 						"type": "default"
 					}
 				],
@@ -350,6 +381,11 @@
 						"key": "origin",
 						"value": "{{origin}}",
 						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
+						"type": "default"
 					}
 				],
 				"url": {
@@ -425,6 +461,11 @@
 						"key": "origin",
 						"value": "{{origin}}",
 						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
+						"type": "default"
 					}
 				],
 				"url": {
@@ -488,6 +529,11 @@
 						"key": "origin",
 						"value": "{{origin}}",
 						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
+						"type": "default"
 					}
 				],
 				"body": {
@@ -541,6 +587,11 @@
 					{
 						"key": "origin",
 						"value": "{{origin}}",
+						"type": "default"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{api_key}}",
 						"type": "default"
 					}
 				],
