@@ -217,10 +217,6 @@ functions:
           path: /update
           method: get
           cors: true
-          authorizer:
-            name: authorizer
-            type: token
-            resultTtlInSeconds: 0
     memorySize: 512
 
   authorizer:
