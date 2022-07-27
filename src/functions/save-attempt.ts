@@ -4,7 +4,6 @@ import { SaveAttemptBody } from "../types/database";
 import { saveValidationAttempt } from "../utils/database";
 import { LambdaResponses } from "../utils/lambda-responses";
 import { Logger } from "../utils/logger";
-import { checker } from "../utils/cors-helper";
 import { StatusCodes } from "http-status-codes";
 import Newrelic from "newrelic";
 import { saveAttemptEvent } from "../types/nrEvents";
@@ -23,93 +22,63 @@ export const saveAttempt = async (
     const logger = new Logger(context);
     const body = JSON.parse(event.body);
     const attempt = body as SaveAttemptBody;
-    let origin = [""];
 
-    if (event.headers.origin || event.headers.Origin) {
-      origin = event.headers.origin
-        ? [event.headers.origin]
-        : [event.headers.Origin];
-    }
+    logger.info(
+      "Checking incoming parameters...",
+      attempt.accountId,
+      attempt.token
+    );
+    const { token, accountId, eligibilityStatus, orgId, orgName, reason } =
+      attempt;
 
-    let allowed = "Denied";
+    const nrEvent: saveAttemptEvent = {
+      func: "SaveAttempt",
+      accountId: attempt?.accountId ?? "undefined",
+      token: attempt?.token ?? "undefined",
+      eligibilityStatus: attempt?.eligibilityStatus ?? "undefined",
+      orgId: attempt?.orgId ?? "undefined",
+      orgName: attempt?.orgName ?? "undefined",
+      reason: attempt?.reason ?? "undefined",
+    };
 
-    logger.info(`Origin: ${origin}`);
+    Newrelic.recordCustomEvent("NrO4GSaveAttempt", {
+      ...nrEvent,
+      ...{ action: "start" },
+    });
 
-    if (origin.filter(checker).length > 0) {
-      allowed = origin[0];
-    }
-
-    logger.info(`Allowed: ${allowed}`);
-
-    if (allowed !== "Denied") {
-      logger.info(
-        "Checking incoming parameters...",
-        attempt.accountId,
-        attempt.token
-      );
-      const { token, accountId, eligibilityStatus, orgId, orgName, reason } =
-        attempt;
-
-      const nrEvent: saveAttemptEvent = {
-        func: "SaveAttempt",
-        accountId: attempt?.accountId ?? "undefined",
-        token: attempt?.token ?? "undefined",
-        eligibilityStatus: attempt?.eligibilityStatus ?? "undefined",
-        orgId: attempt?.orgId ?? "undefined",
-        orgName: attempt?.orgName ?? "undefined",
-        reason: attempt?.reason ?? "undefined",
-      };
-
+    if (
+      token === undefined ||
+      accountId === undefined ||
+      eligibilityStatus === undefined ||
+      orgId === undefined ||
+      orgName === undefined
+    ) {
       Newrelic.recordCustomEvent("NrO4GSaveAttempt", {
         ...nrEvent,
-        ...{ action: "start" },
+        ...{ action: "bad_request" },
       });
-
-      if (
-        token === undefined ||
-        accountId === undefined ||
-        eligibilityStatus === undefined ||
-        orgId === undefined ||
-        orgName === undefined
-      ) {
-        Newrelic.recordCustomEvent("NrO4GSaveAttempt", {
-          ...nrEvent,
-          ...{ action: "bad_request" },
-        });
-        return LambdaResponses.badRequest(allowed);
-      }
-
-      logger.info("Saving data to the database...", accountId, token);
-      await saveValidationAttempt(
-        token,
-        accountId,
-        eligibilityStatus,
-        orgId,
-        orgName,
-        reason
-      );
-
-      Newrelic.recordCustomEvent("NrO4GSaveAttempt", {
-        ...nrEvent,
-        ...{ action: "success" },
-      });
-      logger.info("Saved data...", accountId, token);
-
-      return {
-        headers: {
-          "Access-Control-Allow-Origin": allowed,
-        },
-        statusCode: StatusCodes.CREATED,
-        body: "",
-      };
-    } else {
-      return {
-        headers: {
-          "Access-Control-Allow-Origin": allowed,
-        },
-        statusCode: StatusCodes.FORBIDDEN,
-        body: "Access Denied.",
-      };
+      return LambdaResponses.badRequest();
     }
+
+    logger.info("Saving data to the database...", accountId, token);
+    await saveValidationAttempt(
+      token,
+      accountId,
+      eligibilityStatus,
+      orgId,
+      orgName,
+      reason
+    );
+
+    Newrelic.recordCustomEvent("NrO4GSaveAttempt", {
+      ...nrEvent,
+      ...{ action: "success" },
+    });
+    logger.info("Saved data...", accountId, token);
+
+    return {
+      statusCode: StatusCodes.CREATED,
+      body: "",
+    };
   });
 };

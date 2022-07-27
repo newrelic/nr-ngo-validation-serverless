@@ -6,11 +6,10 @@ import { getExpirationDateFromResponse } from "../services/lookup";
 const TOKEN_REGEX = /^([a-zA-Z0-9]{8})+(@)[a-zA-Z0-9]+$/;
 
 export const validateLookupResponse = (
-  lookupResponse: LookupLargeResponse,
-  allowed: string
+  lookupResponse: LookupLargeResponse
 ): LookupLargeResponse | LambdaResponse => {
   if (lookupResponse.returnStatus.data.length === 0) {
-    return LambdaResponses.noDataForProvidedToken(allowed);
+    return LambdaResponses.noDataForProvidedToken();
   }
 
   return lookupResponse;
