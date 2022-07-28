@@ -210,6 +210,9 @@ export const validate = async (
         return LambdaResponses.noDataForProvidedToken();
       } else {
         return {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
           statusCode: StatusCodes.OK,
           body: JSON.stringify(constraintResponse),
         };
@@ -241,6 +244,9 @@ export const validate = async (
       ...{ action: "success" },
     });
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.OK,
       body: JSON.stringify(response),
     };

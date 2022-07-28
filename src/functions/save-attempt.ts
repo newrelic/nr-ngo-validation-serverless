@@ -77,6 +77,9 @@ export const saveAttempt = async (
     logger.info("Saved data...", accountId, token);
 
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.CREATED,
       body: "",
     };

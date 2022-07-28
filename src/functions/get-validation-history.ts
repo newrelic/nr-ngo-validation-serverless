@@ -107,6 +107,9 @@ export const getValidationHistory = async (
     });
 
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.OK,
       body: JSON.stringify(response),
     };

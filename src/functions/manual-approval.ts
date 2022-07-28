@@ -81,6 +81,9 @@ export const manualApprove = async (
     });
 
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.CREATED,
       body: JSON.stringify(""),
     };

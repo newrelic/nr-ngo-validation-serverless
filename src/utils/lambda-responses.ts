@@ -4,6 +4,9 @@ import { StatusCodes } from "http-status-codes";
 export class LambdaResponses {
   public static readonly noTokenProvided = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.BAD_REQUEST,
       body: JSON.stringify({
         internalStatusCode: 40001,
@@ -14,6 +17,9 @@ export class LambdaResponses {
 
   public static readonly badTokenProvided = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.BAD_REQUEST,
       body: JSON.stringify({
         internalStatusCode: 40002,
@@ -24,6 +30,9 @@ export class LambdaResponses {
 
   public static readonly missingRequiredData = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.BAD_REQUEST,
       body: JSON.stringify({
         internalStatusCode: 40003,
@@ -35,6 +44,9 @@ export class LambdaResponses {
 
   public static readonly badRequest = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.BAD_REQUEST,
       body: JSON.stringify({
         internalStatusCode: 40004,
@@ -45,6 +57,9 @@ export class LambdaResponses {
 
   public static readonly tokenExpired = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.UNAUTHORIZED,
       body: JSON.stringify({
         internalStatusCode: 40101,
@@ -55,6 +70,9 @@ export class LambdaResponses {
 
   public static readonly notQualified = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.UNAUTHORIZED,
       body: JSON.stringify({
         internalStatusCode: 40102,
@@ -65,6 +83,9 @@ export class LambdaResponses {
 
   public static readonly tokenAlreadyUsed = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.UNAUTHORIZED,
       body: JSON.stringify({
         internalStatusCode: 40103,
@@ -75,6 +96,9 @@ export class LambdaResponses {
 
   public static readonly tokenInRetentionPeriod = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.UNAUTHORIZED,
       body: JSON.stringify({
         internalStatusCode: 40104,
@@ -85,6 +109,9 @@ export class LambdaResponses {
 
   public static readonly organisationAlreadyExist = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.UNAUTHORIZED,
       body: JSON.stringify({
         internalStatusCode: 40105,
@@ -95,6 +122,9 @@ export class LambdaResponses {
 
   public static readonly accountAlreadyExist = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.UNAUTHORIZED,
       body: JSON.stringify({
         internalStatusCode: 40106,
@@ -105,6 +135,9 @@ export class LambdaResponses {
 
   public static readonly noEndpoint = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.NOT_FOUND,
       body: JSON.stringify({
         internalStatusCode: 40401,
@@ -115,6 +148,9 @@ export class LambdaResponses {
 
   public static readonly noDataForProvidedToken = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.NOT_FOUND,
       body: JSON.stringify({
         internalStatusCode: 40402,
@@ -125,6 +161,9 @@ export class LambdaResponses {
 
   public static readonly noDataForProvidedOrgId = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.NOT_FOUND,
       body: JSON.stringify({
         internalStatusCode: 40403,
@@ -135,6 +174,9 @@ export class LambdaResponses {
 
   public static readonly wrongConfiguration = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       body: JSON.stringify({
         internalStatusCode: 50001,
@@ -145,6 +187,9 @@ export class LambdaResponses {
 
   public static readonly cannotSaveToDB = (): LambdaResponse => {
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       body: JSON.stringify({
         internalStatusCode: 50002,

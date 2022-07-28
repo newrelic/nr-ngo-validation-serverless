@@ -62,6 +62,9 @@ export const validateAccount = async (
       });
       logger.info("Found the account", accountId);
       return {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
         statusCode: StatusCodes.OK,
         body: JSON.stringify(response),
       };
@@ -73,6 +76,9 @@ export const validateAccount = async (
       ...{ action: "not_found" },
     });
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.NO_CONTENT,
       body: "",
     };

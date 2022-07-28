@@ -71,6 +71,9 @@ export const updateLookupLargeResponse = async (
     });
 
     return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
       statusCode: StatusCodes.CREATED,
       body: "",
     };
