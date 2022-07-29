@@ -7,8 +7,6 @@ import {
 import { LookupApiFixtures } from "../fixtures/lookup-api-fixtures";
 import { LambdaResponses } from "../../src/utils/lambda-responses";
 
-const allowed = "https://allowed.newrelic.com";
-
 describe("Token utils", () => {
   it("Provided token has got proper format", () => {
     const correctToken = "pin12355@321handle";
@@ -71,13 +69,13 @@ describe("Token utils", () => {
 describe("Lookup response validation", () => {
   it("Correct response from lookup api should pass the validation check", () => {
     expect(
-      validateLookupResponse(LookupApiFixtures.validLookupApiResponse, allowed)
+      validateLookupResponse(LookupApiFixtures.validLookupApiResponse)
     ).toEqual(LookupApiFixtures.validLookupApiResponse);
   });
 
   it("Incorrect response (empty array) from lookup api should return no data for provided token", () => {
     expect(
-      validateLookupResponse(LookupApiFixtures.invalidLookupResponse, allowed)
-    ).toEqual(LambdaResponses.noDataForProvidedToken(allowed));
+      validateLookupResponse(LookupApiFixtures.invalidLookupResponse)
+    ).toEqual(LambdaResponses.noDataForProvidedToken());
   });
 });

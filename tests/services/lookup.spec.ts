@@ -11,7 +11,6 @@ import { LookupApiFixtures } from "../fixtures/lookup-api-fixtures";
 const fetchMock = jest.spyOn(fetch, "default");
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { Response } = fetch;
-const allowed = "Allow";
 
 let expectedValidResponse: LookupLargeResponse;
 let invalidResponse: LookupLargeResponse;
@@ -23,8 +22,7 @@ describe("Lookup API", () => {
   beforeAll(() => {
     expectedValidResponse = LookupApiFixtures.validLookupApiResponse;
     invalidResponse = LookupApiFixtures.invalidLookupResponse;
-    noDataForProvidedTokenError =
-      LambdaResponses.noDataForProvidedToken(allowed);
+    noDataForProvidedTokenError = LambdaResponses.noDataForProvidedToken();
     validLookupResponse = LookupApiFixtures.validLookupApiResponse;
     notQualifiedResponse =
       LookupApiFixtures.validLookupApiButNotQualifiedResponse;
@@ -39,7 +37,7 @@ describe("Lookup API", () => {
       new Response(JSON.stringify(expectedValidResponse))
     );
 
-    const response = await getResponseFromLookup("fake@token", allowed);
+    const response = await getResponseFromLookup("fake@token");
 
     expect(response).toEqual(expectedValidResponse);
   });
@@ -51,7 +49,6 @@ describe("Lookup API", () => {
 
     const response = await getResponseFromLookup(
       "fake@token",
-      allowed,
       "yourSessionKey123"
     );
 
@@ -63,7 +60,7 @@ describe("Lookup API", () => {
       new Response(JSON.stringify(invalidResponse))
     );
 
-    const response = await getResponseFromLookup("bad@token", allowed);
+    const response = await getResponseFromLookup("bad@token");
 
     expect(response).toEqual(noDataForProvidedTokenError);
   });

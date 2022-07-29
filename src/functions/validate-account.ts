@@ -5,7 +5,6 @@ import { getValidationAttemptByAccountId } from "../utils/database";
 import { LambdaResponses } from "../utils/lambda-responses";
 import { Context } from "aws-lambda/handler";
 import { Logger } from "../utils/logger";
-import { checker } from "../utils/cors-helper";
 import { StatusCodes } from "http-status-codes";
 import Newrelic from "newrelic";
 import { validateAccountEvent } from "../types/nrEvents";
@@ -23,92 +22,65 @@ export const validateAccount = async (
   return handleDistributedTracing("nr-o4g-validate-account", async () => {
     const logger = new Logger(context);
     const params = event.queryStringParameters || {};
-    let origin = [""];
     const nrEvent: validateAccountEvent = {
       func: "ValidateAccount",
       accountId: params?.accountId ?? "undefined",
     };
-    let checkUsedAccountResult: ValidationAttempts;
-
-    if (event.headers.origin || event.headers.Origin) {
-      origin = event.headers.origin
-        ? [event.headers.origin]
-        : [event.headers.Origin];
-    }
-
-    let allowed = "Denied";
+    const checkUsedAccountResult: ValidationAttempts;
     let accountId: string;
 
-    logger.info(`Origin: ${origin}`);
-
-    if (origin.filter(checker).length > 0) {
-      allowed = origin[0];
-    }
-
-    logger.info(`Allowed: ${allowed}`);
-
-    if (allowed !== "Denied") {
-      if (params.accountId) {
-        accountId = params.accountId;
-        logger.info(`Acc id: ${accountId}`, "Debugging");
-      } else {
-        Newrelic.recordCustomEvent("NrO4GValidateAccount", {
-          ...nrEvent,
-          ...{ action: "start" },
-        });
-        return LambdaResponses.badRequest(allowed);
-      }
-
-      logger.info("Getting information about account from database", accountId);
-      checkUsedAccountResult = await getValidationAttemptByAccountId(accountId);
-      logger.info("Obtained information about account", accountId);
-
-      let response = undefined;
-      if (checkUsedAccountResult.records.length === 1) {
-        const { eligibility_status, validation_date } =
-          checkUsedAccountResult.records[0];
-        response = {
-          eligibility_status,
-          validation_date,
-        };
-        logger.info(
-          `Response all good case: ${JSON.stringify(response)}`,
-          "Debugging"
-        );
-        Newrelic.recordCustomEvent("NrO4GValidateAccount", {
-          ...nrEvent,
-          ...{ action: "success" },
-        });
-        logger.info("Found the account", accountId);
-        return {
-          headers: {
-            "Access-Control-Allow-Origin": allowed,
-          },
-          statusCode: StatusCodes.OK,
-          body: JSON.stringify(response),
-        };
-      }
-
-      logger.info("Account not found", accountId);
+    if (params.accountId) {
+      accountId = params.accountId;
+      logger.info(`Acc id: ${accountId}`, "Debugging");
+    } else {
       Newrelic.recordCustomEvent("NrO4GValidateAccount", {
         ...nrEvent,
-        ...{ action: "not_found" },
+        ...{ action: "start" },
       });
-      return {
-        headers: {
-          "Access-Control-Allow-Origin": allowed,
-        },
-        statusCode: StatusCodes.NO_CONTENT,
-        body: "",
+      return LambdaResponses.badRequest();
+    }
+
+    logger.info("Getting information about account from database", accountId);
+    checkUsedAccountResult = await getValidationAttemptByAccountId(accountId);
+    logger.info("Obtained information about account", accountId);
+
+    let response = undefined;
+    if (checkUsedAccountResult.records.length === 1) {
+      const { eligibility_status, validation_date } =
+        checkUsedAccountResult.records[0];
+      response = {
+        eligibility_status,
+        validation_date,
       };
-    } else {
+      logger.info(
+        `Response all good case: ${JSON.stringify(response)}`,
+        "Debugging"
+      );
+      Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+        ...nrEvent,
+        ...{ action: "success" },
+      });
+      logger.info("Found the account", accountId);
       return {
         headers: {
-          "Access-Control-Allow-Origin": allowed,
+          "Access-Control-Allow-Origin": "*",
         },
-        statusCode: StatusCodes.FORBIDDEN,
-        body: "Access Denied.",
+        statusCode: StatusCodes.OK,
+        body: JSON.stringify(response),
       };
     }
+
+    logger.info("Account not found", accountId);
+    Newrelic.recordCustomEvent("NrO4GValidateAccount", {
+      ...nrEvent,
+      ...{ action: "not_found" },
+    });
+    return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+      statusCode: StatusCodes.NO_CONTENT,
+      body: "",
+    };
   });
 };
