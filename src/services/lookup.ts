@@ -6,7 +6,6 @@ import { validateLookupResponse } from "../utils/token-validator";
 
 export const getResponseFromLookup = async (
   token: string,
-  allowed: string,
   sessionKey?: string
 ): Promise<LookupLargeResponse | LambdaResponses> => {
   let lookUpApiUrl: string;
@@ -18,7 +17,7 @@ export const getResponseFromLookup = async (
   }
 
   const lookupRes = await sendGetRequest<LookupLargeResponse>(lookUpApiUrl);
-  const validatedLookupResponse = validateLookupResponse(lookupRes, allowed);
+  const validatedLookupResponse = validateLookupResponse(lookupRes);
 
   return validatedLookupResponse;
 };

@@ -10,5 +10,5 @@ export type FailedResponseBody = {
 };
 
 export interface HeaderOption {
-  'Access-Control-Allow-Origin': string;
+  "Access-Control-Allow-Origin": string;
 }
