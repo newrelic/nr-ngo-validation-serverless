@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6ab51c01-538e-4064-b358-e5a1b430c1bf",
+		"_postman_id": "3477e3ce-847f-4796-a2d8-bc7d8b099aee",
 		"name": "O4G Testing Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -155,54 +155,6 @@
 						{
 							"key": "orgId",
 							"value": "badId"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get LLR No Origin",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"tests[\"Response has Access Denied.\"] = responseBody === \"Access Denied.\";",
-							"",
-							"pm.test(\"Status code is 403\", function () {",
-							"    pm.response.to.have.status(403);",
-							"});",
-							"",
-							"pm.test(\"Status code has status Forbidden\", function () {",
-							"    pm.response.to.have.status(\"Forbidden\");",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "{{api_key}}",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "{{base_url}}/large-response?orgId={{organizationId}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"large-response"
-					],
-					"query": [
-						{
-							"key": "orgId",
-							"value": "{{organizationId}}"
 						}
 					]
 				}
