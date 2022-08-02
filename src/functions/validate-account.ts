@@ -26,7 +26,6 @@ export const validateAccount = async (
       func: "ValidateAccount",
       accountId: params?.accountId ?? "undefined",
     };
-    const checkUsedAccountResult: ValidationAttempts;
     let accountId: string;
 
     if (params.accountId) {
@@ -41,7 +40,8 @@ export const validateAccount = async (
     }
 
     logger.info("Getting information about account from database", accountId);
-    checkUsedAccountResult = await getValidationAttemptByAccountId(accountId);
+    const checkUsedAccountResult: ValidationAttempts =
+      await getValidationAttemptByAccountId(accountId);
     logger.info("Obtained information about account", accountId);
 
     let response = undefined;
