@@ -59,9 +59,21 @@ After deployment it is recommended to do a sync of terraform states with s3 buck
 aws s3 sync .serverless s3://${BUCKET_NAME} --exclude "*" --include "validation-service.zip"
 ```
 
+## Deployment notes
+Errors/warnings in GH Actions to ignore:
+- Deploy on tag
+  - Deploy Lambda Functions
+    - `Cannot find module 'newrelic' or its corresponding type declarations.`
+    - `Warning: Unable to find NR License key for extension validation; falling back to CloudWatch for transport.`
+    - `Warning: Function "..." already will be handled with provider.layers; skipping.`
+    - `Warning: No New Relic AWS Lambda integration found for this New Relic linked account and aws account.`
+    - `Error while creating the New Relic AWS Lambda cloud integration: Error: ["data.cloudLinkAccount missing in response"].`
+
 ## Testing
 
 To run all tests type `npm test` in your terminal in project folder.
+
+You can import collection from tests/integration_tests.json to Postman and setup context. After deployment you should test if endpoints work (with and without api key)
 
 ## Requests to each lambda function
 
