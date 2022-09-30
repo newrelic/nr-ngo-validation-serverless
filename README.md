@@ -60,7 +60,9 @@ aws s3 sync .serverless s3://${BUCKET_NAME} --exclude "*" --include "validation-
 ```
 
 ## Deployment notes
+
 Errors/warnings in GH Actions to ignore:
+
 - Deploy on tag
   - Deploy Lambda Functions
     - `Cannot find module 'newrelic' or its corresponding type declarations.`
