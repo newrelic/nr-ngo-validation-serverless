@@ -19,6 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Is Staging
+        id: isStaging
+        if: contains(${{ github.event.inputs.deploy_to_env }}, 'STAGING')
+        run: echo "::set-output name=staging::true"
+
       - name: Checkout repo
         uses: actions/checkout@v2
 
@@ -48,14 +53,14 @@ jobs:
         run: sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
 
       - name: Create staging env file
-        if: ${{ github.event.inputs.deploy_to_env }} == 'STAGING'
+        if: steps.isStaging.output.staging == true
         run: |
           cat > .env << EOF
           ${{ secrets.STAGING_ENV }}
           EOF
 
       - name: Create prod env file
-        if: ${{ github.event.inputs.deploy_to_env }} == 'PROD'
+        if: steps.isStaging.output.staging == false
         run: |
           cat > .env << EOF
           ${{ secrets.PROD_ENV }}
@@ -65,7 +70,7 @@ jobs:
         run: npm install
 
       - name: Set stage for prod
-        if: ${{ github.event.inputs.deploy_to_env }} == 'PROD'
+        if: steps.isStaging.output.staging == false
         run: |
           sed -i "s/stage: staging\":.*/stage\": \"prod\",/g" serverless.yml
 
@@ -73,9 +78,9 @@ jobs:
         run: sls deploy -s ${{ github.event.inputs.deploy_to_env }}
 
       - name: Sync terraform state with s3 bucket staging
-        if: ${{ github.event.inputs.deploy_to_env }} == 'STAGING'
+        if: steps.isStaging.output.staging == true
         run: aws s3 sync .serverless s3://${{ secrets.STAGING_BUCKET }} --exclude "*" --include "validation-service.zip" --region us-east-2
 
       - name: Sync terraform state with s3 bucket prod
-        if: ${{ github.event.inputs.deploy_to_env }} == 'PROD'
+        if: steps.isStaging.output.staging == false
         run: aws s3 sync .serverless s3://${{ secrets.PROD_BUCKET }} --exclude "*" --include "validation-service.zip" --region us-east-2
