@@ -60,7 +60,7 @@ jobs:
           EOF
 
       - name: Create prod env file
-        if: steps.isStaging.output.staging == false
+        if: steps.isStaging.output.staging != true
         run: |
           cat > .env << EOF
           ${{ secrets.PROD_ENV }}
@@ -70,7 +70,7 @@ jobs:
         run: npm install
 
       - name: Set stage for prod
-        if: steps.isStaging.output.staging == false
+        if: steps.isStaging.output.staging != true
         run: |
           sed -i "s/stage: staging\":.*/stage\": \"prod\",/g" serverless.yml
 
@@ -82,5 +82,5 @@ jobs:
         run: aws s3 sync .serverless s3://${{ secrets.STAGING_BUCKET }} --exclude "*" --include "validation-service.zip" --region us-east-2
 
       - name: Sync terraform state with s3 bucket prod
-        if: steps.isStaging.output.staging == false
+        if: steps.isStaging.output.staging != true
         run: aws s3 sync .serverless s3://${{ secrets.PROD_BUCKET }} --exclude "*" --include "validation-service.zip" --region us-east-2
