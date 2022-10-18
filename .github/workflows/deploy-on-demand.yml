@@ -1,13 +1,19 @@
-name: Deploy On Tag
+name: Deploy On Workflow
 
 on:
-  push:
-    tags:
-      - v*
+  workflow_dispatch:
+    inputs:
+      deploy_to_env:
+        description: "STAGING | PROD"
+        type: choice
+        required: true
+        default: "STAGING"
+        options:
+         - STAGING
+         - PROD
 
 jobs:
   serverless-deploy:
-    if: startsWith(github.ref, 'refs/tags/v')
     name: Deploy lambda
     runs-on: ubuntu-latest
     steps:
@@ -41,17 +47,35 @@ jobs:
       - name: Serverless Framework AWS authentication
         run: sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
 
-      - name: Create env file
+      - name: Create staging env file
+        if: ${{ github.event.inputs.deploy_to_env == 'STAGING' }} 
         run: |
           cat > .env << EOF
           ${{ secrets.ENV }}
           EOF
 
+      - name: Create prod env file
+        if: ${{ github.event.inputs.deploy_to_env == 'PROD' }} 
+        run: |
+          cat > .env << EOF
+          ${{ secrets.PROD_ENV }}
+          EOF
+
       - name: Install NPM Dependencies
         run: npm install
 
-      - name: Deploy Lambda Functions
-        run: sls deploy -s staging
+      - name: Set stage for prod
+        if: ${{ github.event.inputs.deploy_to_env == 'PROD' }} 
+        run: |
+          sed -i "s/stage: staging\":.*/stage\": \"prod\",/g" serverless.yml
 
-      - name: Sync terraform state with s3 bucket
+      - name: Deploy Lambda Functions
+        run: sls deploy -s ${{ github.event.inputs.deploy_to_env }}
+
+      - name: Sync terraform state with s3 bucket staging
+        if: ${{ github.event.inputs.deploy_to_env == 'STAGING' }} 
         run: aws s3 sync .serverless s3://${{ secrets.STAGING_BUCKET }} --exclude "*" --include "validation-service.zip" --region us-east-2
+
+      - name: Sync terraform state with s3 bucket prod
+        if: ${{ github.event.inputs.deploy_to_env == 'PROD' }}
+        run: aws s3 sync .serverless s3://${{ secrets.PROD_BUCKET }} --exclude "*" --include "validation-service.zip" --region us-east-2
