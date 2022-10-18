@@ -51,7 +51,7 @@ jobs:
         if: ${{ github.event.inputs.deploy_to_env == 'STAGING' }} 
         run: |
           cat > .env << EOF
-          ${{ secrets.STAGING_ENV }}
+          ${{ secrets.ENV }}
           EOF
 
       - name: Create prod env file
