@@ -8,7 +8,7 @@ import {
 import { LambdaResponse } from "../types/response";
 import { LambdaResponses } from "../utils/lambda-responses";
 import { getValidationAttempts } from "../utils/database";
-import { checkValidColumnName, createSql } from "../utils/sql";
+import { checkValidColumnName, createSqlAdm } from "../utils/sql";
 import { Logger } from "../utils/logger";
 import { StatusCodes } from "http-status-codes";
 import Newrelic from "newrelic";
@@ -25,11 +25,11 @@ export const getValidationHistory = async (
     const nrEvent: getValidationHistoryEvent = {
       func: "getValidationHistory",
       accountId: params.accountId ?? "undefined",
-      orgId: params.orgId ?? "undefined",
       orderBy: params.orderBy ?? "undefined",
       orderAsc: (params.orderAsc === "true" ? true : false) ?? "undefined",
       limit: Number(params.limit) ?? "undefined",
       offset: Number(params.offset) ?? "undefined",
+      searchPhrase: params.searchPhrase ?? "undefined",
       eventStartDate: new Date(params.startDate).toString(),
       eventEndDate: new Date(params.endDate).toString(),
     };
@@ -39,7 +39,7 @@ export const getValidationHistory = async (
       ...{ action: "start" },
     });
 
-    if (params.accountId && !params.orgId) {
+    if (params.accountId && params.searchPhrase) {
       Newrelic.recordCustomEvent("NrO4GValidationHistory", {
         ...nrEvent,
         ...{ action: "bad_request" },
@@ -59,11 +59,11 @@ export const getValidationHistory = async (
 
     const validationHistoryRequest: ValidationHistoryRequest = {
       accountId: params.accountId ?? undefined,
-      orgId: params.orgId ?? undefined,
       orderBy: params.orderBy ?? undefined,
       orderAsc: (params.orderAsc === "true" ? true : false) ?? undefined,
       limit: Number(params.limit) ?? undefined,
       offset: Number(params.offset) ?? undefined,
+      searchPhrase: params.searchPhrase ?? "undefined",
       startDate: new Date(params.startDate),
       endDate: new Date(params.endDate),
     };
@@ -80,8 +80,8 @@ export const getValidationHistory = async (
       "Preparing get data query and count query...",
       validationHistoryRequest.accountId
     );
-    const sqlQuery = createSql(validationHistoryRequest, false);
-    const countQuery = createSql(validationHistoryRequest, true);
+    const sqlQuery = createSqlAdm(validationHistoryRequest, false);
+    const countQuery = createSqlAdm(validationHistoryRequest, true);
 
     const validationHistory = (await getValidationAttempts(
       sqlQuery as string,

@@ -19,6 +19,7 @@ export type ValidationAttempts = {
 
 export type ValidationHistoryRequest = {
   accountId?: string;
+  orgId?: string;
   searchPhrase?: string;
   orderBy?: string;
   orderAsc?: boolean;

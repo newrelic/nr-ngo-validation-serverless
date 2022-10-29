@@ -1,14 +1,50 @@
-import { ValidationHistoryRequest } from '../types/database';
+import { ValidationHistoryRequest } from "../types/database";
 
-export const createSql = (params: ValidationHistoryRequest, isCountQuery: boolean): string => {
+export const createSql = (
+  params: ValidationHistoryRequest,
+  isCountQuery: boolean
+): string => {
   let query = createQueryBegin(isCountQuery);
 
   if (params.startDate && params.endDate) {
-    query += 'WHERE validation_date BETWEEN :start_date AND :end_date ';
+    query += "WHERE validation_date BETWEEN :start_date AND :end_date ";
+  }
+
+  if (params.accountId && params.orgId) {
+    query += "AND account_id = :account_id AND org_id = :org_id ";
+  }
+
+  if (!isCountQuery) {
+    if (params.orderAsc !== undefined && params.orderBy) {
+      query += `ORDER BY ${params.orderBy} ${
+        params.orderAsc ? "ASC" : "DESC"
+      } `;
+    }
+
+    if (params.limit) {
+      query += `LIMIT :limit `;
+    }
+
+    if (params.offset) {
+      query += `OFFSET :offset `;
+    }
+  }
+
+  return query;
+};
+
+export const createSqlAdm = (
+  params: ValidationHistoryRequest,
+  isCountQuery: boolean
+): string => {
+  let query = createQueryBegin(isCountQuery);
+
+  if (params.startDate && params.endDate) {
+    query += "WHERE validation_date BETWEEN :start_date AND :end_date ";
   }
 
   if (params.accountId) {
-    query += 'AND account_id = :account_id ';
+    query += "AND account_id = :account_id ";
   }
 
   if (params.searchPhrase) {
@@ -17,7 +53,9 @@ export const createSql = (params: ValidationHistoryRequest, isCountQuery: boolea
 
   if (!isCountQuery) {
     if (params.orderAsc !== undefined && params.orderBy) {
-      query += `ORDER BY ${params.orderBy} ${params.orderAsc ? 'ASC' : 'DESC'} `;
+      query += `ORDER BY ${params.orderBy} ${
+        params.orderAsc ? "ASC" : "DESC"
+      } `;
     }
 
     if (params.limit) {
@@ -41,7 +79,15 @@ export const createQueryBegin = (isCountQuery: boolean): string => {
 };
 
 export const checkValidColumnName = (columnName: string): boolean => {
-  const columnNames = ['account_id', 'validation_date', 'org_id', 'org_name', 'eligibility_status', 'reason', 'token'];
+  const columnNames = [
+    "account_id",
+    "validation_date",
+    "org_id",
+    "org_name",
+    "eligibility_status",
+    "reason",
+    "token",
+  ];
 
   return columnNames.includes(columnName);
 };
