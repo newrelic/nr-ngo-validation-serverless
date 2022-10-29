@@ -227,6 +227,52 @@ GET
   orderAsc: Boolean
   limit: Number
   offset: Number
+  orgId: String
+  startDate: Date
+  endDate: Date
+}
+```
+
+<b>Response</b>
+
+```
+{
+  "attempts": [
+    {
+      "id": 1,
+      "account_id": "1",
+      "validation_date": "2021-02-06 13:30:00",
+      "org_id": "org-id-1",
+      "org_name": "The Organisation",
+      "eligibility_status": true,
+      "reason": "",
+      "token": "awesome@token"
+    }
+  ],
+  "records": 1
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+```
+
+### Get validation history admin endpoint
+
+Allows to fetch validation history data from the database for the admin user.
+
+<b>Request</b>
+
+```
+GET
+{
+  accountId: String
+  orderBy: String
+  orderAsc: Boolean
+  limit: Number
+  offset: Number
   searchPhrase: String
   startDate: Date
   endDate: Date
