@@ -268,7 +268,6 @@ Allows to fetch validation history data from the database for the admin user.
 ```
 GET
 {
-  accountId: String
   orderBy: String
   orderAsc: Boolean
   limit: Number
