@@ -15,7 +15,7 @@ import Newrelic from "newrelic";
 import { getValidationHistoryEvent } from "../types/nrEvents";
 import { handleDistributedTracing } from "../utils/distributed_tracing";
 
-export const getValidationHistory = async (
+export const getValidationHistoryAdm = async (
   event: APIGatewayProxyEvent,
   context: Context
 ): Promise<LambdaResponse> => {
@@ -23,7 +23,7 @@ export const getValidationHistory = async (
     const logger = new Logger(context);
     const params = event.queryStringParameters || {};
     const nrEvent: getValidationHistoryEvent = {
-      func: "getValidationHistory",
+      func: "getValidationHistoryAdm",
       orderBy: params.orderBy ?? "undefined",
       orderAsc: (params.orderAsc === "true" ? true : false) ?? "undefined",
       limit: Number(params.limit) ?? "undefined",

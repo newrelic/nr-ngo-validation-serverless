@@ -165,7 +165,7 @@ functions:
 
   get-history-adm:
     handler: src/functions/get-validation-history-adm.getValidationHistoryAdm
-    description: Gets validation history for given account id - adm
+    description: Gets validation history - admin version
     iamRoleStatements:
       - Effect: "Allow"
         Action:
