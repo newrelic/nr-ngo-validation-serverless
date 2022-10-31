@@ -6,6 +6,7 @@ export type getLlrEvent = {
 export type getValidationHistoryEvent = {
   func: string;
   accountId?: string;
+  orgId?: string;
   orderBy?: string;
   orderAsc?: boolean | string;
   limit?: number | string;

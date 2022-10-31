@@ -8,6 +8,7 @@ The 'For Good' Validation Service is designed to check the program eligibility o
 
 - get-lookup-response: allow user to fetch LLR from the database,
 - get-validation-history: allow user to fetch history of validation from database. We are supporting AuroraDB with Postgres right now,
+- get-validation-history-adm: allow admin to fetch history of validation from database. We are supporting AuroraDB with Postgres right now,
 - manual-approval: allow for manual approval of a user by NR employees,
 - update-llr: allows for an update of large lookup response on the database,
 - save-attempts: allow user to save validation attempt to the database,
@@ -222,6 +223,51 @@ Allows to fetch validation history data from the database.
 GET
 {
   accountId: String
+  orderBy: String
+  orderAsc: Boolean
+  limit: Number
+  offset: Number
+  orgId: String
+  startDate: Date
+  endDate: Date
+}
+```
+
+<b>Response</b>
+
+```
+{
+  "attempts": [
+    {
+      "id": 1,
+      "account_id": "1",
+      "validation_date": "2021-02-06 13:30:00",
+      "org_id": "org-id-1",
+      "org_name": "The Organisation",
+      "eligibility_status": true,
+      "reason": "",
+      "token": "awesome@token"
+    }
+  ],
+  "records": 1
+}
+```
+
+<b>Possible custom errors</b>
+
+```
+- Bad request: 'Bad parameters provided to endpoint.'
+```
+
+### Get validation history admin endpoint
+
+Allows to fetch validation history data from the database for the admin user.
+
+<b>Request</b>
+
+```
+GET
+{
   orderBy: String
   orderAsc: Boolean
   limit: Number
