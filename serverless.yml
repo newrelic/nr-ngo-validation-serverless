@@ -163,7 +163,7 @@ functions:
     tags:
       use_aurora: 'true'
 
-  get-validation-history-adm:
+  get-history-adm:
     handler: src/functions/get-validation-history-adm.getValidationHistoryAdm
     description: Gets validation history for given account id - adm
     iamRoleStatements:
