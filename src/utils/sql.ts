@@ -43,10 +43,6 @@ export const createSqlAdm = (
     query += "WHERE validation_date BETWEEN :start_date AND :end_date ";
   }
 
-  if (params.accountId) {
-    query += "AND account_id = :account_id ";
-  }
-
   if (params.searchPhrase) {
     query += `AND (org_id ILIKE CONCAT('%', :search_phrase, '%') OR org_name ILIKE CONCAT('%', :search_phrase, '%') OR account_id ILIKE CONCAT('%', :search_phrase, '%')) `;
   }

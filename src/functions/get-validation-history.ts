@@ -47,6 +47,14 @@ export const getValidationHistory = async (
       return LambdaResponses.badRequest();
     }
 
+    if (!params.accountId || !params.orgId) {
+      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
+        ...nrEvent,
+        ...{ action: "bad_request" },
+      });
+      return LambdaResponses.badRequest();
+    }
+
     if (!params.startDate && !params.endDate) {
       Newrelic.recordCustomEvent("NrO4GValidationHistory", {
         ...nrEvent,

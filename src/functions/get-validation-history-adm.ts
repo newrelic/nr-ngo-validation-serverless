@@ -24,7 +24,6 @@ export const getValidationHistory = async (
     const params = event.queryStringParameters || {};
     const nrEvent: getValidationHistoryEvent = {
       func: "getValidationHistory",
-      accountId: params.accountId ?? "undefined",
       orderBy: params.orderBy ?? "undefined",
       orderAsc: (params.orderAsc === "true" ? true : false) ?? "undefined",
       limit: Number(params.limit) ?? "undefined",
@@ -58,7 +57,6 @@ export const getValidationHistory = async (
     logger.info("Obtaining validation history...", params.accountId);
 
     const validationHistoryRequest: ValidationHistoryRequest = {
-      accountId: params.accountId ?? undefined,
       orderBy: params.orderBy ?? undefined,
       orderAsc: (params.orderAsc === "true" ? true : false) ?? undefined,
       limit: Number(params.limit) ?? undefined,

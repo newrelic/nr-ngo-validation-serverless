@@ -29,28 +29,12 @@ describe("Sql utils", () => {
       expect(query).toEqual(SqlFixtures.minimumQuery);
     });
 
-    it("Should return admin select query based on account id", () => {
-      const query = createSqlAdm(
-        ValidationHistoryFixtures.validationHistoryAccountId,
-        false
-      );
-      expect(query).toEqual(SqlFixtures.queryWithAccountId);
-    });
-
     it("Should return select query based on account id and org id", () => {
       const query = createSql(
         ValidationHistoryFixtures.validationHistoryAccountIdAndOrgId,
         false
       );
       expect(query).toEqual(SqlFixtures.queryWithAccountIdAndOrgId);
-    });
-
-    it("Should return admin select query based on account id, when offset is 0 then without it", () => {
-      const query = createSqlAdm(
-        ValidationHistoryFixtures.validationHistoryWithoutOffset,
-        false
-      );
-      expect(query).toEqual(SqlFixtures.queryWithoutOffset);
     });
 
     it("Should return admin select query based on search phrase", () => {
