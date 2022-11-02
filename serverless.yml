@@ -55,10 +55,6 @@ functions:
           path: /validate
           method: get
           cors: true
-          authorizer:
-            name: authorizer
-            type: token
-            resultTtlInSeconds: 0
     memorySize: 512
     tags:
       use_aurora: 'true'
@@ -80,10 +76,6 @@ functions:
           path: /validate-token
           method: get
           cors: true
-          authorizer:
-            name: authorizer
-            type: token
-            resultTtlInSeconds: 0
     memorySize: 512
     tags:
       use_aurora: 'true'
@@ -105,10 +97,6 @@ functions:
           path: /validate-account
           method: get
           cors: true
-          authorizer:
-            name: authorizer
-            type: token
-            resultTtlInSeconds: 0
     memorySize: 512
     tags:
       use_aurora: 'true'
@@ -130,10 +118,6 @@ functions:
           path: /attempts
           method: post
           cors: true
-          authorizer:
-            name: authorizer
-            type: token
-            resultTtlInSeconds: 0
     memorySize: 512
     tags:
       use_aurora: 'true'
@@ -153,6 +137,27 @@ functions:
     events:
       - http:
           path: /attempts
+          method: get
+          cors: true
+    memorySize: 512
+    tags:
+      use_aurora: 'true'
+
+  get-history-adm:
+    handler: src/functions/get-validation-history-adm.getValidationHistoryAdm
+    description: Gets validation history - admin version
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - rds-data:*
+        Resource: "arn:aws:rds:*:*:cluster:${env:DATABASE_CLUSTER_NAME}"
+      - Effect: "Allow"
+        Action:
+          - secretsmanager:*
+        Resource: "arn:aws:secretsmanager:*:*:*"
+    events:
+      - http:
+          path: /attempts-adm
           method: get
           cors: true
           authorizer:
@@ -180,10 +185,6 @@ functions:
           path: /manual-approve
           method: post
           cors: true
-          authorizer:
-            name: authorizer
-            type: token
-            resultTtlInSeconds: 0
     memorySize: 512
     tags:
       use_aurora: 'true'
@@ -205,10 +206,6 @@ functions:
           path: /large-response
           method: get
           cors: true
-          authorizer:
-            name: authorizer
-            type: token
-            resultTtlInSeconds: 0
     memorySize: 512
     tags:
       use_aurora: 'true'
