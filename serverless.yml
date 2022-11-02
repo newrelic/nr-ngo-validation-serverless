@@ -160,10 +160,6 @@ functions:
           path: /attempts-adm
           method: get
           cors: true
-          authorizer:
-            name: authorizer
-            type: token
-            resultTtlInSeconds: 0
     memorySize: 512
     tags:
       use_aurora: 'true'
