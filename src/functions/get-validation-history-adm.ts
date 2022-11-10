@@ -8,14 +8,14 @@ import {
 import { LambdaResponse } from "../types/response";
 import { LambdaResponses } from "../utils/lambda-responses";
 import { getValidationAttempts } from "../utils/database";
-import { checkValidColumnName, createSql } from "../utils/sql";
+import { checkValidColumnName, createSqlAdm } from "../utils/sql";
 import { Logger } from "../utils/logger";
 import { StatusCodes } from "http-status-codes";
 import Newrelic from "newrelic";
 import { getValidationHistoryEvent } from "../types/nrEvents";
 import { handleDistributedTracing } from "../utils/distributed_tracing";
 
-export const getValidationHistory = async (
+export const getValidationHistoryAdm = async (
   event: APIGatewayProxyEvent,
   context: Context
 ): Promise<LambdaResponse> => {
@@ -23,13 +23,12 @@ export const getValidationHistory = async (
     const logger = new Logger(context);
     const params = event.queryStringParameters || {};
     const nrEvent: getValidationHistoryEvent = {
-      func: "getValidationHistory",
-      accountId: params.accountId ?? "undefined",
-      newrelicOrgId: params.newrelicOrgId ?? "undefined",
+      func: "getValidationHistoryAdm",
       orderBy: params.orderBy ?? "undefined",
       orderAsc: (params.orderAsc === "true" ? true : false) ?? "undefined",
       limit: Number(params.limit) ?? "undefined",
       offset: Number(params.offset) ?? "undefined",
+      searchPhrase: params.searchPhrase ?? "undefined",
       eventStartDate: new Date(params.startDate).toString(),
       eventEndDate: new Date(params.endDate).toString(),
     };
@@ -38,14 +37,6 @@ export const getValidationHistory = async (
       ...nrEvent,
       ...{ action: "start" },
     });
-
-    if (!params.accountId || !params.newrelicOrgId) {
-      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
-        ...nrEvent,
-        ...{ action: "bad_request" },
-      });
-      return LambdaResponses.badRequest();
-    }
 
     if (!params.startDate && !params.endDate) {
       Newrelic.recordCustomEvent("NrO4GValidationHistory", {
@@ -58,12 +49,11 @@ export const getValidationHistory = async (
     logger.info("Obtaining validation history...", params.accountId);
 
     const validationHistoryRequest: ValidationHistoryRequest = {
-      accountId: params.accountId ?? undefined,
-      newrelicOrgId: params.newrelicOrgId ?? undefined,
       orderBy: params.orderBy ?? undefined,
       orderAsc: (params.orderAsc === "true" ? true : false) ?? undefined,
       limit: Number(params.limit) ?? undefined,
       offset: Number(params.offset) ?? undefined,
+      searchPhrase: params.searchPhrase ?? undefined,
       startDate: new Date(params.startDate),
       endDate: new Date(params.endDate),
     };
@@ -80,8 +70,8 @@ export const getValidationHistory = async (
       "Preparing get data query and count query...",
       validationHistoryRequest.accountId
     );
-    const sqlQuery = createSql(validationHistoryRequest, false);
-    const countQuery = createSql(validationHistoryRequest, true);
+    const sqlQuery = createSqlAdm(validationHistoryRequest, false);
+    const countQuery = createSqlAdm(validationHistoryRequest, true);
 
     const validationHistory = (await getValidationAttempts(
       sqlQuery as string,

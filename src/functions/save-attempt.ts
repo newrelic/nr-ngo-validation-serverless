@@ -28,8 +28,15 @@ export const saveAttempt = async (
       attempt.accountId,
       attempt.token
     );
-    const { token, accountId, eligibilityStatus, orgId, orgName, reason } =
-      attempt;
+    const {
+      token,
+      accountId,
+      eligibilityStatus,
+      orgId,
+      orgName,
+      newrelicOrgId,
+      reason,
+    } = attempt;
 
     const nrEvent: saveAttemptEvent = {
       func: "SaveAttempt",
@@ -38,6 +45,7 @@ export const saveAttempt = async (
       eligibilityStatus: attempt?.eligibilityStatus ?? "undefined",
       orgId: attempt?.orgId ?? "undefined",
       orgName: attempt?.orgName ?? "undefined",
+      newrelicOrgId: attempt?.newrelicOrgId ?? "undefined",
       reason: attempt?.reason ?? "undefined",
     };
 
@@ -51,7 +59,8 @@ export const saveAttempt = async (
       accountId === undefined ||
       eligibilityStatus === undefined ||
       orgId === undefined ||
-      orgName === undefined
+      orgName === undefined ||
+      newrelicOrgId === undefined
     ) {
       Newrelic.recordCustomEvent("NrO4GSaveAttempt", {
         ...nrEvent,
@@ -67,6 +76,7 @@ export const saveAttempt = async (
       eligibilityStatus,
       orgId,
       orgName,
+      newrelicOrgId,
       reason
     );
 

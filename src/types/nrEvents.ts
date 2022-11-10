@@ -6,6 +6,7 @@ export type getLlrEvent = {
 export type getValidationHistoryEvent = {
   func: string;
   accountId?: string;
+  newrelicOrgId?: string;
   orderBy?: string;
   orderAsc?: boolean | string;
   limit?: number | string;
@@ -30,6 +31,7 @@ export type saveAttemptEvent = {
   eligibilityStatus?: boolean | string;
   orgId?: string;
   orgName?: string;
+  newrelicOrgId?: string;
   reason?: string;
 };
 

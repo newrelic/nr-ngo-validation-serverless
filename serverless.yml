@@ -38,7 +38,6 @@ provider:
     TEST: ${env:TEST, 'default_value'}
 
 functions:
-
   validate:
     handler: src/functions/validator.validate
     description: Validates organization with Tech Soup API
@@ -61,6 +60,8 @@ functions:
             type: token
             resultTtlInSeconds: 0
     memorySize: 512
+    tags:
+      use_aurora: 'true'
 
   validate-token:
     handler: src/functions/validate-token.validateToken
@@ -84,6 +85,8 @@ functions:
             type: token
             resultTtlInSeconds: 0
     memorySize: 512
+    tags:
+      use_aurora: 'true'
 
   validate-account:
     handler: src/functions/validate-account.validateAccount
@@ -107,6 +110,8 @@ functions:
             type: token
             resultTtlInSeconds: 0
     memorySize: 512
+    tags:
+      use_aurora: 'true'
 
   save-attempt:
     handler: src/functions/save-attempt.saveAttempt
@@ -130,6 +135,8 @@ functions:
             type: token
             resultTtlInSeconds: 0
     memorySize: 512
+    tags:
+      use_aurora: 'true'
 
   get-validation-history:
     handler: src/functions/get-validation-history.getValidationHistory
@@ -153,6 +160,33 @@ functions:
             type: token
             resultTtlInSeconds: 0
     memorySize: 512
+    tags:
+      use_aurora: 'true'
+
+  get-history-adm:
+    handler: src/functions/get-validation-history-adm.getValidationHistoryAdm
+    description: Gets validation history - admin version
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - rds-data:*
+        Resource: "arn:aws:rds:*:*:cluster:${env:DATABASE_CLUSTER_NAME}"
+      - Effect: "Allow"
+        Action:
+          - secretsmanager:*
+        Resource: "arn:aws:secretsmanager:*:*:*"
+    events:
+      - http:
+          path: /attempts-adm
+          method: get
+          cors: true
+          authorizer:
+            name: authorizer
+            type: token
+            resultTtlInSeconds: 0
+    memorySize: 512
+    tags:
+      use_aurora: 'true'
 
   manual-approval:
     handler: src/functions/manual-approval.manualApprove
@@ -176,6 +210,8 @@ functions:
             type: token
             resultTtlInSeconds: 0
     memorySize: 512
+    tags:
+      use_aurora: 'true'
 
   get-llr:
     handler: src/functions/get-lookup-response.getLookupResponse
@@ -199,6 +235,8 @@ functions:
             type: token
             resultTtlInSeconds: 0
     memorySize: 512
+    tags:
+      use_aurora: 'true'
 
   update-llr:
     handler: src/functions/update-llr.updateLookupLargeResponse
@@ -218,6 +256,8 @@ functions:
           method: get
           cors: true
     memorySize: 512
+    tags:
+      use_aurora: 'true'
 
   authorizer:
     handler: src/functions/authorizer.authorize
@@ -226,5 +266,4 @@ functions:
     environment:
       API_KEY: ${env:API_KEY, 'default_value'}
     tags:
-      use_aurora: false
-      use_github_api: false
+      use_aurora: 'false'
