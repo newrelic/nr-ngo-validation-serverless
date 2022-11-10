@@ -25,7 +25,7 @@ export const getValidationHistory = async (
     const nrEvent: getValidationHistoryEvent = {
       func: "getValidationHistory",
       accountId: params.accountId ?? "undefined",
-      orgId: params.orgId ?? "undefined",
+      newrelicOrgId: params.newrelicOrgId ?? "undefined",
       orderBy: params.orderBy ?? "undefined",
       orderAsc: (params.orderAsc === "true" ? true : false) ?? "undefined",
       limit: Number(params.limit) ?? "undefined",
@@ -39,15 +39,7 @@ export const getValidationHistory = async (
       ...{ action: "start" },
     });
 
-    if (params.accountId && !params.orgId) {
-      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
-        ...nrEvent,
-        ...{ action: "bad_request" },
-      });
-      return LambdaResponses.badRequest();
-    }
-
-    if (!params.accountId || !params.orgId) {
+    if (!params.accountId || !params.newrelicOrgId) {
       Newrelic.recordCustomEvent("NrO4GValidationHistory", {
         ...nrEvent,
         ...{ action: "bad_request" },
@@ -67,7 +59,7 @@ export const getValidationHistory = async (
 
     const validationHistoryRequest: ValidationHistoryRequest = {
       accountId: params.accountId ?? undefined,
-      orgId: params.orgId ?? undefined,
+      newrelicOrgId: params.newrelicOrgId ?? undefined,
       orderBy: params.orderBy ?? undefined,
       orderAsc: (params.orderAsc === "true" ? true : false) ?? undefined,
       limit: Number(params.limit) ?? undefined,

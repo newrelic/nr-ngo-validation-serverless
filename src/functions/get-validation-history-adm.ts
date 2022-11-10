@@ -38,14 +38,6 @@ export const getValidationHistoryAdm = async (
       ...{ action: "start" },
     });
 
-    if (params.accountId && params.searchPhrase) {
-      Newrelic.recordCustomEvent("NrO4GValidationHistory", {
-        ...nrEvent,
-        ...{ action: "bad_request" },
-      });
-      return LambdaResponses.badRequest();
-    }
-
     if (!params.startDate && !params.endDate) {
       Newrelic.recordCustomEvent("NrO4GValidationHistory", {
         ...nrEvent,
@@ -61,7 +53,7 @@ export const getValidationHistoryAdm = async (
       orderAsc: (params.orderAsc === "true" ? true : false) ?? undefined,
       limit: Number(params.limit) ?? undefined,
       offset: Number(params.offset) ?? undefined,
-      searchPhrase: params.searchPhrase ?? "undefined",
+      searchPhrase: params.searchPhrase ?? undefined,
       startDate: new Date(params.startDate),
       endDate: new Date(params.endDate),
     };
