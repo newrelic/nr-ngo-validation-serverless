@@ -177,11 +177,12 @@ export const saveValidationAttempt = async (
   eligibilityStatus: boolean,
   orgId: string,
   orgName: string,
+  newrelicOrgId: string,
   reason: string
 ): Promise<any | undefined> => {
   const result = await dbClient.query({
-    sql: `INSERT INTO validation_attempts (eligibility_status, token, account_id, org_id, org_name, reason, validation_source)
-      VALUES (:eligibility_status, :token, :account_id, :org_id, :org_name, :reason, :validation_source)`,
+    sql: `INSERT INTO validation_attempts (eligibility_status, token, account_id, org_id, org_name, newrelic_org_id, reason, validation_source)
+      VALUES (:eligibility_status, :token, :account_id, :org_id, :org_name, :newrelic_org_id, :reason, :validation_source)`,
     parameters: [
       {
         token: token,
@@ -189,6 +190,7 @@ export const saveValidationAttempt = async (
         eligibility_status: eligibilityStatus,
         org_id: orgId,
         org_name: orgName,
+        newrelic_org_id: newrelicOrgId,
         reason: reason || "",
         validation_source: ValidationSource.TECHSOUP,
       },

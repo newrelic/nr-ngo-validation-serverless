@@ -4,6 +4,7 @@ export type SaveAttemptBody = {
   orgId: string;
   eligibilityStatus: boolean;
   orgName: string;
+  newrelicOrgId: string;
   reason?: string;
 };
 
@@ -19,6 +20,7 @@ export type ValidationAttempts = {
 
 export type ValidationHistoryRequest = {
   accountId?: string;
+  newrelicOrgId?: string;
   orgId?: string;
   searchPhrase?: string;
   orderBy?: string;

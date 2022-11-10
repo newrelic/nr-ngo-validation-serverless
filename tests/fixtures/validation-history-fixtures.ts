@@ -23,6 +23,7 @@ export const ValidationHistoryFixtures = {
 
   validationHistoryAccountIdAndOrgId: {
     accountId: "1",
+    newrelicOrgId: "241414",
     orgId: "111",
     orderBy: "validation_date",
     orderAsc: true,

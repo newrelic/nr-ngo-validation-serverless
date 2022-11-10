@@ -10,8 +10,9 @@ export const createSql = (
     query += "WHERE validation_date BETWEEN :start_date AND :end_date ";
   }
 
-  if (params.accountId && params.orgId) {
-    query += "AND account_id = :account_id AND org_id = :org_id ";
+  if (params.accountId && params.newrelicOrgId) {
+    query +=
+      "AND account_id = :account_id AND newrelic_org_id = :newrelic_org_id ";
   }
 
   if (!isCountQuery) {
@@ -80,6 +81,7 @@ export const checkValidColumnName = (columnName: string): boolean => {
     "validation_date",
     "org_id",
     "org_name",
+    "newrelic_org_id",
     "eligibility_status",
     "reason",
     "token",

@@ -34,7 +34,7 @@ describe("Sql utils", () => {
         ValidationHistoryFixtures.validationHistoryAccountIdAndOrgId,
         false
       );
-      expect(query).toEqual(SqlFixtures.queryWithAccountIdAndOrgId);
+      expect(query).toEqual(SqlFixtures.queryWithAccountIdAndNewrelicOrgId);
     });
 
     it("Should return admin select query based on search phrase", () => {
