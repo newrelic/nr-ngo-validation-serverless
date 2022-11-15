@@ -33,6 +33,9 @@ export const getValidationAttempts = async (
         account_id: params.accountId,
       },
       {
+        newrelic_org_id: params.newrelicOrgId,
+      },
+      {
         search_phrase: params.searchPhrase,
       },
       {
